@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAPORAN AUDIT SPRINT 2 — BERNADA.ID</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 11pt;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: #fff;
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #A12828;
+        }
+
+        .header h1 {
+            font-size: 24pt;
+            color: #A12828;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .header .subtitle {
+            font-size: 14pt;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .header .meta {
+            font-size: 10pt;
+            color: #888;
+        }
+
+        .meta-table {
+            width: 100%;
+            margin-bottom: 30px;
+            border-collapse: collapse;
+        }
+
+        .meta-table td {
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .meta-table td:first-child {
+            background: #f5f2ee;
+            font-weight: 600;
+            width: 150px;
+        }
+
+        h2 {
+            font-size: 16pt;
+            color: #A12828;
+            margin: 30px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #A12828;
+        }
+
+        h3 {
+            font-size: 13pt;
+            color: #2C2926;
+            margin: 20px 0 10px 0;
+        }
+
+        h4 {
+            font-size: 11pt;
+            color: #4A4641;
+            margin: 15px 0 8px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0 20px 0;
+            font-size: 10pt;
+        }
+
+        th, td {
+            padding: 8px 10px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+
+        th {
+            background: #A12828;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f7f5;
+        }
+
+        .status-pass {
+            color: #047857;
+            font-weight: 700;
+        }
+
+        .status-warning {
+            color: #D97706;
+            font-weight: 700;
+        }
+
+        .status-error {
+            color: #DC2626;
+            font-weight: 700;
+        }
+
+        .status-high {
+            background: #FEE2E2;
+            color: #DC2626;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 9pt;
+            font-weight: 600;
+        }
+
+        .status-medium {
+            background: #FEF3C7;
+            color: #D97706;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 9pt;
+            font-weight: 600;
+        }
+
+        .status-low {
+            background: #E0F2FE;
+            color: #0369A1;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 9pt;
+            font-weight: 600;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: "JetBrains Mono", "SF Mono", monospace;
+            font-size: 9pt;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 10px 0;
+            font-size: 9pt;
+            font-family: "JetBrains Mono", "SF Mono", monospace;
+            line-height: 1.5;
+        }
+
+        ul, ol {
+            margin: 8px 0;
+            padding-left: 24px;
+        }
+
+        li {
+            margin: 4px 0;
+        }
+
+        .section-intro {
+            font-style: italic;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .highlight-box {
+            background: #FBF1F0;
+            border-left: 4px solid #A12828;
+            padding: 12px 16px;
+            margin: 15px 0;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #A12828;
+            text-align: center;
+            font-size: 9pt;
+            color: #888;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+            }
+
+            h2 {
+                page-break-after: avoid;
+            }
+
+            table {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>LAPORAN AUDIT SPRINT 2</h1>
+    <div class="subtitle">BERNADA.ID — Digital Wedding Invitation Platform</div>
+    <div class="meta">Internal Code Review · Engineering Handbook Compliance</div>
+</div>
+
+<table class="meta-table">
+    <tr>
+        <td>Project</td>
+        <td>BERNADA.ID</td>
+    </tr>
+    <tr>
+        <td>Version</td>
+        <td>v1.1.0 (The First Experience)</td>
+    </tr>
+    <tr>
+        <td>Tanggal Audit</td>
+        <td>05 Agustus 2026</td>
+    </tr>
+    <tr>
+        <td>Auditor</td>
+        <td>AI Pair Programmer</td>
+    </tr>
+    <tr>
+        <td>Scope</td>
+        <td>Landing page 9 section + sections.css + responsive.css + interaksi JS + aset SVG + dokumentasi</td>
+    </tr>
+    <tr>
+        <td>Referensi</td>
+        <td>Engineering Handbook BERNADA.ID (rules/02–06, 09, 10) · `.docs/sprint-2.md`</td>
+    </tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- TAHAP 1: INTERNAL CODE REVIEW -->
+<!-- ============================================================ -->
+
+<h2>TAHAP 1: INTERNAL CODE REVIEW</h2>
+
+<!-- 1.1 Struktur File -->
+<h3>1.1 Struktur File</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Lokasi</th>
+        <th>Isi</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td><code>index.html</code></td>
+        <td>Landing page 9 section + back-to-top + 3 script defer</td>
+        <td class="status-pass">✅ Sesuai rencana</td>
+    </tr>
+    <tr>
+        <td><code>assets/css/sections.css</code></td>
+        <td>Style section 11 bagian (v1.1.0)</td>
+        <td class="status-pass">✅ Terisi</td>
+    </tr>
+    <tr>
+        <td><code>assets/css/responsive.css</code></td>
+        <td>Media query xs → 2xl (v1.1.0)</td>
+        <td class="status-pass">✅ Terisi</td>
+    </tr>
+    <tr>
+        <td><code>assets/css/variables.css</code></td>
+        <td>Token baru bagian 16 (Gradient &amp; Surface) + 17 (Size &amp; Metric)</td>
+        <td class="status-pass">✅ Ada</td>
+    </tr>
+    <tr>
+        <td><code>assets/js/</code></td>
+        <td><code>navigation.js</code>, <code>accordion.js</code>, <code>scroll-effects.js</code></td>
+        <td class="status-pass">✅ 3 file, satu tanggung jawab</td>
+    </tr>
+    <tr>
+        <td><code>assets/img/</code></td>
+        <td>7 SVG placeholder (hero, about, 6 portofolio, favicon)</td>
+        <td class="status-pass">✅ Ada</td>
+    </tr>
+    <tr>
+        <td><code>.docs/sections.md</code></td>
+        <td>Dokumentasi section baru</td>
+        <td class="status-pass">✅ Ada</td>
+    </tr>
+    <tr>
+        <td><code>.docs/releases/v1.1.0-first-experience.md</code></td>
+        <td>Release document v1.1.0</td>
+        <td class="status-pass">✅ Ada</td>
+    </tr>
+</table>
+
+<!-- 1.2 Penamaan File & Class -->
+<h3>1.2 Penamaan File &amp; Class</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Pola</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>File JS</td>
+        <td>kebab-case, nama sesuai fungsi</td>
+        <td class="status-pass">✅ Konsisten</td>
+    </tr>
+    <tr>
+        <td>Class CSS section</td>
+        <td><code>section-*</code>, <code>feature-*</code>, <code>pricing-*</code>, <code>footer-*</code></td>
+        <td class="status-pass">✅ Sesuai rules/05</td>
+    </tr>
+    <tr>
+        <td>State class</td>
+        <td><code>.is-open</code>, <code>.is-active</code>, <code>.is-visible</code>, <code>.is-scrolled</code></td>
+        <td class="status-pass">✅ Konsisten</td>
+    </tr>
+    <tr>
+        <td>Aset SVG</td>
+        <td>kebab-case deskriptif</td>
+        <td class="status-pass">✅ Konsisten</td>
+    </tr>
+</table>
+
+<!-- 1.3 Validitas Markup -->
+<h3>1.3 Validitas Markup</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Hasil</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>Keseimbangan tag HTML</td>
+        <td>Diff open-close = 6 (tepat = 4 meta + 2 link void)</td>
+        <td class="status-pass">✅ Seimbang</td>
+    </tr>
+    <tr>
+        <td>Semantik</td>
+        <td><code>header</code>, <code>main</code>, <code>section</code>, <code>article</code>, <code>nav</code>, <code>footer</code>, heading hierarkis</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Atribut gambar</td>
+        <td>Semua <code>img</code> punya <code>alt</code> + <code>width/height</code> (7 lazy, 1 fetchpriority)</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Inline style</td>
+        <td>0 ditemukan</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Anchor target</td>
+        <td>9 section id konsisten dengan menu (beranda, tentang, fitur, harga, portofolio, faq)</td>
+        <td class="status-pass">✅</td>
+    </tr>
+</table>
+
+<!-- 1.4 Konsistensi Class & Token -->
+<h3>1.4 Konsistensi Class &amp; Token</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Hasil</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>Token <code>var(--token)</code> di sections/responsive</td>
+        <td>84 token unik — 83 terdefinisi di <code>variables.css</code>; 1 fallback</td>
+        <td class="status-pass">✅ Hampir sempurna</td>
+    </tr>
+    <tr>
+        <td>Hardcoded warna</td>
+        <td>0 heksadesimal / <code>rgba()</code> di sections.css &amp; responsive.css</td>
+        <td class="status-pass">✅ Murni token</td>
+    </tr>
+    <tr>
+        <td>Class HTML → CSS</td>
+        <td>Seluruh class terdefinisi (komponen, layout, utilitas, section)</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Nilai geometrik mikro</td>
+        <td>Tercatat di daftar REKOMENDASI TOKEN BARU akhir sections.css</td>
+        <td class="status-pass">✅ Didokumentasikan</td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+        <th colspan="4" style="background: #D97706;">WARNING</th>
+    </tr>
+    <tr>
+        <th>Temuan</th>
+        <th>Lokasi</th>
+        <th>Alasan</th>
+        <th>Severity</th>
+    </tr>
+    <tr>
+        <td>4 class struktural tanpa CSS khusus</td>
+        <td><code>.hero-content</code>, <code>.about-content</code>, <code>.features</code>, <code>.footer-col</code></td>
+        <td>Wrapper semantik — styling ditangani parent/komponen lain; boleh dipertahankan namun perlu catatan</td>
+        <td><span class="status-low">LOW</span></td>
+    </tr>
+    <tr>
+        <td>Custom property <code>--reveal-delay</code> belum dipakai</td>
+        <td><code>sections.css:967</code></td>
+        <td>Dideklarasikan dengan fallback 0ms; skala tunda berjenjang belum diterapkan</td>
+        <td><span class="status-low">LOW</span></td>
+    </tr>
+</table>
+
+<!-- 1.5 Dead / Duplicate Code -->
+<h3>1.5 Dead / Duplicate Code</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <td colspan="3">Tidak ditemukan class duplikat antar file. Script JS dibagi per tanggung jawab tanpa duplikasi logika. SVG di-<code>inline</code> untuk ikon berulang dan di-file untuk gambar besar — tanpa duplikasi aset.</td>
+    </tr>
+</table>
+
+<!-- 1.6 Single Responsibility -->
+<h3>1.6 Single Responsibility</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>File</th>
+        <th>Tanggung Jawab</th>
+        <th>Status</th>
+    </tr>
+    <tr><td><code>navigation.js</code></td><td>Mobile menu + sticky header</td><td class="status-pass">✅</td></tr>
+    <tr><td><code>accordion.js</code></td><td>FAQ accordion (satu terbuka)</td><td class="status-pass">✅</td></tr>
+    <tr><td><code>scroll-effects.js</code></td><td>Reveal + active nav + back-to-top</td><td class="status-pass">✅</td></tr>
+    <tr><td><code>sections.css</code></td><td>Style section landing page</td><td class="status-pass">✅</td></tr>
+    <tr><td><code>responsive.css</code></td><td>Media query (Mobile First)</td><td class="status-pass">✅</td></tr>
+    <tr><td><code>assets/img/*.svg</code></td><td>Aset visual placeholder</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 1.7 Dokumentasi -->
+<h3>1.7 Dokumentasi</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Dokumen</th>
+        <th>Status</th>
+        <th>Catatan</th>
+    </tr>
+    <tr>
+        <td><code>.docs/sprint-2.md</code></td>
+        <td class="status-pass">✅</td>
+        <td>Scope, AC, risiko, timeline, keputusan</td>
+    </tr>
+    <tr>
+        <td><code>.docs/sections.md</code></td>
+        <td class="status-pass">✅</td>
+        <td>Struktur &amp; interaksi section</td>
+    </tr>
+    <tr>
+        <td><code>.docs/changelog.md</code></td>
+        <td class="status-pass">✅</td>
+        <td>Entri v1.1.0 ditambahkan</td>
+    </tr>
+    <tr>
+        <td><code>.docs/releases/v1.1.0-first-experience.md</code></td>
+        <td class="status-pass">✅</td>
+        <td>Release document dibuat</td>
+    </tr>
+    <tr>
+        <td><code>.docs/design-system.md</code></td>
+        <td class="status-pass">✅</td>
+        <td>Token bagian 15 &amp; 16 didokumentasikan</td>
+    </tr>
+    <tr>
+        <td><code>.docs/roadmap.md</code> &amp; <code>.ai/context/*</code></td>
+        <td class="status-pass">✅</td>
+        <td>Status Sprint 2 tersinkron</td>
+    </tr>
+    <tr>
+        <td><code>sections.css</code> — REKOMENDASI TOKEN BARU</td>
+        <td class="status-pass">✅</td>
+        <td>8 poin nilai hardcoded terdokumentasi</td>
+    </tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- TAHAP 2: ARCHITECTURE REVIEW -->
+<!-- ============================================================ -->
+
+<h2>TAHAP 2: ARCHITECTURE REVIEW</h2>
+
+<!-- 2.1 Layer & Separation of Concerns -->
+<h3>2.1 Layer &amp; Separation of Concerns</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>Media query hanya di <code>responsive.css</code> (rules/04)</td><td class="status-pass">✅</td></tr>
+    <tr><td>Style section terpisah dari komponen/layout</td><td class="status-pass">✅</td></tr>
+    <tr><td>Interaksi terpisah dari markup (progressive enhancement)</td><td class="status-pass">✅</td></tr>
+    <tr><td>Urutan import <code>main.css</code> konsisten</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 2.2 Design Token -->
+<h3>2.2 Design Token</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Kategori Baru</th>
+        <th>Token</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>GRADIENT &amp; SURFACE (16)</td><td><code>--gradient-brand</code>, <code>--gradient-soft</code>, <code>--color-surface-translucent</code></td><td class="status-pass">✅</td></tr>
+    <tr><td>SIZE &amp; METRIC (17)</td><td><code>--size-icon-*</code> (5), <code>--size-hero-visual-*</code> (2)</td><td class="status-pass">✅</td></tr>
+    <tr><td>Ukuran ikon berulang</td><td>Ditokenisasi (feature, about, pricing, footer, hamburger)</td><td class="status-pass">✅</td></tr>
+</table>
+
+<table>
+    <tr>
+        <th colspan="4" style="background: #D97706;">WARNING</th>
+    </tr>
+    <tr>
+        <th>Temuan</th>
+        <th>Lokasi</th>
+        <th>Alasan</th>
+        <th>Severity</th>
+    </tr>
+    <tr>
+        <td>Nilai geometrik mikro belum ditoken</td>
+        <td>sections.css (2px, 5.5px, rasio 4/5, ornamen 8–12rem)</td>
+        <td>Sudah dicatat di REKOMENDASI TOKEN BARU; menunggu keputusan penjaga Design System</td>
+        <td><span class="status-low">LOW</span></td>
+    </tr>
+</table>
+
+<!-- 2.3 JS Architecture -->
+<h3>2.3 JS Architecture</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>IIFE + <code>'use strict'</code> di 3 file</td><td class="status-pass">✅</td></tr>
+    <tr><td>Syntax valid (node --check)</td><td class="status-pass">✅</td></tr>
+    <tr><td>State via class/ARIA, bukan inline style</td><td class="status-pass">✅</td></tr>
+    <tr><td>Breakpoint desktop via <code>matchMedia('(min-width: 992px)')</code> = referensi <code>--breakpoint-lg</code></td><td class="status-pass">✅</td></tr>
+    <tr><td>Listener <code>passive: true</code> untuk scroll</td><td class="status-pass">✅</td></tr>
+    <tr><td>Fallback tanpa JS: konten tetap terlihat (progressive enhancement)</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 2.4 Responsive Architecture -->
+<h3>2.4 Responsive Architecture</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>Mobile First — semua media query <code>min-width</code></td><td class="status-pass">✅</td></tr>
+    <tr><td>6 breakpoint terisi (480/576/768/992/1200/1400)</td><td class="status-pass">✅</td></tr>
+    <tr><td>Navbar: panel mobile → baris statis di ≥992px</td><td class="status-pass">✅</td></tr>
+    <tr><td>Grid section: 1 → 2 → 3 kolom mengikuti breakpoint</td><td class="status-pass">✅</td></tr>
+    <tr><td>Visual fluid: <code>max-width</code> + <code>margin-inline: auto</code></td><td class="status-pass">✅</td></tr>
+</table>
+
+<table>
+    <tr>
+        <th colspan="4" style="background: #D97706;">WARNING</th>
+    </tr>
+    <tr>
+        <th>Temuan</th>
+        <th>Lokasi</th>
+        <th>Alasan</th>
+        <th>Severity</th>
+    </tr>
+    <tr>
+        <td>Nilai pixel di media query</td>
+        <td><code>responsive.css</code></td>
+        <td>CSS Custom Properties tidak valid di media query; sudah diberi komentar referensi token per breakpoint</td>
+        <td><span class="status-low">LOW</span></td>
+    </tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- TAHAP 3: QA REVIEW -->
+<!-- ============================================================ -->
+
+<h2>TAHAP 3: QA REVIEW</h2>
+
+<!-- 3.1 Aset & Referensi -->
+<h3>3.1 Aset &amp; Referensi</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Item</th>
+        <th>Hasil</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>7 SVG di <code>assets/img/</code></td>
+        <td>Semua <code>src</code> yang direferensikan ada di filesystem</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>3 script JS</td>
+        <td>Semua file ada + syntax valid</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>CSS import</td>
+        <td>Semua file yang di-import <code>main.css</code> ada</td>
+        <td class="status-pass">✅</td>
+    </tr>
+</table>
+
+<!-- 3.2 Keseimbangan & Struktur -->
+<h3>3.2 Keseimbangan &amp; Struktur</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Hasil</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>Tag HTML</td>
+        <td>Balanced (diff 6 = elemen void di head)</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Kurung CSS</td>
+        <td>sections (123/123), responsive (21/21), variables (1/1)</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>9 section</td>
+        <td>Semua id unik &amp; menu mengarah benar</td>
+        <td class="status-pass">✅</td>
+    </tr>
+</table>
+
+<!-- 3.3 Aksesibilitas -->
+<h3>3.3 Aksesibilitas</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Hasil</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>Atribut ARIA</td>
+        <td>57 atribut (aria-expanded, aria-controls, aria-labelledby, role="region", aria-hidden, aria-label)</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Menu mobile</td>
+        <td>Tutup via tombol, link, ESC; fokus dipindah; scroll lock <code>body.nav-open</code></td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>FAQ accordion</td>
+        <td>Kontrol via tombol, state ARIA sinkron</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td><code>:focus-visible</code> + focus ring</td>
+        <td>Berasal dari reset/base + komponen Sprint 1</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td><code>prefers-reduced-motion</code></td>
+        <td>animations.css:443 — durasi &amp; scroll dinonaktifkan</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Screen reader</td>
+        <td><code>.sr-only</code> utilitas ditambahkan; ikon dekoratif <code>aria-hidden</code></td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Alt text</td>
+        <td>Semua gambar deskriptif Bahasa Indonesia</td>
+        <td class="status-pass">✅</td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+        <th colspan="4" style="background: #D97706;">WARNING</th>
+    </tr>
+    <tr>
+        <th>Temuan</th>
+        <th>Lokasi</th>
+        <th>Alasan</th>
+        <th>Severity</th>
+    </tr>
+    <tr>
+        <td>Kontras warna &amp; navigasi keyboard belum diuji manual di browser</td>
+        <td>Seluruh halaman</td>
+        <td>Perlu uji manual (DevTools) sebelum rilis ke publik</td>
+        <td><span class="status-low">LOW</span></td>
+    </tr>
+</table>
+
+<!-- 3.4 Performa -->
+<h3>3.4 Performa</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Hasil</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>Script loading</td>
+        <td>3 script <code>defer</code> — tidak memblok render</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Gambar</td>
+        <td>7 <code>loading="lazy"</code>, 1 <code>fetchpriority="high"</code> (hero)</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Layout stability</td>
+        <td><code>width/height</code> di semua img + <code>aspect-ratio</code> portofolio</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Ikon</td>
+        <td>26 SVG inline (tanpa request tambahan)</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Reveal observer</td>
+        <td><code>unobserve</code> setelah elemen tampil</td>
+        <td class="status-pass">✅</td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+        <th colspan="4" style="background: #D97706;">WARNING</th>
+    </tr>
+    <tr>
+        <th>Temuan</th>
+        <th>Lokasi</th>
+        <th>Alasan</th>
+        <th>Severity</th>
+    </tr>
+    <tr>
+        <td>Google Fonts via <code>@import</code></td>
+        <td><code>main.css</code></td>
+        <td>Menambah request pihak ketiga; opsi preconnect/preload untuk optimasi lanjut</td>
+        <td><span class="status-low">LOW</span></td>
+    </tr>
+</table>
+
+<!-- 3.5 Responsive Readiness -->
+<h3>3.5 Responsive Readiness</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Breakpoint</th>
+        <th>Perubahan Utama</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>sm (576px)</td><td>visual hero diperbesar</td><td class="status-pass">✅</td></tr>
+    <tr><td>md (768px)</td><td>pricing 3 kolom, footer 2 kolom, hero padding lega</td><td class="status-pass">✅</td></tr>
+    <tr><td>lg (992px)</td><td>navbar baris, hero &amp; about 2 kolom, footer 4 kolom</td><td class="status-pass">✅</td></tr>
+    <tr><td>xl (1200px)</td><td>jarak section lebih lega</td><td class="status-pass">✅</td></tr>
+    <tr><td>2xl (1400px)</td><td>shadow visual hero lebih dalam</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- TAHAP 4: ENGINEERING REVIEW -->
+<!-- ============================================================ -->
+
+<h2>TAHAP 4: ENGINEERING REVIEW</h2>
+
+<!-- 4.1 Scalability -->
+<h3>4.1 Scalability</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>Section baru = tambah <code>section</code> di HTML + class di sections.css</td><td class="status-pass">✅</td></tr>
+    <tr><td>Interaksi modular — satu file per perilaku</td><td class="status-pass">✅</td></tr>
+    <tr><td>Token terpusat — perubahan desain satu tempat</td><td class="status-pass">✅</td></tr>
+    <tr><td>Aset lokal — tidak bergantung CDN</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 4.2 Maintainability -->
+<h3>4.2 Maintainability</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>Murni design token (kecuali nilai mikro terdokumentasi)</td><td class="status-pass">✅</td></tr>
+    <tr><td>Komentar per bagian konsisten</td><td class="status-pass">✅</td></tr>
+    <tr><td>Konflik reveal vs hover kartu sudah diperbaiki</td><td class="status-pass">✅</td></tr>
+    <tr><td>Stacking context visual hero (isolation) sudah diperbaiki</td><td class="status-pass">✅</td></tr>
+</table>
+
+<table>
+    <tr>
+        <th colspan="4" style="background: #D97706;">WARNING</th>
+    </tr>
+    <tr>
+        <th>Temuan</th>
+        <th>Lokasi</th>
+        <th>Alasan</th>
+        <th>Severity</th>
+    </tr>
+    <tr>
+        <td>Copywriting masih placeholder</td>
+        <td>Harga pricing, nama portofolio</td>
+        <td>Butuh persetujuan bisnis (Product Owner) sebelum rilis publik — sesuai risiko #1 &amp; #2 sprint</td>
+        <td><span class="status-low">LOW</span></td>
+    </tr>
+</table>
+
+<!-- 4.3 Reusability -->
+<h3>4.3 Reusability</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>Memakai komponen Sprint 1 (.card, .card-hover, .btn, .grid-*)</td><td class="status-pass">✅</td></tr>
+    <tr><td>Memakai token yang tersedia, bukan nilai ad-hoc</td><td class="status-pass">✅</td></tr>
+    <tr><td>Pola section-head / eyebrow dipakai ulang</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 4.4 Engineering Handbook Compliance -->
+<h3>4.4 Engineering Handbook Compliance</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Rule</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>02-coding-standard.md</td><td class="status-pass">✅ Dipatuhi</td></tr>
+    <tr><td>03-design-system.md</td><td class="status-pass">✅ Token-based</td></tr>
+    <tr><td>04-project-structure.md</td><td class="status-pass">✅ Media query hanya di responsive</td></tr>
+    <tr><td>05-naming-convention.md</td><td class="status-pass">✅ Konsisten</td></tr>
+    <tr><td>09-review-checklist.md</td><td class="status-pass">✅ Self-review dijalankan</td></tr>
+    <tr><td>10-engineering-workflow.md</td><td class="status-pass">✅ 8 tahap dijalankan</td></tr>
+    <tr><td>11-release-naming.md</td><td class="status-pass">✅ v1.1.0 The First Experience</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- REKOMENDASI -->
+<!-- ============================================================ -->
+
+<h2>REKOMENDASI</h2>
+
+<p>Tidak ada temuan Priority 1 (HIGH). Seluruh temuan bersifat non-blocking.</p>
+
+<h3>Priority 2 (MEDIUM) — Sebaiknya Diperbaiki Sebelum Rilis Publik</h3>
+
+<table>
+    <tr>
+        <th>#</th>
+        <th>Temuan</th>
+        <th>Alasan</th>
+        <th>Lokasi</th>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>Konfirmasi copywriting harga &amp; nama portofolio ke Product Owner</td>
+        <td>Harga "Rp99 rb / Rp199 rb" &amp; nama pasangan masih ilustrasi</td>
+        <td><code>index.html</code> pricing &amp; portfolio</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>Uji manual kontras warna &amp; navigasi keyboard di browser</td>
+        <td>Validasi aksesibilitas tahap akhir</td>
+        <td>Seluruh halaman</td>
+    </tr>
+</table>
+
+<h3>Priority 3 (LOW) — Nice to Have</h3>
+
+<table>
+    <tr>
+        <th>#</th>
+        <th>Temuan</th>
+        <th>Alasan</th>
+        <th>Lokasi</th>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>Catat 4 class struktural tanpa style khusus</td>
+        <td>Kejelasan maintainer (hero-content, about-content, features, footer-col)</td>
+        <td><code>.docs/sections.md</code></td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>Teriapkan <code>--reveal-delay-*</code> untuk tunda berjenjang</td>
+        <td>Skala tunda reveal lebih hidup (opsional)</td>
+        <td><code>sections.css</code> reveal</td>
+    </tr>
+    <tr>
+        <td>5</td>
+        <td>Preconnect/preload Google Fonts</td>
+        <td>Optimasi waktu muat font</td>
+        <td><code>main.css</code></td>
+    </tr>
+    <tr>
+        <td>6</td>
+        <td>Keputusan penjaga Design System untuk nilai mikro</td>
+        <td>Tokenisasi 2px, rotate, rasio, ornamen (daftar sudah siap)</td>
+        <td>REKOMENDASI TOKEN BARU sections.css</td>
+    </tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- RINGKASAN -->
+<!-- ============================================================ -->
+
+<h2>RINGKASAN</h2>
+
+<table>
+    <tr>
+        <th>Kategori</th>
+        <th>PASS</th>
+        <th>WARNING</th>
+        <th>ERROR</th>
+    </tr>
+    <tr>
+        <td>1. Internal Code Review</td>
+        <td class="status-pass">7</td>
+        <td class="status-warning">2</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td>2. Architecture Review</td>
+        <td class="status-pass">4</td>
+        <td class="status-warning">2</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td>3. QA Review</td>
+        <td class="status-pass">5</td>
+        <td class="status-warning">2</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td>4. Engineering Review</td>
+        <td class="status-pass">4</td>
+        <td class="status-warning">1</td>
+        <td>0</td>
+    </tr>
+    <tr style="font-weight: 700; background: #f5f2ee;">
+        <td>TOTAL</td>
+        <td class="status-pass">20</td>
+        <td class="status-warning">7</td>
+        <td class="status-error">0</td>
+    </tr>
+</table>
+
+<div class="highlight-box">
+    <strong>Kesimpulan: ✅ AUDIT PASS</strong> — Sprint 2 memenuhi seluruh Acceptance Criteria. Tidak ada error; 7 temuan bersifat LOW (non-blocking) dan sebagian besar sudah terdokumentasi. Landing page siap dilanjutkan ke tahap Release setelah copywriting harga disetujui Product Owner.
+</div>
+
+<div class="footer">
+    <p><strong>BERNADA.ID Engineering Handbook</strong> · Sprint 2 Audit Report · v1.1.0</p>
+    <p>Dokumen ini bersifat rahasia dan hanya untuk penggunaan internal tim BERNADA.ID.</p>
+    <p>05 Agustus 2026 · AI Pair Programmer</p>
+</div>
+
+</body>
+</html>

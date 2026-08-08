@@ -1,0 +1,579 @@
+/* ==========================================================
+  BERNADA.ID VARIABLES
+  ----------------------------------------------------------
+  Design System / Design Tokens
+  Version : 1.1.0
+  Last Update : 05 Agustus 2026
+  ==========================================================
+
+  File ini adalah pusat Design System untuk seluruh project
+  BERNADA.ID. Semua nilai (warna, tipografi, spacing, dll.)
+  ditulis sebagai CSS Custom Properties agar konsisten,
+  mudah dirawat, dan mudah dikembangkan.
+
+  Prinsip :
+  1. Mobile First  : nilai default dirancang untuk layar kecil.
+  2. Skala konsisten : mengikuti skala 4px untuk spacing,
+    skala 4-5% untuk tipografi.
+  3. Semantic naming : nama variabel menggambarkan fungsi,
+    bukan tampilan.
+  ========================================================== */
+
+:root {
+
+/* ==========================================================
+  1. COLOR PALETTE
+  ----------------------------------------------------------
+  Identitas visual resmi BERNADA.ID : kombinasi MERAH dan EMAS.
+  Karakter brand : Elegan, Hangat, Romantis, Modern, Premium.
+  Naming convention : awalan --color- (semantic naming).
+  Struktur skala warna : -50 (paling terang) hingga -900
+  (paling gelap). 500 adalah warna utama (base).
+  ========================================================== */
+
+  /* ------------------------------------------
+    BASE COLOR
+    Warna dasar yang selalu dipakai
+  ------------------------------------------ */
+
+  --color-white: #FFFFFF;               /* Warna putih murni */
+  --color-black: #000000;               /* Warna hitam murni */
+  --color-transparent: transparent;     /* Warna transparan */
+
+  /* ------------------------------------------
+    BRAND PRIMARY (Merah)
+    Warna utama brand Bernada.ID
+  ------------------------------------------ */
+
+  --color-primary: #A12828;             /* Primary base - warna utama brand */
+  --color-primary-light: #CF2E2E;       /* Primary terang - aksen / hover */
+  --color-primary-dark: #6D0E1B;        /* Primary gelap - aktif / teks */
+
+  --color-primary-50: #FBF1F0;          /* Primary terang - background soft */
+  --color-primary-100: #F5DEDD;         /* Primary sangat terang */
+  --color-primary-200: #EBBDBB;         /* Primary terang */
+  --color-primary-300: #E09590;         /* Primary sedang-terang */
+  --color-primary-400: var(--color-primary-light); /* Primary terang vivid */
+  --color-primary-500: var(--color-primary);       /* Primary base */
+  --color-primary-600: #8C1E22;         /* Primary hover */
+  --color-primary-700: var(--color-primary-dark);  /* Primary gelap */
+  --color-primary-800: #47070F;         /* Primary sangat gelap */
+  --color-primary-900: #32040A;         /* Primary paling gelap */
+
+  /* ------------------------------------------
+    BRAND ACCENT (Emas)
+    Aksen mewah untuk tema undangan
+  ------------------------------------------ */
+
+  --color-accent: #FFC400;              /* Accent base - aksen utama */
+  --color-accent-light: #FFE066;        /* Accent terang - hover */
+  --color-accent-dark: #E6AD00;         /* Accent gelap - aktif / teks */
+
+  --color-gold-50: #FFF9E6;             /* Gold terang - background soft */
+  --color-gold-100: #FFF0BF;            /* Gold sangat terang */
+  --color-gold-200: #FFE699;            /* Gold terang */
+  --color-gold-300: #FFDC66;            /* Gold sedang-terang */
+  --color-gold-400: #FFD033;            /* Gold sedang */
+  --color-gold-500: var(--color-accent);/* Gold base - aksen utama */
+  --color-gold-600: var(--color-accent-dark); /* Gold hover */
+  --color-gold-700: #CC9400;            /* Gold aktif / teks di atas terang */
+  --color-gold-800: #A87A00;            /* Gold sangat gelap */
+  --color-gold-900: #805D00;            /* Gold paling gelap */
+
+  /* ------------------------------------------
+    NEUTRAL (Gray)
+    Warna netral hangat untuk teks, border, dan background
+  ------------------------------------------ */
+
+  --color-gray-50: #FBF9F6;             /* Gray terang - background soft */
+  --color-gray-100: #F5F2EE;            /* Gray sangat terang - border ringan */
+  --color-gray-200: #ECE8E3;            /* Gray terang - border default */
+  --color-gray-300: #E0DCD5;            /* Gray sedang-terang - border input */
+  --color-gray-400: #B5B0A9;            /* Gray sedang - placeholder / disabled */
+  --color-gray-500: #8C8780;            /* Gray medium - teks muted */
+  --color-gray-600: #6B665F;            /* Gray gelap - teks sekunder */
+  --color-gray-700: #4A4641;            /* Gray lebih gelap */
+  --color-gray-800: #2C2926;            /* Gray sangat gelap - teks utama */
+  --color-gray-900: #1A1816;            /* Gray paling gelap - teks heading */
+
+  /* ------------------------------------------
+    SEMANTIC COLOR
+    Warna standar UI untuk status / feedback
+    (sukses, peringatan, error, info)
+  ------------------------------------------ */
+
+  /* Success - operasi berhasil */
+  --color-success-50: #ECFDF5;          /* Background status sukses */
+  --color-success-500: #10B981;         /* Ikon / aksen sukses */
+  --color-success-600: #059669;         /* Hover status sukses */
+  --color-success-700: #047857;         /* Teks status sukses */
+
+  /* Warning - peringatan */
+  --color-warning-50: #FFFBEB;          /* Background status peringatan */
+  --color-warning-500: #F59E0B;         /* Ikon / aksen peringatan */
+  --color-warning-600: #D97706;         /* Hover status peringatan */
+  --color-warning-700: #B45309;         /* Teks status peringatan */
+
+  /* Danger - error / gagal */
+  --color-danger-50: #FEF2F2;           /* Background status error */
+  --color-danger-500: #EF4444;          /* Ikon / aksen error */
+  --color-danger-600: #DC2626;          /* Hover status error */
+  --color-danger-700: #B91C1C;          /* Teks status error */
+
+  /* Info - informasi */
+  --color-info-50: #EFF6FF;             /* Background status info */
+  --color-info-500: #3B82F6;            /* Ikon / aksen info */
+  --color-info-600: #2563EB;            /* Hover status info */
+  --color-info-700: #1D4ED8;            /* Teks status info */
+
+  /* ------------------------------------------
+    BACKGROUND & SURFACE
+    Warna latar halaman dan permukaan kartu / komponen
+  ------------------------------------------ */
+
+  --color-background: #F7F3EF;          /* Latar belakang halaman utama */
+  --color-surface: #FFFFFF;             /* Permukaan kartu / komponen */
+  --color-surface-alt: #F5F2EE;         /* Permukaan sekunder / section berbeda */
+  --color-surface-strong: #ECE8E3;      /* Permukaan kontras / hover */
+
+  /* ------------------------------------------
+    TEXT COLOR
+    Skala warna teks berdasarkan hierarki
+  ------------------------------------------ */
+
+  --color-text-primary: #1F1F1F;        /* Teks utama (heading) */
+  --color-text-secondary: #555555;      /* Teks sekunder (body) */
+  --color-text-muted: #8C8780;          /* Teks redup (caption) */
+  --color-text-disabled: #B5B0A9;       /* Teks nonaktif */
+  --color-text-inverse: #FFFFFF;        /* Teks di atas warna gelap */
+  --color-text-link: var(--color-primary); /* Teks tautan */
+
+  /* ------------------------------------------
+    BORDER COLOR
+    Skala warna border berdasarkan hierarki
+  ------------------------------------------ */
+
+  --color-border: #E5E5E5;              /* Border default */
+  --color-border-light: #F0EDE9;        /* Border sangat ringan (card divider) */
+  --color-border-strong: #D5D0C9;       /* Border kuat (input) */
+
+  /* ------------------------------------------
+    FOCUS RING COLOR
+    Warna outline saat elemen menerima fokus keyboard
+  ------------------------------------------ */
+
+  --color-focus-ring: rgba(161, 40, 40, 0.35); /* Ring fokus aksesibilitas */
+
+  /* ------------------------------------------
+    BACKWARD COMPATIBILITY ALIAS
+    Alias nama variabel lama agar komponen yang sudah ada
+    tetap berfungsi. Kode baru sebaiknya memakai awalan --color-.
+  ------------------------------------------ */
+
+  /* Alias base color */
+  --white: var(--color-white);           /* Alias warna putih */
+  --black: var(--color-black);           /* Alias warna hitam */
+  --transparent: var(--color-transparent); /* Alias transparan */
+
+  /* Alias primary */
+  --primary-50: var(--color-primary-50);
+  --primary-100: var(--color-primary-100);
+  --primary-200: var(--color-primary-200);
+  --primary-300: var(--color-primary-300);
+  --primary-400: var(--color-primary-400);
+  --primary-500: var(--color-primary-500);
+  --primary-600: var(--color-primary-600);
+  --primary-700: var(--color-primary-700);
+  --primary-800: var(--color-primary-800);
+  --primary-900: var(--color-primary-900);
+
+  /* Alias gold */
+  --gold-50: var(--color-gold-50);
+  --gold-100: var(--color-gold-100);
+  --gold-200: var(--color-gold-200);
+  --gold-300: var(--color-gold-300);
+  --gold-400: var(--color-gold-400);
+  --gold-500: var(--color-gold-500);
+  --gold-600: var(--color-gold-600);
+  --gold-700: var(--color-gold-700);
+  --gold-800: var(--color-gold-800);
+  --gold-900: var(--color-gold-900);
+
+  /* Alias gray */
+  --gray-50: var(--color-gray-50);
+  --gray-100: var(--color-gray-100);
+  --gray-200: var(--color-gray-200);
+  --gray-300: var(--color-gray-300);
+  --gray-400: var(--color-gray-400);
+  --gray-500: var(--color-gray-500);
+  --gray-600: var(--color-gray-600);
+  --gray-700: var(--color-gray-700);
+  --gray-800: var(--color-gray-800);
+  --gray-900: var(--color-gray-900);
+
+  /* Alias semantic */
+  --success-50: var(--color-success-50);
+  --success-500: var(--color-success-500);
+  --success-600: var(--color-success-600);
+  --success-700: var(--color-success-700);
+  --warning-50: var(--color-warning-50);
+  --warning-500: var(--color-warning-500);
+  --warning-600: var(--color-warning-600);
+  --warning-700: var(--color-warning-700);
+  --danger-50: var(--color-danger-50);
+  --danger-500: var(--color-danger-500);
+  --danger-600: var(--color-danger-600);
+  --danger-700: var(--color-danger-700);
+  --info-50: var(--color-info-50);
+  --info-500: var(--color-info-500);
+  --info-600: var(--color-info-600);
+  --info-700: var(--color-info-700);
+
+  /* Alias background & surface */
+  --background: var(--color-background);
+  --surface: var(--color-surface);
+  --surface-alt: var(--color-surface-alt);
+  --surface-strong: var(--color-surface-strong);
+
+  /* Alias text */
+  --text-primary: var(--color-text-primary);
+  --text-secondary: var(--color-text-secondary);
+  --text-muted: var(--color-text-muted);
+  --text-disabled: var(--color-text-disabled);
+  --text-inverse: var(--color-text-inverse);
+  --text-link: var(--color-text-link);
+
+  /* Alias border */
+  --border-light: var(--color-border-light);
+  --border-default: var(--color-border);
+  --border-strong: var(--color-border-strong);
+
+  /* Alias focus ring */
+  --focus-ring-color: var(--color-focus-ring);
+
+/* ==========================================================
+  2. TYPOGRAPHY (FONT FAMILY)
+  ----------------------------------------------------------
+  Font utama project. Sesuaikan dengan @import Google Fonts
+  di style.css jika menggunakan webfont.
+  ========================================================== */
+
+  --font-family-body: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; /* Teks utama */
+  --font-family-heading: "Playfair Display", Georgia, "Times New Roman",
+    serif; /* Judul / elemen elegan undangan */
+  --font-family-mono: "JetBrains Mono", "SF Mono", "Fira Code", Consolas,
+    "Courier New", monospace; /* Kode / data */
+
+/* ==========================================================
+  3. FONT SIZE
+  ----------------------------------------------------------
+  Skala dimulai dari ukuran mobile (base 16px).
+  Gunakan rem agar mengikuti ukuran akar dokumen.
+  ========================================================== */
+
+  --font-size-xs: 0.75rem;        /* 12px - caption / label kecil */
+  --font-size-sm: 0.875rem;       /* 14px - teks sekunder / badge */
+  --font-size-base: 1rem;         /* 16px - teks body default */
+  --font-size-md: 1.125rem;       /* 18px - teks penting */
+  --font-size-lg: 1.25rem;        /* 20px - subheading kecil */
+  --font-size-xl: 1.5rem;         /* 24px - subheading */
+  --font-size-2xl: 1.875rem;      /* 30px - heading 3 */
+  --font-size-3xl: 2.25rem;       /* 36px - heading 2 */
+  --font-size-4xl: 3rem;          /* 48px - heading 1 */
+  --font-size-5xl: 3.75rem;       /* 60px - hero besar */
+  --font-size-6xl: 4.5rem;        /* 72px - hero utama */
+
+  /* ------------------------------------------
+    FLUID / DISPLAY SIZE (Mobile First)
+    Ukuran judul besar yang mengalir mengikuti lebar layar
+    menggunakan clamp(min, preferred, max)
+  ------------------------------------------ */
+
+  --font-size-display-sm: clamp(1.875rem, 4vw, 2.5rem);   /* Display kecil */
+  --font-size-display-md: clamp(2.25rem, 5vw, 3rem);      /* Display sedang */
+  --font-size-display-lg: clamp(3rem, 7vw, 4.5rem);       /* Display besar */
+
+/* ==========================================================
+  4. FONT WEIGHT
+  ========================================================== */
+
+  --font-weight-light: 300;       /* Ringan */
+  --font-weight-regular: 400;     /* Normal / default */
+  --font-weight-medium: 500;      /* Sedang */
+  --font-weight-semibold: 600;    /* Semi tebal - button / label */
+  --font-weight-bold: 700;        /* Tebal - heading kecil */
+  --font-weight-extrabold: 800;   /* Sangat tebal */
+  --font-weight-black: 900;       /* Paling tebal - heading besar */
+
+/* ==========================================================
+  5. LINE HEIGHT
+  ----------------------------------------------------------
+  Tanpa satuan (unitless) agar proporsional terhadap ukuran font.
+  ========================================================== */
+
+  --line-height-tight: 1.25;      /* Rapat - heading */
+  --line-height-snug: 1.375;      /* Agak rapat - subheading */
+  --line-height-normal: 1.5;      /* Normal - body text */
+  --line-height-relaxed: 1.625;   /* Longgar - paragraf */
+  --line-height-loose: 2;         /* Sangat longgar - teks kecil / caption */
+
+/* ==========================================================
+  6. LETTER SPACING
+  ========================================================== */
+
+  --letter-spacing-tighter: -0.05em;  /* Negatif rapat - heading besar */
+  --letter-spacing-tight: -0.025em;   /* Negatif - heading */
+  --letter-spacing-normal: 0;         /* Normal - default */
+  --letter-spacing-wide: 0.025em;     /* Lebar - label */
+  --letter-spacing-wider: 0.05em;     /* Lebar - uppercase */
+  --letter-spacing-widest: 0.1em;     /* Paling lebar - brand / badge */
+
+/* ==========================================================
+  7. SPACING
+  ----------------------------------------------------------
+  Skala 4px (rem). Mulai dari unit terkecil untuk mobile.
+  ========================================================== */
+
+  --spacing-2xs: 0.125rem;        /* 2px - jarak sangat kecil */
+  --spacing-xs: 0.5rem;           /* 8px - jarak antar elemen kecil */
+  --spacing-sm: 0.75rem;          /* 12px - gap button / badge */
+  --spacing-md: 1rem;             /* 16px - jarak antar elemen */
+  --spacing-lg: 1.5rem;           /* 24px - padding card / container */
+  --spacing-xl: 2rem;             /* 32px - padding card besar */
+  --spacing-2xl: 2.5rem;          /* 40px - jarak antar section */
+  --spacing-3xl: 3rem;            /* 48px - jarak antar section */
+  --spacing-4xl: 3.5rem;          /* 56px - padding section */
+  --spacing-5xl: 4rem;            /* 64px - padding section besar */
+  --spacing-6xl: 4.5rem;          /* 72px - jarak section besar */
+  --spacing-7xl: 5rem;            /* 80px - jarak hero */
+
+  /* ------------------------------------------
+    CONTEXTUAL SPACING
+    Spacing yang dipakai bersama pada layout
+  ------------------------------------------ */
+
+  --container-padding-x: 1.25rem; /* Padding horizontal kontainer (mobile) */
+
+/* ==========================================================
+  8. BORDER RADIUS
+  ----------------------------------------------------------
+  Skala sudut elemen. Pill untuk bentuk pil, Full untuk lingkaran.
+  ========================================================== */
+
+  --border-radius-none: 0;        /* Tanpa sudut */
+  --border-radius-xs: 0.25rem;    /* 4px - tag kecil */
+  --border-radius-sm: 0.5rem;     /* 8px - input kecil */
+  --border-radius-md: 0.75rem;    /* 12px - button / komponen kecil */
+  --border-radius-lg: 1rem;       /* 16px - input / card */
+  --border-radius-xl: 1.25rem;    /* 20px - card besar */
+  --border-radius-2xl: 1.5rem;    /* 24px - modal / popup */
+  --border-radius-pill: 9999px;   /* Bentuk pil - button / badge */
+  --border-radius-full: 50%;      /* Lingkaran penuh - avatar / ikon */
+
+/* ==========================================================
+  9. SHADOW
+  ----------------------------------------------------------
+  Skala bayangan dari halus hingga kuat.
+  ========================================================== */
+
+  --shadow-xs: 0 1px 2px rgba(16, 24, 40, 0.06);           /* Bayangan halus */
+  --shadow-sm: 0 1px 3px rgba(16, 24, 40, 0.1),
+    0 1px 2px rgba(16, 24, 40, 0.06);                      /* Card default */
+  --shadow-md: 0 4px 6px -1px rgba(16, 24, 40, 0.1),
+    0 2px 4px -2px rgba(16, 24, 40, 0.1);                  /* Hover card */
+  --shadow-lg: 0 10px 15px -3px rgba(16, 24, 40, 0.1),
+    0 4px 6px -4px rgba(16, 24, 40, 0.1);                  /* Dropdown / popup */
+  --shadow-xl: 0 20px 25px -5px rgba(16, 24, 40, 0.1),
+    0 8px 10px -6px rgba(16, 24, 40, 0.1);                 /* Modal / overlay */
+  --shadow-2xl: 0 25px 50px -12px rgba(16, 24, 40, 0.25);  /* Bayangan kuat */
+
+/* ==========================================================
+  10. TRANSITION
+  ----------------------------------------------------------
+  Terdiri dari durasi, fungsi easing, dan nilai gabungan.
+  Gunakan nilai gabungan (--transition-normal) pada properti transition.
+  ========================================================== */
+
+  /* Durasi */
+  --transition-duration-fast: 150ms;    /* Hover cepat */
+  --transition-duration-normal: 250ms;  /* Default */
+  --transition-duration-slow: 350ms;    /* Animasi besar */
+
+  /* Fungsi easing */
+  --transition-timing-ease: cubic-bezier(0.4, 0, 0.2, 1);      /* Default */
+  --transition-timing-ease-in: cubic-bezier(0.4, 0, 1, 1);     /* Masuk */
+  --transition-timing-ease-out: cubic-bezier(0, 0, 0.2, 1);    /* Keluar */
+  --transition-timing-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1); /* Bolak-balik */
+
+  /* Nilai gabungan */
+  --transition-fast: var(--transition-duration-fast)
+    var(--transition-timing-ease);      /* Transisi cepat */
+  --transition-normal: var(--transition-duration-normal)
+    var(--transition-timing-ease);      /* Transisi default */
+  --transition-slow: var(--transition-duration-slow)
+    var(--transition-timing-ease);      /* Transisi lambat */
+
+/* ==========================================================
+  11. Z-INDEX
+  ----------------------------------------------------------
+  Skala lapisan (layer) dari bawah ke paling atas.
+  ========================================================== */
+
+  --z-index-negative: -1;        /* Di belakang konten */
+  --z-index-base: 0;             /* Lapisan dasar */
+  --z-index-header: 100;         /* Header / navbar */
+  --z-index-dropdown: 1000;      /* Dropdown */
+  --z-index-sticky: 1100;        /* Elemen sticky */
+  --z-index-overlay: 1200;       /* Overlay / backdrop */
+  --z-index-modal: 1300;         /* Modal / dialog */
+  --z-index-popover: 1400;       /* Popover */
+  --z-index-tooltip: 1500;       /* Tooltip */
+  --z-index-toast: 1600;         /* Toast / notifikasi */
+  --z-index-max: 2147483647;     /* Lapisan tertinggi (paling atas) */
+
+/* ==========================================================
+  12. CONTAINER WIDTH
+  ----------------------------------------------------------
+  Lebar maksimum kontainer sesuai breakpoint.
+  ========================================================== */
+
+  --container-xs: 480px;         /* Kontainer sangat kecil */
+  --container-sm: 540px;         /* Kontainer kecil */
+  --container-md: 720px;         /* Kontainer tablet */
+  --container-lg: 960px;         /* Kontainer laptop */
+  --container-xl: 1140px;        /* Kontainer desktop */
+  --container-2xl: 1280px;       /* Kontainer desktop besar */
+  --container-max-width: var(--container-2xl); /* Kontainer utama project */
+
+/* ==========================================================
+  13. BREAKPOINT
+  ----------------------------------------------------------
+  Mobile First : gunakan media query min-width.
+  NOTE : CSS Custom Properties TIDAK bisa dipakai di dalam
+  media query. Nilai ini menjadi referensi dokumentasi dan
+  sumber untuk JavaScript (window.matchMedia).
+  ========================================================== */
+
+  --breakpoint-xs: 480px;        /* Smartphone kecil */
+  --breakpoint-sm: 576px;        /* Smartphone */
+  --breakpoint-md: 768px;        /* Tablet */
+  --breakpoint-lg: 992px;        /* Laptop */
+  --breakpoint-xl: 1200px;       /* Desktop */
+  --breakpoint-2xl: 1400px;      /* Desktop besar */
+
+/* ==========================================================
+  14. OPACITY
+  ========================================================== */
+
+  --opacity-0: 0;                /* Sepenuhnya transparan */
+  --opacity-10: 0.1;             /* 10% terlihat */
+  --opacity-20: 0.2;             /* 20% terlihat */
+  --opacity-30: 0.3;             /* 30% terlihat */
+  --opacity-40: 0.4;             /* 40% terlihat */
+  --opacity-50: 0.5;             /* 50% terlihat */
+  --opacity-60: 0.6;             /* 60% terlihat */
+  --opacity-70: 0.7;             /* 70% terlihat */
+  --opacity-75: 0.75;            /* 75% terlihat */
+  --opacity-80: 0.8;             /* 80% terlihat */
+  --opacity-90: 0.9;             /* 90% terlihat */
+  --opacity-100: 1;              /* Sepenuhnya terlihat */
+  --opacity-disabled: 0.5;       /* Opacity elemen nonaktif */
+
+/* ==========================================================
+  15. TOKENS TAMBAHAN (EFFECT & LAYOUT)
+  ----------------------------------------------------------
+  Token pendukung yang dipakai komponen yang sudah ada
+  di project (blur, durasi animasi, tinggi header).
+  ========================================================== */
+
+  /* Blur - untuk efek glassmorphism */
+  --blur-xs: 4px;                /* Blur sangat halus */
+  --blur-sm: 8px;                /* Blur halus */
+  --blur-md: 12px;               /* Blur default - card glass */
+  --blur-lg: 16px;               /* Blur kuat */
+  --blur-xl: 24px;               /* Blur sangat kuat */
+
+  /* Durasi animasi - untuk keyframes animasi */
+  --animation-fast: 200ms;       /* Animasi cepat */
+  --animation-normal: 500ms;     /* Animasi default */
+  --animation-slow: 800ms;       /* Animasi lambat */
+
+  /* Layout - tinggi elemen global */
+  --header-height: 4.5rem;       /* 72px - tinggi header utama */
+
+/* ==========================================================
+  16. GRADIENT & SURFACE EFFECT
+  ----------------------------------------------------------
+  Token efek visual section landing page (Sprint 2).
+  Gradien tersusun seluruhnya dari token brand agar tetap
+  konsisten dengan design system.
+  ========================================================== */
+
+  /* Gradient brand - banner CTA / highlight premium */
+  --gradient-brand: linear-gradient(
+      135deg,
+      var(--color-primary-800) 0%,
+      var(--color-primary) 45%,
+      var(--color-gold-600) 100%
+  );
+
+  /* Gradient lembut - latar hero / about (hangat & romantis) */
+  --gradient-soft: linear-gradient(
+      180deg,
+      var(--color-primary-50) 0%,
+      var(--color-surface) 100%
+  );
+
+  /* Surface translusen - header glass / overlay ringan */
+  --color-surface-translucent: rgba(255, 255, 255, 0.85);
+
+/* ==========================================================
+  17. SIZE & METRIC
+  ----------------------------------------------------------
+  Ukuran ikon dan elemen visual yang dipakai berulang
+  (Sprint 2 — The First Experience). Nilai geometrik mikro
+  (offset, rotate, rasio) tetap dicatat di REKOMENDASI TOKEN
+  sections.css sampai keputusan penjaga Design System.
+  ========================================================== */
+
+  /* Glyph ikon */
+  --size-icon-lg: 1.5rem;       /* ikon besar - feature, hamburger */
+  --size-icon-md: 1.375rem;     /* ikon sedang - poin about */
+  --size-icon-sm: 1.125rem;     /* ikon kecil - centang pricing, kontak */
+
+  /* Kotak tempat ikon */
+  --size-icon-tile-lg: 3rem;    /* kotak ikon fitur (feature-card) */
+  --size-icon-tile-md: 2.75rem; /* kotak ikon poin (about-point) */
+
+  /* Lebar visual hero */
+  --size-hero-visual: 24rem;    /* mobile */
+  --size-hero-visual-sm: 26rem; /* smartphone (breakpoint sm) */
+
+/* ==========================================================
+  18. DECORATIVE (SPRINT 2)
+  ----------------------------------------------------------
+  Warna sinar dan ukuran ornamen untuk kedalaman visual
+  (UI Showcase Standard, rules/14). Tersusun dari warna
+  brand agar tetap konsisten dengan design system.
+  ========================================================== */
+
+  /* Sinar lembut */
+  --color-glow-gold-soft: rgba(255, 220, 102, 0.4);    /* sinar emas lembut */
+  --color-glow-gold-faint: rgba(255, 224, 130, 0.06);  /* tint emas sangat tipis */
+  --color-glow-gold-deep: rgba(204, 148, 0, 0.16);     /* tint emas hangat */
+  --color-glow-primary-soft: rgba(235, 189, 187, 0.5); /* sinar merah muda */
+  --color-glow-primary-deep: rgba(161, 40, 40, 0.12);  /* tint merah halus */
+
+  /* Ukuran ornamen / blob dekoratif */
+  --deco-orb-lg: 26rem;         /* blob besar - glow utama */
+  --deco-orb-md: 18rem;         /* blob sedang */
+  --deco-orb-sm: 11rem;         /* blob kecil */
+  --deco-ornament-sm: 6rem;     /* ornamen melayang kecil */
+  --deco-ornament-md: 9rem;     /* ornamen melayang sedang */
+  --deco-pattern-size: 2.5rem;  /* ukuran tile pola titik */
+
+  /* Durasi melayang ornamen (gerakan halus, siklus penuh) */
+  --animation-float: 6s;        /* naik-turun sekali dalam 6 detik */
+
+}

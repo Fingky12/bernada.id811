@@ -1,0 +1,299 @@
+/* ==========================================================
+    BERNADA.ID COMPONENTS
+    ----------------------------------------------------------
+    Document : Form Components · Category : Components
+    Version  : 1.0.0 · Status : ✅ Stable · Update : 04-08-2026
+
+    Single Responsibility : Elemen input form untuk data entry.
+    Design Token Source   : assets/css/variables.css
+  ========================================================== */
+
+
+/* ==========================================================
+    1. INPUT BASE
+    ----------------------------------------------------------
+    Base style untuk semua elemen form.
+    Menggunakan token: --spacing-sm, --spacing-md,
+    --border-radius-lg, --color-gray-300, --color-white,
+    --transition-normal, --color-primary-500
+  ========================================================== */
+
+.input {
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--color-gray-300);
+    background: var(--color-white);
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-base);
+    color: var(--color-text-primary);
+    transition: var(--transition-normal);
+}
+
+.input::placeholder {
+    color: var(--color-gray-400);
+}
+
+
+/* ==========================================================
+    2. INPUT STATES
+    ----------------------------------------------------------
+    State komponen: focus, disabled, error, success.
+  ========================================================== */
+
+/* ------------------------------------------
+    FOCUS
+    State saat input menerima fokus keyboard
+------------------------------------------ */
+
+.input:focus {
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 4px rgba(161, 40, 40, 0.15);
+    outline: none;
+}
+
+/* ------------------------------------------
+    DISABLED
+    Input yang tidak bisa diubah
+------------------------------------------ */
+
+.input:disabled {
+    opacity: var(--opacity-disabled);
+    cursor: not-allowed;
+    background: var(--color-gray-100);
+}
+
+/* ------------------------------------------
+    ERROR
+    Input dengan validasi gagal
+------------------------------------------ */
+
+.input-error {
+    border-color: var(--color-danger-500);
+}
+
+.input-error:focus {
+    border-color: var(--color-danger-500);
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15);
+}
+
+/* ------------------------------------------
+    SUCCESS
+    Input dengan validasi berhasil
+------------------------------------------ */
+
+.input-success {
+    border-color: var(--color-success-500);
+}
+
+.input-success:focus {
+    border-color: var(--color-success-500);
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+}
+
+
+/* ==========================================================
+    3. TEXTAREA
+    ----------------------------------------------------------
+    Input multi-baris untuk teks panjang.
+    Extends: .input
+  ========================================================== */
+
+.textarea {
+    resize: vertical;
+    min-height: 8.75rem;
+    line-height: var(--line-height-normal);
+}
+
+
+/* ==========================================================
+    4. SELECT
+    ----------------------------------------------------------
+    Dropdown select untuk pilihan opsi.
+    Extends: .input
+  ========================================================== */
+
+.select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238C8780' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right var(--spacing-sm) center;
+    padding-right: var(--spacing-xl);
+    cursor: pointer;
+}
+
+
+/* ==========================================================
+    5. CHECKBOX & RADIO
+    ----------------------------------------------------------
+    Elemen input tipe checkbox dan radio.
+  ========================================================== */
+
+/* ------------------------------------------
+    CHECKBOX
+    Kotak centang untuk pilihan multiple
+------------------------------------------ */
+
+.checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    cursor: pointer;
+    font-size: var(--font-size-base);
+    color: var(--color-text-primary);
+}
+
+.checkbox input[type="checkbox"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    accent-color: var(--color-primary-500);
+    cursor: pointer;
+}
+
+/* ------------------------------------------
+    RADIO
+    Pilihan tunggal dari beberapa opsi
+------------------------------------------ */
+
+.radio {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    cursor: pointer;
+    font-size: var(--font-size-base);
+    color: var(--color-text-primary);
+}
+
+.radio input[type="radio"] {
+    width: 1.25rem;
+    height: 1.25rem;
+    accent-color: var(--color-primary-500);
+    cursor: pointer;
+}
+
+
+/* ==========================================================
+    6. SWITCH
+    ----------------------------------------------------------
+    Toggle switch untuk on/off state.
+  ========================================================== */
+
+.switch {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    cursor: pointer;
+    font-size: var(--font-size-base);
+    color: var(--color-text-primary);
+}
+
+.switch input[type="checkbox"] {
+    position: relative;
+    width: 3rem;
+    height: 1.625rem;
+    -webkit-appearance: none;
+    appearance: none;
+    background: var(--color-gray-300);
+    border-radius: var(--border-radius-pill);
+    transition: var(--transition-normal);
+    cursor: pointer;
+}
+
+.switch input[type="checkbox"]::before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 1.25rem;
+    height: 1.25rem;
+    background: var(--color-white);
+    border-radius: var(--border-radius-full);
+    transition: var(--transition-normal);
+    box-shadow: var(--shadow-xs);
+}
+
+.switch input[type="checkbox"]:checked {
+    background: var(--color-primary-500);
+}
+
+.switch input[type="checkbox"]:checked::before {
+    transform: translateX(1.375rem);
+}
+
+.switch input[type="checkbox"]:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+}
+
+
+/* ==========================================================
+    7. FORM GROUPS
+    ----------------------------------------------------------
+    Layout helper untuk mengelompokkan elemen form.
+  ========================================================== */
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.form-label {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-primary);
+}
+
+.form-hint {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+
+.form-error {
+    font-size: var(--font-size-sm);
+    color: var(--color-danger-500);
+}
+
+
+/* ==========================================================
+    REKOMENDASI TOKEN BARU
+    ----------------------------------------------------------
+    Nilai hardcoded yang perlu ditambahkan ke variables.css:
+
+    1. --form-focus-ring-primary: rgba(161, 40, 40, 0.15);
+        Ring fokus untuk input dengan warna primary.
+        Digunakan di: .input:focus
+
+    2. --form-focus-ring-danger: rgba(239, 68, 68, 0.15);
+        Ring fokus untuk input dengan error.
+        Digunakan di: .input-error:focus
+
+    3. --form-focus-ring-success: rgba(16, 185, 129, 0.15);
+        Ring fokus untuk input dengan success.
+        Digunakan di: .input-success:focus
+
+    4. --switch-width: 3rem;
+        Lebar switch toggle.
+        Digunakan di: .switch input
+
+    5. --switch-height: 1.625rem;
+        Tinggi switch toggle.
+        Digunakan di: .switch input
+
+    6. --switch-knob-size: 1.25rem;
+        Ukuran knob switch.
+        Digunakan di: .switch input::before
+
+    7. --switch-knob-offset: 2px;
+        Offset knob dari tepi switch.
+        Digunakan di: .switch input::before
+
+    8. --switch-knob-translate: 1.375rem;
+        Jarak translate knob saat checked.
+        Digunakan di: .switch input:checked::before
+
+    Catatan: Beberapa nilai menggunakan hardcoded karena
+    CSS Custom Properties tidak bisa digunakan untuk
+    pseudo-element di semua browser. Pertimbangkan untuk
+    menggunakan variabel di masa depan.
+  ========================================================== */

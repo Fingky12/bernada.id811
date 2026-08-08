@@ -1,0 +1,69 @@
+<!--
+  BERNADA.ID ENGINEERING HANDBOOK
+  Document : Roadmap · Category : Panduan (source of truth)
+  Version  : 1.0.5 · Status : 🟠 Proses · Update : 05-08-2026
+-->
+
+# Roadmap BERNADA.ID
+
+> Arah pengembangan jangka panjang BERNADA.ID. Dokumen ini adalah **sumber kebenaran**; ringkasan untuk AI ada di `.ai/context/roadmap.md`.
+>
+> Status item: 🟡 Belum · 🟠 Proses/sebagian · ✅ Selesai.
+>
+> **Sprint aktif:** Sprint 2 — The First Experience (Homepage) · `.docs/sprint-2.md`.
+
+---
+
+## Fase 1 — Foundation (Alpha) · v1.0.0 Alpha
+
+**Tujuan:** membangun fondasi desain, struktur kode, dan halaman inti.
+
+| Item | Status | Catatan |
+| --- | --- | --- |
+| Design System resmi (Merah & Emas) | ✅ | `assets/css/variables.css`, `.docs/design-system.md` |
+| Reset CSS dasar | ✅ | `assets/css/reset.css` — murni reset, tanpa design token |
+| Base stylesheet | ✅ | `assets/css/base.css` — styling dasar elemen via design token |
+| Struktur stylesheet & layout dasar | ✅ | `layout.css` selesai (container, grid, flex, stack, cluster, sidebar, dll.); `sections.css` placeholder siap |
+| Komponen UI dasar | ✅ | button, card, badge, form di `assets/css/components/` (modular, satu file per komponen) |
+| Animation system | ✅ | `animations.css` — keyframes, utility classes, duration, delay, easing, fill mode |
+| Main entry point | ✅ | `main.css` — single entry point CSS Framework |
+| Halaman inti & navigasi | 🟠 | Sprint 2 — `index.html` 9 section selesai dibangun; menunggu audit & Release v1.1.0 (`.docs/sprint-2.md`) |
+| Setup server & database awal | 🟡 | belum dimulai |
+
+## Fase 2 — Core Features (Beta) · v1.0.0 Beta
+
+- Builder / editor undangan digital
+- Template undangan & personalisasi
+- Manajemen tamu & RSVP
+- Autentikasi pengguna
+
+## Fase 3 — Launch · v1.0.0 GA
+
+- Pembayaran & penagihan
+- Optimasi performa & SEO
+- Uji coba & hardening produksi
+
+## Fase 4 — Scale & Expand (Post-GA)
+
+- Kategori undangan non-pernikahan
+- Analitik untuk pengguna
+- Multi-template marketplace
+- Integrasi pihak ketiga (media, payment, notification)
+
+---
+
+## Prinsip Roadmap
+
+1. Setiap fase harus menyelesaikan fondasi terlebih dahulu (design system → komponen → fitur).
+2. Fitur baru tidak boleh mengorbankan kualitas fondasi yang sudah ada.
+3. Roadmap bisa berubah — perubahan harus disetujui manusia dan dicatat di changelog.
+
+---
+
+| Version | Date | Author | Status | Description |
+| --- | --- | --- | --- | --- |
+| 1.0.5 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Homepage 9 section selesai dibangun — menunggu audit & Release v1.1.0 |
+| 1.0.3 | 04-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Review | Sprint 1 selesai — Release v1.0.0 The Foundation Release |
+| 1.0.2 | 03-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Review | Layout system selesai (layout.css 10 bagian) |
+| 1.0.1 | 03-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Review | Tambah base.css (base stylesheet) pada Fase 1 |
+| 1.0.0 | 03-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Review | Draft roadmap berbasis fase |

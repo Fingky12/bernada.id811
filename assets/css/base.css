@@ -1,0 +1,445 @@
+/* ==========================================================
+    BERNADA.ID BASE
+    ----------------------------------------------------------
+    Base Stylesheet
+    Version : 1.0.0
+    Last Update : 03 Agustus 2026
+    ==========================================================
+
+    File ini memberikan styling dasar pada elemen HTML dengan
+    memakai Design System yang sudah dibuat di variables.css.
+
+    Posisi lapisan :
+    variables.css → reset.css → BASE.CSS → utilities →
+    layout → components → sections → animations → responsive
+
+    Prinsip :
+    1. Design Token Only : seluruh nilai berasal dari token.
+    2. Bukan komponen : navbar, hero, card, button-component,
+        footer, pricing, layout, grid, flex helper dibuat di
+        lapisan lain.
+    3. Single Responsibility : satu bagian file = satu tugas.
+    4. Readability First : komentar rapi per bagian agar mudah
+        dipahami developer baru.
+    5. Maintainability : perubahan cukup melalui token, bukan
+        mengedit nilai di sini.
+  ========================================================== */
+
+/* ==========================================================
+    1. HTML
+    ----------------------------------------------------------
+    Pengaturan dasar pada akar dokumen : skema warna dan latar
+    dasar. color-scheme memastikan kontrol form native tampil
+    konsisten (light theme) di semua browser.
+  ========================================================== */
+
+html {
+    color-scheme: light;
+    background-color: var(--color-background);
+}
+
+/* ==========================================================
+  2. BODY
+  ----------------------------------------------------------
+  Dasar tipografi & warna teks seluruh dokumen. Nilai di sini
+  diwariskan (inherited) ke semua elemen dan dapat di-override
+  per elemen / komponen.
+  ========================================================== */
+
+body {
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--line-height-normal);
+    color: var(--color-text-primary);
+    background-color: var(--color-background);
+    overflow-wrap: break-word;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==========================================================
+  3. TYPOGRAPHY
+  ----------------------------------------------------------
+  Default elemen teks (selain paragraf & heading yang diatur
+  di bagian 4 & 5). Elemen teknis memakai font mono; elemen
+  penekanan memakai semibold.
+  ========================================================== */
+
+/* Elemen kode / teknis */
+
+code,
+kbd,
+samp {
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-sm);
+}
+
+code {
+    background-color: var(--color-surface-strong);
+    border-radius: var(--border-radius-xs);
+    padding: 0.15em 0.4em; /* relatif terhadap font induk */
+}
+
+pre {
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-relaxed);
+    margin-block: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    overflow-x: auto;
+    background-color: var(--color-surface-alt);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+    color: var(--color-text-primary);
+}
+
+pre code {
+    background: none;
+    padding: 0;
+    border-radius: var(--border-radius-none);
+}
+
+/* Penekanan */
+
+strong,
+b {
+    font-weight: var(--font-weight-semibold);
+}
+
+em,
+i {
+    font-style: italic;
+}
+
+/* Teks kecil & catatan */
+
+small {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+
+mark {
+    background-color: var(--color-gold-100);
+    color: var(--color-text-primary);
+    border-radius: var(--border-radius-xs);
+    padding: 0.1em 0.3em; /* relatif terhadap font induk */
+}
+
+sub,
+sup {
+    font-size: 0.75em; /* relatif terhadap font induk */
+    line-height: 0;
+    position: relative;
+}
+
+sub {
+    bottom: -0.25em;
+}
+
+sup {
+    top: -0.5em;
+}
+
+/* Kutipan */
+
+blockquote {
+    margin-block: var(--spacing-lg);
+    padding-inline-start: var(--spacing-lg);
+    border-inline-start: 3px solid var(--color-primary);
+    font-style: italic;
+    color: var(--color-text-secondary);
+}
+
+/* Pemisah horizontal */
+
+hr {
+    margin-block: var(--spacing-xl);
+    border: none;
+    border-top: 1px solid var(--color-border);
+}
+
+/* Gambar dengan keterangan */
+
+figure {
+    margin: 0;
+}
+
+figcaption {
+    margin-top: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    text-align: center;
+}
+
+/* ==========================================================
+    4. PARAGRAPH
+    ----------------------------------------------------------
+    Paragraf adalah body text utama : line-height longgar agar
+    nyaman dibaca dalam alinea yang panjang.
+  ========================================================== */
+
+p {
+    margin-block: var(--spacing-md);
+    line-height: var(--line-height-relaxed);
+    color: var(--color-text-secondary);
+    overflow-wrap: anywhere;
+}
+
+/* ==========================================================
+    5. HEADING
+    ----------------------------------------------------------
+    Judul memakai serif elegan Playfair Display
+    (--font-family-heading) dengan ukuran sesuai skala font.
+    Hierarki : h1 (terbesar) hingga h6 (terkecil).
+  ========================================================== */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-family-heading);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text-primary);
+    line-height: var(--line-height-tight);
+    margin-block: var(--spacing-lg) var(--spacing-md);
+    letter-spacing: var(--letter-spacing-normal);
+}
+
+@supports (text-wrap: balance) {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        text-wrap: balance;
+    }
+}
+
+h1 {
+    font-size: var(--font-size-4xl);
+}
+
+h2 {
+    font-size: var(--font-size-3xl);
+}
+
+h3 {
+    font-size: var(--font-size-2xl);
+}
+
+h4 {
+    font-size: var(--font-size-xl);
+}
+
+h5 {
+    font-size: var(--font-size-lg);
+}
+
+h6 {
+    font-size: var(--font-size-md);
+}
+
+/* ==========================================================
+    6. LINKS
+    ----------------------------------------------------------
+    Link selalu terlihat sebagai tautan : warna primary + garis
+    bawah. Ketebalan garis bawah dipertebal saat hover agar
+    feedback jelas bagi pengguna keyboard & mouse.
+  ========================================================== */
+
+a {
+    color: var(--white);
+    text-decoration: none;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.15em;
+    transition: color var(--transition-fast),
+        text-decoration-thickness var(--transition-fast);
+}
+
+a:hover,
+a:visited {
+    color: var(--color-primary-dark);
+    text-decoration-thickness: 2px;
+}
+
+a:active {
+    color: var(--color-primary-dark);
+}
+
+/* ==========================================================
+    7. IMAGES & MEDIA
+    ----------------------------------------------------------
+    reset.css sudah membuat media block & max-width:100%. Di sini
+    dilengkapi : tinggi proporsional (tidak gepeng) dan alt text
+    yang tetap terbaca saat gambar gagal dimuat.
+  ========================================================== */
+
+img,
+video {
+    height: auto;
+}
+
+img {
+    font-style: italic;
+    color: var(--color-text-muted);
+    background-color: var(--color-surface-alt);
+}
+
+/* ==========================================================
+    8. FORMS
+    ----------------------------------------------------------
+    Default elemen form : warna teks, placeholder, dan state
+    disabled. Warisan font sudah diatur di reset.css. Styling
+    visual penuh (padding, border, background) dikelola komponen
+    (.input, .textarea) di components/form.css.
+  ========================================================== */
+
+label {
+    display: inline-block;
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-primary);
+}
+
+input,
+textarea,
+select {
+    color: var(--color-text-primary);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--color-text-muted);
+    opacity: 1;
+}
+
+input:disabled,
+textarea:disabled,
+select:disabled,
+button:disabled {
+    opacity: var(--opacity-disabled);
+    cursor: not-allowed;
+}
+
+fieldset {
+    min-width: 0;
+    margin-block: var(--spacing-lg);
+    padding: var(--spacing-lg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-md);
+}
+
+legend {
+    padding-inline: var(--spacing-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+}
+
+/* ==========================================================
+    9. BUTTONS (DEFAULT HTML)
+    ----------------------------------------------------------
+    Default tombol native <button>. Normalisasi tampilan browser
+    agar konsisten. Styling visual PADA TOMBOL dikelola komponen
+    .btn di components/button.css.
+  ========================================================== */
+
+button {
+    appearance: none;
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-normal);
+    color: var(--color-text-primary);
+}
+
+/* ==========================================================
+    10. SELECTION
+    ----------------------------------------------------------
+    Warna teks terpilih memakai primary brand agar konsisten
+    dengan identitas visual BERNADA.ID.
+  ========================================================== */
+
+::selection {
+    background-color: var(--color-primary);
+    color: var(--color-text-inverse);
+}
+
+/* ==========================================================
+    11. FOCUS
+    ----------------------------------------------------------
+    Indikator fokus keyboard jelas terlihat memakai focus ring
+    brand. Hanya :focus-visible agar tidak mengganggu pengguna
+    mouse / touch.
+  ========================================================== */
+
+:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+}
+
+/* ==========================================================
+    12. SCROLLBAR
+    ----------------------------------------------------------
+    Scrollbar dikustomisasi dengan warna brand untuk kesan
+    premium, konsisten di WebKit (Chrome/Safari/Edge) dan
+    Firefox.
+  ========================================================== */
+
+/* Firefox */
+
+@supports (scrollbar-width: thin) {
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-primary-300) var(--color-surface-alt);
+    }
+}
+
+/* WebKit & Blink */
+
+::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: var(--color-surface-alt);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--color-primary-300);
+    border-radius: var(--border-radius-pill);
+    border: 3px solid var(--color-surface-alt);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-primary);
+}
+
+::-webkit-scrollbar-corner {
+    background-color: var(--color-surface-alt);
+}
+
+/* ==========================================================
+    13. SECTION DEFAULT
+    ----------------------------------------------------------
+    Ritme vertikal default untuk elemen <section>. Komponen
+    section spesifik (hero, features, dsb.) dibangun di
+    sections.css dan menimpa nilai ini sesuai kebutuhan.
+    Mobile First : padding kecil dulu, diperbesar di layar MD.
+  ========================================================== */
+
+section {
+    padding-block: var(--spacing-4xl);
+}
+
+@media (min-width: 768px) {
+
+    /* 768px = --breakpoint-md (token tidak bisa dipakai
+       di dalam media query). */
+    section {
+        padding-block: var(--spacing-5xl);
+    }
+}

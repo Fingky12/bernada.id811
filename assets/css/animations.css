@@ -1,0 +1,472 @@
+/* ==========================================================
+    BERNADA.ID ANIMATIONS
+    ----------------------------------------------------------
+    Global Animation System
+    Version : 1.0.0
+    Last Update : 04 Agustus 2026
+    ==========================================================
+
+    File ini menyediakan SISTEM ANIMASI global yang reusable
+    untuk seluruh project BERNADA.ID :
+    - Keyframes                (fade, slide, zoom, rotate)
+    - Animation Utility Classes(.animate-*)
+    - Duration Utilities       (.duration-*)
+    - Delay Utilities          (.delay-*)
+    - Timing Function Utilities(.ease-*)
+    - Fill Mode Utilities      (.fill-*)
+    - Accessibility            (prefers-reduced-motion)
+
+    Posisi lapisan :
+    variables → reset → base → utilities → layout →
+    components → sections → ANIMATIONS → responsive
+
+    Prinsip :
+    1. Design Token Only : durasi & easing memakai token dari
+        variables.css.
+    2. Single Responsibility : satu utility = satu tugas, dan
+        dapat digabung (composable), contoh :
+        <div class="animate-slide-up duration-slow delay-200 ease-out">
+    3. Reusable : satu animasi dipakai banyak komponen.
+    4. Separation of Concerns : file ini TIDAK menata komponen
+        (button, card, modal, navbar, hero, dsb.) — komponen
+        cukup memakai utility dari file ini.
+    5. Mobile First : animasi ringan & halus sebagai default.
+    6. Accessibility : prefers-reduced-motion selalu dihormati.
+
+    CATATAN REKOMENDASI TOKEN
+    ----------------------------------------------------------
+    Durasi & easing yang SUDAH TERSEDIA di variables.css :
+    --animation-fast              = 200ms
+    --animation-normal            = 500ms
+    --animation-slow              = 800ms
+    --transition-timing-ease      (default)
+    --transition-timing-ease-in
+    --transition-timing-ease-out
+    --transition-timing-ease-in-out
+
+    Token berikut DIREKOMENDASIKAN ditambahkan ke variables.css
+    agar file ini bebas dari nilai hardcoded :
+        1. Alias durasi : --duration-fast / --duration-normal /
+                        --duration-slow    (menunjuk --animation-*)
+        2. Alias easing : --ease / --ease-in / --ease-out /
+                        --ease-in-out      (menunjuk --transition-timing-*)
+        3. Skala delay  : --delay-100 / --delay-200 / --delay-300 /
+                        --delay-500 / --delay-700 / --delay-1000
+        4. Jarak gerak  : --motion-distance-sm / -md / -lg
+                        (jarak translate pada keyframes slide)
+  ========================================================== */
+
+/* ==========================================================
+    1. FADE ANIMATION
+    ----------------------------------------------------------
+    Perubahan transparansi murni tanpa pergerakan. Animasi
+    paling ringan untuk browser dan paling nyaman di mata —
+    cocok untuk kemunculan konten yang halus (modal, dropdown,
+    toast, notifikasi).
+
+    KEYFRAMES : fade-in, fade-out
+  ========================================================== */
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fade-out {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+/* ==========================================================
+    2. SLIDE ANIMATION
+    ----------------------------------------------------------
+    Elemen masuk / keluar dengan geser halus pada satu sumbu,
+    disertai fade agar gerakan tidak terasa "kaku". Dipakai
+    untuk panel, bottom sheet, dropdown, dan konten yang muncul
+    dari arah tertentu. Jarak geser 1.5rem mengikuti skala
+    --spacing-lg.
+
+    KEYFRAMES : slide-up, slide-down, slide-left, slide-right
+  ========================================================== */
+
+@keyframes slide-up {
+    from {
+        opacity: 0;
+        transform: translateY(1.5rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slide-down {
+    from {
+        opacity: 0;
+        transform: translateY(-1.5rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slide-left {
+    from {
+        opacity: 0;
+        transform: translateX(1.5rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slide-right {
+    from {
+        opacity: 0;
+        transform: translateX(-1.5rem);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ==========================================================
+    3. SCALE ANIMATION
+    ----------------------------------------------------------
+    Elemen muncul / menghilang dengan perubahan ukuran yang
+    halus (zoom), disertai fade. Cocok untuk modal, popup, dan
+    konten yang terkesan "tumbuh" dari pusatnya.
+
+    KEYFRAMES : zoom-in, zoom-out
+  ========================================================== */
+
+@keyframes zoom-in {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes zoom-out {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+}
+
+/* ==========================================================
+    4. ROTATE ANIMATION
+    ----------------------------------------------------------
+    Rotasi untuk elemen berputar. rotate-in / rotate-out
+    memberi kesan "membuka" (cocok untuk ikon & konten kecil),
+    sedangkan spin untuk indikator loading yang berputar
+    terus-menerus.
+
+    KEYFRAMES : rotate-in, rotate-out, spin
+  ========================================================== */
+
+@keyframes rotate-in {
+    from {
+        opacity: 0;
+        transform: rotate(-8deg) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: rotate(0) scale(1);
+    }
+}
+
+@keyframes rotate-out {
+    from {
+        opacity: 1;
+        transform: rotate(0) scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: rotate(8deg) scale(0.96);
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes float {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+/* ==========================================================
+    5. ANIMATION UTILITY CLASSES
+    ----------------------------------------------------------
+    Satu kelas = satu animasi siap pakai. Default memakai
+    durasi normal (--animation-normal), easing default
+    (--transition-timing-ease), dan fill-mode both agar elemen
+    mulai dari state awal saat animasi ditunda dan menetap di
+    state akhir setelah selesai.
+
+    Composable : durasi, delay, timing, dan fill dapat diganti
+    dengan utility di bagian 6-9. Satu elemen memakai SATU
+    nama animasi — untuk kombinasi beberapa animasi, komposisikan
+    lewat elemen induk/anak, bukan menumpuk dua .animate-*.
+  ========================================================== */
+
+.animate-fade-in {
+    animation: fade-in var(--animation-normal)
+        var(--transition-timing-ease) both;
+}
+
+.animate-fade-out {
+    animation: fade-out var(--animation-normal)
+        var(--transition-timing-ease) both;
+}
+
+.animate-slide-up {
+    animation: slide-up var(--animation-normal)
+        var(--transition-timing-ease) both;
+}
+
+.animate-slide-down {
+    animation: slide-down var(--animation-normal)
+        var(--transition-timing-ease) both;
+}
+
+.animate-slide-left {
+    animation: slide-left var(--animation-normal)
+        var(--transition-timing-ease) both;
+}
+
+.animate-slide-right {
+    animation: slide-right var(--animation-normal)
+        var(--transition-timing-ease) both;
+}
+
+.animate-zoom-in {
+    animation: zoom-in var(--animation-normal)
+        var(--transition-timing-ease) both;
+}
+
+.animate-zoom-out {
+    animation: zoom-out var(--animation-normal)
+        var(--transition-timing-ease) both;
+}
+
+.animate-rotate-in {
+    animation: rotate-in var(--animation-normal)
+        var(--transition-timing-ease) both;
+}
+
+.animate-rotate-out {
+    animation: rotate-out var(--animation-normal)
+        var(--transition-timing-ease) both;
+}
+
+/* Loading spinner : putaran kontinu. Easing linear agar
+   kecepatan konstan; durasi dapat diganti .duration-*. */
+.animate-spin {
+    animation: spin var(--animation-slow) linear infinite;
+}
+
+/* Melayang ringan untuk elemen dekoratif (ornamen). Gerakan
+   halus 8px; mati otomatis saat prefers-reduced-motion. */
+.animate-float {
+    animation: float var(--animation-float) var(--transition-timing-ease)
+        infinite;
+}
+
+/* Matikan animasi — untuk kasus tertentu, misalnya
+   menghentikan animasi lewat JavaScript. */
+.animate-none {
+    animation: none !important;
+}
+
+/* ==========================================================
+    6. DURATION UTILITIES
+    ----------------------------------------------------------
+    Mengganti durasi animasi tanpa mengubah nama animasi.
+    Nilai memakai token --animation-* yang sudah ada.
+    CATATAN : jika menginginkan penamaan --duration-*, tambahkan
+    alias di variables.css (lihat rekomendasi pada header file).
+  ========================================================== */
+
+.duration-fast {
+    animation-duration: var(--animation-fast) !important;
+}
+
+.duration-normal {
+    animation-duration: var(--animation-normal) !important;
+}
+
+.duration-slow {
+    animation-duration: var(--animation-slow) !important;
+}
+
+/* ==========================================================
+    7. DELAY UTILITIES
+    ----------------------------------------------------------
+    Menunda mulai animasi — berguna untuk stagger (animasi
+    berurutan antar elemen). Skala 100ms cukup halus untuk
+    kesan berlapis (premium).
+
+    CATATAN : token delay belum tersedia di variables.css,
+    sehingga nilai di bawah masih hardcoded. DIREKOMENDASIKAN
+    menambahkan token --delay-* (lihat header file) lalu
+    mengganti nilai berikut menjadi var(--delay-*).
+  ========================================================== */
+
+.delay-0 {
+    animation-delay: 0ms !important;
+}
+
+.delay-100 {
+    animation-delay: 100ms !important;
+}
+
+.delay-150 {
+    animation-delay: 150ms !important;
+}
+
+.delay-200 {
+    animation-delay: 200ms !important;
+}
+
+.delay-250 {
+    animation-delay: 250ms !important;
+}
+
+.delay-300 {
+    animation-delay: 300ms !important;
+}
+
+.delay-500 {
+    animation-delay: 500ms !important;
+}
+
+.delay-700 {
+    animation-delay: 700ms !important;
+}
+
+.delay-1000 {
+    animation-delay: 1000ms !important;
+}
+
+/* ==========================================================
+    8. TIMING FUNCTION UTILITIES
+    ----------------------------------------------------------
+    Mengganti kurva percepatan animasi. Memakai token easing
+    dari variables.css (--transition-timing-*).
+    CATATAN : jika menginginkan penamaan --ease-*, tambahkan
+    alias di variables.css (lihat rekomendasi pada header file).
+  ========================================================== */
+
+.ease {
+    animation-timing-function: var(--transition-timing-ease) !important;
+}
+
+.ease-in {
+    animation-timing-function: var(--transition-timing-ease-in) !important;
+}
+
+.ease-out {
+    animation-timing-function: var(--transition-timing-ease-out) !important;
+}
+
+.ease-in-out {
+    animation-timing-function: var(--transition-timing-ease-in-out) !important;
+}
+
+/* Linear = kecepatan konstan (keyword CSS murni, bukan
+   nilai desain sehingga tidak memerlukan token). */
+.ease-linear {
+    animation-timing-function: linear !important;
+}
+
+/* ==========================================================
+    9. FILL MODE UTILITIES
+    ----------------------------------------------------------
+    Menentukan gaya elemen SEBELUM dan SESUDAH animasi :
+        - none       : kembali ke gaya normal setelah selesai
+        - backwards  : memakai state awal saat animasi ditunda
+        - forwards   : tetap di state akhir setelah selesai
+        - both       : gabungan backwards + forwards (default
+                    dari utility .animate-* di bagian 5)
+  ========================================================== */
+
+.fill-none {
+    animation-fill-mode: none !important;
+}
+
+.fill-backwards {
+    animation-fill-mode: backwards !important;
+}
+
+.fill-forwards {
+    animation-fill-mode: forwards !important;
+}
+
+.fill-both {
+    animation-fill-mode: both !important;
+}
+
+/* ==========================================================
+    10. ACCESSIBILITY — PREFERS-REDUCED-MOTION
+    ----------------------------------------------------------
+    Pengguna yang menonaktifkan animasi (mabuk gerak, vertigo,
+    gangguan vestibular) menerima versi tanpa gerak : durasi
+    dibuat nyaris nol, iterasi dibatasi satu kali, dan delay
+    dihapus agar konten tampil segera.
+
+    Catatan : aturan serupa juga ada di reset.css bagian 12 —
+    blok di sini melengkapi sistem animasi agar tetap aman
+    walau reset.css tidak dimuat.
+  ========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-delay: 0ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

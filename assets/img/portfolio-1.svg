@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 520" role="img" aria-label="Thumbnail template undangan klasik minimal">
+  <rect width="400" height="520" fill="#FFFFFF"/>
+  <rect x="22" y="22" width="356" height="476" rx="16" fill="none" stroke="#FFC400" stroke-width="3"/>
+  <rect x="32" y="32" width="336" height="456" rx="12" fill="none" stroke="#EBBDBB" stroke-width="1.5"/>
+  <text x="200" y="150" text-anchor="middle" font-family="Georgia, serif" font-size="30" font-style="italic" fill="#A12828">The Wedding of</text>
+  <text x="200" y="228" text-anchor="middle" font-family="Georgia, serif" font-size="44" fill="#1F1F1F">A&amp;B</text>
+  <line x1="150" y1="258" x2="250" y2="258" stroke="#FFC400" stroke-width="2"/>
+  <text x="200" y="310" text-anchor="middle" font-family="Georgia, serif" font-size="18" letter-spacing="4" fill="#6B665F">SAVE THE DATE</text>
+  <text x="200" y="350" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" letter-spacing="3" fill="#A12828" font-weight="bold">08.08.2026</text>
+  <path d="M 176 440 q 6 -6 12 0 q 6 6 0 12 q -6 -6 -12 0 q -6 6 0 -12" fill="#FFC400"/>
+  <path d="M 196 446 q 4 -4 8 0 q 4 4 0 8 q -4 -4 -8 0 q -4 4 0 -8" fill="#A12828"/>
+</svg>

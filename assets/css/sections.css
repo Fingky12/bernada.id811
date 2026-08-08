@@ -1,0 +1,1230 @@
+/* ==========================================================
+    BERNADA.ID SECTIONS
+    ----------------------------------------------------------
+    Page-specific Section Styles
+    Version : 1.1.0
+    Last Update : 05 Agustus 2026
+    ==========================================================
+
+    File ini berisi styling untuk section-section landing page
+    BERNADA.ID (Sprint 2 — The First Experience):
+    - Shared      : section head, eyebrow, reveal animation
+    - Header      : navbar, brand, nav menu, hamburger toggle
+    - Hero        : headline, subtitle, CTA, stats, visual
+    - About       : cerita brand, poin kunci
+    - Features    : 6 kartu fitur
+    - Pricing     : 3 tier + badge popular
+    - Portfolio   : 6 kartu contoh undangan
+    - CTA         : banner ajakan (gradien brand)
+    - FAQ         : accordion
+    - Footer      : brand, navigasi, kontak, back-to-top
+
+    Posisi lapisan :
+    variables → reset → base → utilities → layout →
+    components → SECTIONS → animations → responsive
+
+    Prinsip :
+        1. Design Token Only : seluruh nilai dari variables.css.
+            Nilai hardcoded (bila terpaksa) dicatat di bagian
+            REKOMENDASI TOKEN di akhir file.
+        2. Mobile First : style default untuk layar kecil; semua
+            media query dikumpulkan di responsive.css (rules/04).
+        3. Separation of Concerns : file ini hanya style section,
+            bukan komponen / layout global.
+  ========================================================== */
+
+/* ==========================================================
+    0. SHARED — SECTION HEAD & EYEBROW
+    ----------------------------------------------------------
+    Pola blok judul section yang dipakai berulang:
+    eyebrow (label emas) + judul + deskripsi, rata tengah.
+  ========================================================== */
+
+.section-head {
+    max-width: var(--container-md);
+    margin-inline: auto;
+    margin-bottom: var(--spacing-3xl);
+    text-align: center;
+}
+
+.section-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-2xs) var(--spacing-sm);
+    background: var(--color-gold-50);
+    border: 1px solid var(--color-gold-200);
+    border-radius: var(--border-radius-pill);
+    color: var(--color-gold-700);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--letter-spacing-wide);
+    text-transform: uppercase;
+}
+
+.section-eyebrow::before {
+    content: "";
+    width: var(--spacing-xs);
+    height: var(--spacing-xs);
+    border-radius: var(--border-radius-full);
+    background: var(--color-gold-500);
+}
+
+.section-title {
+    margin-block: var(--spacing-md) var(--spacing-sm);
+}
+
+.section-subtitle {
+    margin: 0;
+    color: var(--color-text-secondary);
+}
+
+/* Aksen teks dalam judul — merah brand / emas premium */
+.accent-text {
+    color: var(--color-primary);
+    font-style: italic;
+}
+
+.accent-gold {
+    color: var(--color-gold-600);
+}
+
+/* Latar section pembeda */
+.section-alt {
+    background: var(--color-surface-alt);
+}
+
+.section-surface {
+    background: var(--color-surface);
+}
+
+/* Offset anchor saat smooth scroll dengan header fixed */
+#beranda,
+#tentang,
+#fitur,
+#harga,
+#portofolio,
+#faq {
+    scroll-margin-top: calc(var(--header-height) + var(--spacing-lg));
+}
+
+/* ==========================================================
+    1. HEADER — NAVBAR
+    ----------------------------------------------------------
+    Header fixed + glass translusen. Menu mobile berupa panel
+    geser dari kanan; menu desktop berupa baris statis
+    (diubah di responsive.css).
+  ========================================================== */
+
+.site-header {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: var(--z-index-header);
+    background: var(--color-surface-translucent);
+    -webkit-backdrop-filter: blur(var(--blur-sm));
+    backdrop-filter: blur(var(--blur-sm));
+    border-bottom: 1px solid transparent;
+    transition: var(--transition-normal);
+}
+
+.site-header.is-scrolled {
+    border-bottom-color: var(--color-border-light);
+    box-shadow: var(--shadow-sm);
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--header-height);
+}
+
+/* Brand / wordmark */
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    text-decoration: none;
+}
+
+.brand-mark {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid var(--color-gold-500);
+    border-radius: var(--border-radius-md);
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-lg);
+    font-style: italic;
+    font-weight: var(--font-weight-bold);
+}
+
+.brand-text {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--letter-spacing-wider);
+    color: var(--color-text-primary);
+}
+
+.brand-text em {
+    font-style: normal;
+    color: var(--color-gold-600);
+}
+
+/* Menu mobile (panel geser dari kanan) */
+.nav-menu {
+    position: fixed;
+    top: var(--header-height);
+    right: 0;
+    bottom: 0;
+    z-index: var(--z-index-header);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg);
+    width: min(100%, var(--container-sm));
+    padding: var(--spacing-xl) var(--spacing-lg);
+    background: var(--color-surface-translucent);
+    -webkit-backdrop-filter: blur(var(--blur-md));
+    backdrop-filter: blur(var(--blur-md));
+    box-shadow: var(--shadow-lg);
+    transform: translateX(100%);
+    transition: transform var(--transition-slow);
+}
+
+.nav-menu.is-open {
+    transform: translateX(0);
+}
+
+/* Kunci scroll body saat menu mobile terbuka (ditambah JS) */
+body.nav-open {
+    overflow: hidden;
+}
+
+.nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.nav-link {
+    position: relative;
+    display: inline-block;
+    padding-block: var(--spacing-2xs);
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-medium);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.nav-link::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    border-radius: var(--border-radius-pill);
+    background: var(--color-gold-500);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--transition-normal);
+}
+
+.nav-link:hover,
+.nav-link.is-active {
+    color: var(--color-primary);
+}
+
+.nav-link:hover::after,
+.nav-link.is-active::after {
+    transform: scaleX(1);
+}
+
+/* CTA di dalam menu — terdorong ke bawah pada panel mobile */
+.nav-cta {
+    margin-top: auto;
+    align-self: flex-start;
+}
+
+/* Tombol hamburger (mobile) */
+.nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--border-radius-md);
+    color: var(--color-text-primary);
+    transition: var(--transition-fast);
+}
+
+.nav-toggle:hover {
+    background: var(--color-primary-50);
+    color: var(--color-primary);
+}
+
+.nav-toggle-icon {
+    display: block;
+    width: var(--size-icon-lg);
+    height: var(--size-icon-lg);
+}
+
+.nav-toggle .bar {
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    transition: var(--transition-fast);
+}
+
+.nav-toggle[aria-expanded="true"] .bar-1 {
+    transform: translateY(5.5px) rotate(45deg);
+}
+
+.nav-toggle[aria-expanded="true"] .bar-2 {
+    opacity: 0;
+}
+
+.nav-toggle[aria-expanded="true"] .bar-3 {
+    transform: translateY(-5.5px) rotate(-45deg);
+}
+
+/* ==========================================================
+    2. HERO
+    ----------------------------------------------------------
+    Pembuka halaman : headline serif + aksen emas, subteks,
+    dua CTA, statistik, dan visual kartu undangan.
+  ========================================================== */
+
+.hero {
+    position: relative;
+    isolation: isolate;
+    padding-block: calc(var(--header-height) + var(--spacing-5xl))
+        var(--spacing-6xl);
+    background: var(--gradient-soft);
+    overflow: hidden;
+}
+
+/* Sinar dekoratif di balik konten hero */
+.hero::before,
+.hero::after {
+    content: "";
+    position: absolute;
+    border-radius: var(--border-radius-full);
+    pointer-events: none;
+    z-index: var(--z-index-negative);
+}
+
+.hero::before {
+    top: -8rem;
+    right: -6rem;
+    width: var(--deco-orb-lg);
+    height: var(--deco-orb-lg);
+    background: radial-gradient(
+        circle,
+        var(--color-glow-gold-soft) 0%,
+        transparent 65%
+    );
+}
+
+.hero::after {
+    bottom: -10rem;
+    left: -7rem;
+    width: var(--deco-orb-md);
+    height: var(--deco-orb-md);
+    background: radial-gradient(
+        circle,
+        var(--color-glow-primary-soft) 0%,
+        transparent 65%
+    );
+}
+
+/* Ornamen mandala melayang di pojok atas kiri */
+.hero-ornament {
+    position: absolute;
+    top: calc(var(--header-height) + var(--spacing-xl));
+    left: var(--spacing-3xl);
+    width: var(--deco-ornament-md);
+    height: var(--deco-ornament-md);
+    opacity: var(--opacity-40);
+    pointer-events: none;
+    z-index: var(--z-index-negative);
+}
+
+.js-enabled .hero-ornament {
+    animation: float var(--animation-float) var(--transition-timing-ease)
+        infinite;
+}
+
+.hero-inner {
+    display: grid;
+    gap: var(--spacing-2xl);
+    align-items: center;
+}
+
+.hero-eyebrow {
+    margin-bottom: var(--spacing-md);
+}
+
+.hero-title {
+    margin-block: 0 0 var(--spacing-md);
+    font-size: var(--font-size-display-lg);
+    font-weight: var(--font-weight-extrabold);
+}
+
+.hero-subtitle {
+    max-width: var(--container-md);
+    margin: 0;
+    font-size: var(--font-size-md);
+}
+
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-xl);
+}
+
+/* Statistik singkat di bawah CTA */
+.hero-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--spacing-md);
+    max-width: var(--container-sm);
+    margin-top: var(--spacing-2xl);
+    padding-top: var(--spacing-lg);
+    border-top: 1px solid var(--color-border-light);
+}
+
+.hero-stat-value {
+    display: block;
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+}
+
+.hero-stat-label {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+
+/* Visual hero */
+.hero-visual {
+    position: relative;
+    max-width: var(--size-hero-visual);
+    margin-inline: auto;
+}
+
+.hero-visual::before {
+    content: "";
+    position: absolute;
+    inset: calc(-1 * var(--spacing-lg));
+    border: 2px dashed var(--color-gold-300);
+    border-radius: var(--border-radius-2xl);
+    z-index: var(--z-index-negative);
+}
+
+.hero-visual img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--border-radius-2xl);
+    box-shadow: var(--shadow-xl);
+}
+
+/* ==========================================================
+    3. ABOUT
+    ----------------------------------------------------------
+    Cerita brand : visual cincin + narasi + poin kunci.
+  ========================================================== */
+
+.about {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+}
+
+.about::before {
+    content: "";
+    position: absolute;
+    top: -6rem;
+    left: -6rem;
+    width: var(--deco-orb-md);
+    height: var(--deco-orb-md);
+    border-radius: var(--border-radius-full);
+    background: radial-gradient(
+        circle,
+        var(--color-glow-gold-soft) 0%,
+        transparent 65%
+    );
+    pointer-events: none;
+    z-index: var(--z-index-negative);
+}
+
+.about-inner {
+    display: grid;
+    gap: var(--spacing-2xl);
+    align-items: center;
+}
+
+.about-visual img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--border-radius-2xl);
+    box-shadow: var(--shadow-lg);
+}
+
+.about-points {
+    display: grid;
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+}
+
+.about-point {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-md);
+}
+
+.about-point-icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: var(--size-icon-tile-md);
+    height: var(--size-icon-tile-md);
+    border-radius: var(--border-radius-lg);
+    background: linear-gradient(
+        135deg,
+        var(--color-gold-50),
+        var(--color-primary-50)
+    );
+    border: 1px solid var(--color-gold-100);
+    color: var(--color-primary);
+}
+
+.about-point-icon svg {
+    width: var(--size-icon-md);
+    height: var(--size-icon-md);
+}
+
+.about-point-title {
+    margin-block: 0 0 var(--spacing-2xs);
+    font-size: var(--font-size-md);
+}
+
+.about-point-desc {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+}
+
+/* ==========================================================
+    4. FEATURES
+    ----------------------------------------------------------
+    Grid 6 kartu fitur (grid-3 dari layout.css). Kartu memakai
+    komponen .card; hanya ikon yang diberi identitas section.
+  ========================================================== */
+
+.features {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+}
+
+/* Pola titik dekoratif di seluruh section */
+.features::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(
+        circle,
+        var(--color-glow-gold-deep) 1.5px,
+        transparent 2px
+    );
+    background-size: var(--deco-pattern-size) var(--deco-pattern-size);
+    background-position: var(--spacing-lg) var(--spacing-lg);
+    pointer-events: none;
+    z-index: var(--z-index-negative);
+}
+
+.feature-icon {
+    display: grid;
+    place-items: center;
+    width: var(--size-icon-tile-lg);
+    height: var(--size-icon-tile-lg);
+    margin-bottom: var(--spacing-md);
+    border-radius: var(--border-radius-lg);
+    background: linear-gradient(
+        135deg,
+        var(--color-gold-50),
+        var(--color-primary-50)
+    );
+    border: 1px solid var(--color-gold-100);
+    color: var(--color-primary);
+    transition: var(--transition-normal);
+}
+
+.feature-icon svg {
+    width: var(--size-icon-lg);
+    height: var(--size-icon-lg);
+}
+
+.feature-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: var(--spacing-4xl);
+    background: linear-gradient(180deg, var(--color-gold-50), transparent);
+    opacity: var(--opacity-50);
+    pointer-events: none;
+}
+
+.feature-card:hover .feature-icon {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-text-inverse);
+}
+
+.feature-title {
+    margin-block: 0 0 var(--spacing-xs);
+    font-size: var(--font-size-lg);
+}
+
+.feature-desc {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+}
+
+/* ==========================================================
+    5. PRICING
+    ----------------------------------------------------------
+    3 tier (Gratis / Premium / Gold). Tier tengah populer diberi
+    border + badge emas. Harga masih placeholder (payment off-scope).
+  ========================================================== */
+
+.pricing {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+}
+
+/* Sinar emas di belakang kartu populer */
+.pricing::before {
+    content: "";
+    position: absolute;
+    top: -8rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: var(--deco-orb-lg);
+    height: var(--deco-orb-lg);
+    border-radius: var(--border-radius-full);
+    background: radial-gradient(
+        circle,
+        var(--color-glow-gold-soft) 0%,
+        transparent 65%
+    );
+    pointer-events: none;
+    z-index: var(--z-index-negative);
+}
+
+.pricing-grid {
+    display: grid;
+    gap: var(--spacing-xl);
+    align-items: stretch;
+}
+
+.pricing-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.pricing-popular {
+    border: 2px solid var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-gold-200), var(--shadow-lg);
+}
+
+.pricing-popular-badge {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: var(--spacing-2xs) var(--spacing-md);
+    border-radius: var(--border-radius-pill);
+    background: var(--color-gold-500);
+    color: var(--color-text-inverse);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--letter-spacing-wide);
+    white-space: nowrap;
+    box-shadow: var(--shadow-sm);
+}
+
+.pricing-tier {
+    margin-bottom: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: var(--letter-spacing-wide);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+}
+
+.pricing-price {
+    display: flex;
+    align-items: baseline;
+    gap: var(--spacing-2xs);
+    margin-block: 0 var(--spacing-xs);
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-display-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+}
+
+.pricing-price .currency {
+    font-size: var(--font-size-lg);
+}
+
+.pricing-period {
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-regular);
+    color: var(--color-text-muted);
+}
+
+.pricing-desc {
+    margin: 0 0 var(--spacing-md);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+}
+
+.pricing-features {
+    display: grid;
+    gap: var(--spacing-sm);
+    margin: 0 0 var(--spacing-lg);
+}
+
+.pricing-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+}
+
+.pricing-features svg {
+    flex: none;
+    width: var(--size-icon-sm);
+    height: var(--size-icon-sm);
+    margin-top: 2px;
+    color: var(--color-gold-600);
+}
+
+.pricing-cta {
+    margin-top: auto;
+}
+
+.pricing-note {
+    margin: var(--spacing-lg) 0 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    text-align: center;
+}
+
+/* ==========================================================
+    6. PORTFOLIO
+    ----------------------------------------------------------
+    Grid contoh undangan (grid-3 dari layout.css). Kartu memakai
+    komponen .card-hover; thumbnail di-zoom halus saat hover.
+  ========================================================== */
+
+.portfolio {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+}
+
+.portfolio::after {
+    content: "";
+    position: absolute;
+    right: -6rem;
+    bottom: -6rem;
+    width: var(--deco-orb-md);
+    height: var(--deco-orb-md);
+    border-radius: var(--border-radius-full);
+    background: radial-gradient(
+        circle,
+        var(--color-glow-primary-soft) 0%,
+        transparent 65%
+    );
+    pointer-events: none;
+    z-index: var(--z-index-negative);
+}
+
+.portfolio-media {
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    border-radius: var(--border-radius-lg);
+}
+
+.portfolio-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-normal);
+}
+
+.portfolio-card:hover .portfolio-media img {
+    transform: scale(1.05);
+}
+
+.portfolio-caption {
+    margin-top: var(--spacing-md);
+}
+
+.portfolio-caption-title {
+    margin: 0 0 var(--spacing-2xs);
+    font-size: var(--font-size-md);
+}
+
+.portfolio-caption-sub {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+
+/* ==========================================================
+    7. CTA BANNER
+    ----------------------------------------------------------
+    Ajakan penutup dengan gradien brand (merah → emas) dan
+    aksen dekoratif lingkaran translusen.
+  ========================================================== */
+
+.cta-banner {
+    position: relative;
+    overflow: hidden;
+    padding: var(--spacing-2xl) var(--spacing-xl);
+    border-radius: var(--border-radius-2xl);
+    background: var(--gradient-brand);
+    text-align: center;
+}
+
+.cta-banner::before,
+.cta-banner::after {
+    content: "";
+    position: absolute;
+    border-radius: var(--border-radius-full);
+    background: var(--color-white);
+    opacity: var(--opacity-10);
+    pointer-events: none;
+}
+
+.cta-banner::before {
+    top: -5rem;
+    right: -3rem;
+    width: 12rem;
+    height: 12rem;
+}
+
+.cta-banner::after {
+    bottom: -4rem;
+    left: -2rem;
+    width: 8rem;
+    height: 8rem;
+}
+
+.cta-title {
+    position: relative;
+    margin-block: 0 0 var(--spacing-sm);
+    color: var(--color-text-inverse);
+}
+
+.cta-subtitle {
+    position: relative;
+    max-width: var(--container-sm);
+    margin: 0 auto var(--spacing-xl);
+    color: var(--color-gold-100);
+}
+
+.cta-actions {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-md);
+}
+
+/* Tombol outline tampil terang di atas gradien gelap */
+.cta-banner .btn-outline {
+    border-color: var(--color-text-inverse);
+    color: var(--color-text-inverse);
+}
+
+.cta-banner .btn-outline:hover {
+    background: var(--color-text-inverse);
+    color: var(--color-primary);
+}
+
+/* ==========================================================
+    8. FAQ — ACCORDION
+    ----------------------------------------------------------
+    Item dapat dibuka satu per satu (atau satu kali) via JS.
+    Animasi panel memakai grid-template-rows 0fr → 1fr
+    (tanpa pengukuran tinggi di JS).
+  ========================================================== */
+
+.faq {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+}
+
+.faq::before {
+    content: "";
+    position: absolute;
+    top: -4rem;
+    right: -4rem;
+    width: var(--deco-orb-sm);
+    height: var(--deco-orb-sm);
+    border-radius: var(--border-radius-full);
+    background: radial-gradient(
+        circle,
+        var(--color-glow-gold-soft) 0%,
+        transparent 65%
+    );
+    pointer-events: none;
+    z-index: var(--z-index-negative);
+}
+
+.faq-inner {
+    max-width: var(--container-md);
+    margin-inline: auto;
+}
+
+.accordion {
+    display: grid;
+    gap: var(--spacing-sm);
+}
+
+.accordion-item {
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    background: var(--color-surface);
+    transition: var(--transition-normal);
+}
+
+.accordion-item.is-open {
+    border-color: var(--color-primary-200);
+    box-shadow: var(--shadow-sm);
+}
+
+.accordion-item:hover {
+    border-color: var(--color-gold-200);
+}
+
+.accordion-header {
+    margin: 0;
+}
+
+.accordion-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    width: 100%;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: var(--border-radius-lg);
+    text-align: left;
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    transition: var(--transition-fast);
+}
+
+.accordion-button:hover {
+    color: var(--color-primary);
+}
+
+.accordion-icon {
+    position: relative;
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    border-radius: var(--border-radius-full);
+    border: 2px solid var(--color-primary);
+    transition: transform var(--transition-normal);
+}
+
+.accordion-icon::before,
+.accordion-icon::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: var(--border-radius-pill);
+    background: var(--color-primary);
+    transform: translate(-50%, -50%);
+}
+
+.accordion-icon::before {
+    width: 0.625rem;
+    height: 2px;
+}
+
+.accordion-icon::after {
+    width: 2px;
+    height: 0.625rem;
+}
+
+.accordion-item.is-open .accordion-icon {
+    transform: rotate(45deg);
+}
+
+.accordion-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--transition-slow);
+}
+
+.accordion-item.is-open .accordion-panel {
+    grid-template-rows: 1fr;
+}
+
+.accordion-content {
+    overflow: hidden;
+}
+
+.accordion-content p {
+    margin: 0;
+    padding: 0 var(--spacing-lg) var(--spacing-lg);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+}
+
+/* ==========================================================
+    9. FOOTER
+    ----------------------------------------------------------
+    Latar gelap (merah paling pekat), konten terang, kolom
+    brand / navigasi / layanan / kontak.
+  ========================================================== */
+
+.site-footer {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background-color: var(--color-primary-900);
+    background-image: radial-gradient(
+            circle at 50% 0%,
+            var(--color-glow-gold-faint) 0%,
+            transparent 55%
+        ),
+        radial-gradient(
+            circle,
+            var(--color-glow-gold-faint) 1.5px,
+            transparent 2px
+        );
+    background-size: auto, var(--deco-pattern-size) var(--deco-pattern-size);
+    background-repeat: no-repeat, repeat;
+    color: var(--color-text-inverse);
+}
+
+/* Sinar merah halus di pojok kanan bawah footer */
+.site-footer::after {
+    content: "";
+    position: absolute;
+    right: -8rem;
+    bottom: -6rem;
+    width: var(--deco-orb-lg);
+    height: var(--deco-orb-lg);
+    border-radius: var(--border-radius-full);
+    background: radial-gradient(
+        circle,
+        var(--color-glow-primary-deep) 0%,
+        transparent 60%
+    );
+    pointer-events: none;
+    z-index: var(--z-index-negative);
+}
+
+.site-footer a {
+    color: var(--color-gray-400);
+}
+
+.site-footer a:hover {
+    color: var(--color-text-inverse);
+}
+
+.footer-top {
+    display: grid;
+    gap: var(--spacing-xl);
+    padding-block: var(--spacing-5xl);
+}
+
+.footer-brand .brand-text {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-inverse);
+}
+
+.footer-brand p {
+    margin: var(--spacing-xl) 0 0;
+    max-width: var(--container-sm);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-400);
+}
+
+.footer-heading {
+    margin: 0 0 var(--spacing-xl);
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-inverse);
+}
+
+.footer-links {
+    display: grid;
+    gap: var(--spacing-xs);
+}
+
+.footer-links a {
+    display: inline-block;
+    font-size: var(--font-size-sm);
+    text-decoration: none;
+}
+
+.footer-contact {
+    display: grid;
+    gap: var(--spacing-sm);
+}
+
+.footer-contact li {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-400);
+}
+
+.footer-contact svg {
+    flex: none;
+    width: var(--size-icon-sm);
+    height: var(--size-icon-sm);
+    margin-top: 2px;
+    color: var(--color-gold-500);
+}
+
+.footer-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+    padding-block: var(--spacing-lg);
+    border-top: 1px solid var(--color-gold-800);
+    font-size: var(--font-size-sm);
+    color: var(--color-gold-200);
+}
+
+.footer-copy,
+.footer-made {
+    margin: 0;
+}
+
+/* ==========================================================
+    10. BACK-TO-TOP
+    ----------------------------------------------------------
+    Tombol melayang kembali ke atas. Muncul setelah halaman
+    digulir (class .is-visible ditambah JS).
+  ========================================================== */
+
+.back-to-top {
+    position: fixed;
+    right: var(--spacing-lg);
+    bottom: var(--spacing-lg);
+    z-index: var(--z-index-sticky);
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--border-radius-pill);
+    background: var(--color-primary);
+    color: var(--color-text-inverse);
+    box-shadow: var(--shadow-md);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(var(--spacing-md));
+    transition: var(--transition-normal);
+}
+
+.back-to-top svg {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.back-to-top:hover {
+    background: var(--color-primary-light);
+    transform: translateY(-2px);
+}
+
+.back-to-top.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* ==========================================================
+    11. SCROLL REVEAL
+    ----------------------------------------------------------
+    Elemen muncul halus saat masuk viewport. Default (tanpa
+    JS) tetap terlihat; class .js-enabled di html baru
+    menyembunyikan state awal. Reduced motion dipangkas oleh
+    animations.css / reset.css.
+  ========================================================== */
+
+.js-enabled .reveal {
+    opacity: 0;
+    transform: translateY(var(--spacing-lg));
+    transition: opacity var(--transition-normal) var(--transition-timing-ease),
+        transform var(--transition-normal) var(--transition-timing-ease);
+    transition-delay: var(--reveal-delay, 0ms);
+}
+
+.js-enabled .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ==========================================================
+    REKOMENDASI TOKEN BARU
+    ----------------------------------------------------------
+    Nilai hardcoded yang perlu dipertimbangkan di variables.css:
+
+    1. --nav-toggle-rotate: 5.5px;
+        Jarak translate bar hamburger saat menjadi ikon "X".
+        Digunakan di: .nav-toggle[aria-expanded="true"]
+
+    2. --portfolio-ratio: 4 / 5;
+        Rasio thumbnail portofolio.
+        Digunakan di: .portfolio-media
+
+    3. --reveal-delay-* (100/200/300ms);
+        Skala tunda reveal berjenjang.
+        Digunakan di: .reveal-delay-1/2/3
+
+    4. --check-mark-offset: 2px;
+        Offset ikon centang/ikon kecil agar sejajar baris teks.
+        Digunakan di: .pricing-features svg, .footer-contact svg
+
+    Catatan: nilai geometrik kecil (offset, rotate) menunggu
+    keputusan penjaga Design System sebelum dijadikan token.
+  ========================================================== */

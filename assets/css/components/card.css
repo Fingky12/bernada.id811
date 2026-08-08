@@ -1,0 +1,136 @@
+/* ==========================================================
+  BERNADA.ID COMPONENTS
+  ----------------------------------------------------------
+  Document : Card Component · Category : Components
+  Version  : 1.0.0 · Status : ✅ Stable · Update : 04-08-2026
+
+  Single Responsibility : Kontainer konten terstruktur.
+  Design Token Source   : assets/css/variables.css
+  ========================================================== */
+
+
+/* ==========================================================
+  1. CARD BASE
+  ----------------------------------------------------------
+  Base style untuk semua varian card.
+  Menggunakan token: --color-surface, --border-radius-xl,
+  --spacing-xl, --shadow-sm, --transition-normal
+  ========================================================== */
+
+.card {
+    background: var(--color-surface);
+    border-radius: var(--border-radius-xl);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-normal);
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-md);
+}
+
+
+/* ==========================================================
+  2. CARD VARIANTS
+  ----------------------------------------------------------
+  Varian card untuk konteks berbeda.
+  ========================================================== */
+
+/* ------------------------------------------
+  GLASS
+  Efek glassmorphism — transparan + blur.
+  Gunakan di atas gambar / gradient background.
+------------------------------------------ */
+
+.card-glass {
+    background: rgba(255, 255, 255, 0.35);
+    -webkit-backdrop-filter: blur(var(--blur-md));
+    backdrop-filter: blur(var(--blur-md));
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* ------------------------------------------
+  OUTLINE
+  Card dengan border tanpa shadow
+------------------------------------------ */
+
+.card-outline {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    box-shadow: none;
+}
+
+.card-outline:hover {
+    border-color: var(--color-primary-500);
+    box-shadow: var(--shadow-sm);
+}
+
+/* ------------------------------------------
+  HOVER
+  Card dengan efek hover lebih halus
+------------------------------------------ */
+
+.card-hover {
+    background: var(--color-surface);
+    border-radius: var(--border-radius-xl);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-xs);
+    transition: var(--transition-normal);
+    cursor: pointer;
+}
+
+.card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+
+/* ==========================================================
+  3. CARD INTERNALS
+  ----------------------------------------------------------
+  Sub-komponen dalam card (header, body, footer).
+  ========================================================== */
+
+.card-header {
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.card-body {
+    margin-bottom: var(--spacing-lg);
+}
+
+.card-footer {
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--color-border-light);
+}
+
+
+/* ==========================================================
+  REKOMENDASI TOKEN BARU
+  ----------------------------------------------------------
+  Nilai hardcoded yang perlu ditambahkan ke variables.css:
+
+  1. --card-glass-bg: rgba(255, 255, 255, 0.35);
+     Background transparan untuk card glass.
+     Digunakan di: .card-glass
+
+  2. --card-glass-border: rgba(255, 255, 255, 0.3);
+     Border transparan untuk card glass.
+     Digunakan di: .card-glass
+
+  3. --card-transform-hover: translateY(-6px);
+     Efek hover naik pada card default.
+     Digunakan di: .card:hover
+
+  4. --card-hover-transform: translateY(-4px);
+     Efek hover lebih halus pada card-hover.
+     Digunakan di: .card-hover:hover
+
+  Catatan: Saat ini menggunakan nilai hardcoded karena
+  CSS Custom Properties tidak bisa digunakan untuk
+  rgba() di semua browser. Pertimbangkan untuk
+  menggunakan variabel di masa depan.
+  ========================================================== */

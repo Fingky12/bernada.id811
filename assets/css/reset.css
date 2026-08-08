@@ -1,0 +1,217 @@
+/* ==========================================================
+  BERNADA.ID RESET CSS
+  ----------------------------------------------------------
+  Reset & normalisasi style bawaan browser.
+
+  Tujuan :
+  - Membuat semua browser berperilaku konsisten.
+  - TIDAK berisi styling khusus project (warna, font brand,
+    layout, komponen).
+  - Warna & tipografi brand diterapkan pada lapisan base
+    stylesheet, bukan di sini.
+
+  Best Practice :
+  - Font inheritance pada elemen form.
+  - max-width:100% untuk media.
+  - Dukungan prefers-reduced-motion.
+  - Menghindari reset berlebihan yang merusak komponen
+    native browser.
+  ========================================================== */
+
+/* ==========================================================
+  1. UNIVERSAL RESET
+  ----------------------------------------------------------
+  Hapus margin & padding bawaan semua elemen sebagai titik
+  awal yang bersih. Spacing aktual diatur melalui design
+  token pada lapisan komponen.
+  ========================================================== */
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+}
+
+/* ==========================================================
+  2. BOX SIZING
+  ----------------------------------------------------------
+  Ukuran elemen dihitung termasuk padding & border sehingga
+  lebar total mudah diprediksi dan konsisten di semua browser.
+  ========================================================== */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* ==========================================================
+  3. HTML & BODY
+  ----------------------------------------------------------
+  Normalisasi dasar dokumen: cegah perbesaran teks otomatis
+  di iOS, perilaku scroll, dan rendering teks yang halus.
+  ========================================================== */
+
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* ==========================================================
+  4. TYPOGRAPHY
+  ----------------------------------------------------------
+  Normalisasi tipografi dasar. Heading mengikuti ukuran &
+  ketebalan elemen induk — ukuran sebenarnya ditentukan oleh
+  design token pada lapisan base stylesheet.
+  ========================================================== */
+
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 1rem;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+}
+
+p {
+    margin: 0;
+}
+
+/* ==========================================================
+  5. IMAGES & MEDIA
+  ----------------------------------------------------------
+  Media responsif: tampil sebagai block dan tidak pernah
+  melebihi lebar elemen induknya.
+  ========================================================== */
+
+img,
+picture,
+video,
+canvas,
+svg {
+    display: block;
+    max-width: 100%;
+}
+
+/* ==========================================================
+  6. LISTS
+  ----------------------------------------------------------
+  Hapus marker & indentasi list bawaan. Marker dapat
+  diaktifkan kembali saat dibutuhkan pada komponen tertentu.
+  ========================================================== */
+
+ul,
+ol {
+    list-style: none;
+}
+
+/* ==========================================================
+  7. LINKS
+  ----------------------------------------------------------
+  Warna link mengikuti warna teks induk dan tanpa garis
+  bawah bawaan. Gaya link aktual diatur di lapisan komponen.
+  ========================================================== */
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* ==========================================================
+  8. FORMS
+  ----------------------------------------------------------
+  Elemen form mewarisi font & warna dari elemen induknya
+  (font inheritance) agar konsisten dengan teks di sekitarnya.
+  ========================================================== */
+
+input,
+textarea,
+select,
+button {
+    font: inherit;
+    color: inherit;
+}
+
+textarea {
+    resize: vertical;
+}
+
+/* ==========================================================
+  9. BUTTONS
+  ----------------------------------------------------------
+  Reset tampilan tombol bawaan browser (border, background,
+  padding, kursor). Tampilan aktual diatur komponen button.
+  ========================================================== */
+
+button {
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+}
+
+/* ==========================================================
+  10. TABLES
+  ----------------------------------------------------------
+  Rapatkan garis antar sel dan hilangkan jarak antar sel
+  bawaan browser.
+  ========================================================== */
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/* ==========================================================
+  11. ACCESSIBILITY
+  ----------------------------------------------------------
+  Fokus keyboard tetap terlihat jelas menggunakan warna
+  elemen itu sendiri (currentColor) — tanpa warna khusus
+  project.
+  ========================================================== */
+
+:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
+
+/* ==========================================================
+  12. REDUCED MOTION
+  ----------------------------------------------------------
+  Menghormati pengguna yang sensitif terhadap gerakan:
+  animasi & transisi dipangkas seminimal mungkin dan
+  scroll menjadi instan.
+  ========================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-delay: 0ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        transition-delay: 0ms !important;
+        scroll-behavior: auto !important;
+    }
+}

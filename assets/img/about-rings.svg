@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 400" role="img" aria-label="Ilustrasi cincin pernikahan emas dan merah">
+  <defs>
+    <linearGradient id="goldRing" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFE066"/>
+      <stop offset="0.5" stop-color="#FFC400"/>
+      <stop offset="1" stop-color="#E6AD00"/>
+    </linearGradient>
+    <radialGradient id="sparkleBg" cx="0.3" cy="0.2" r="1">
+      <stop offset="0" stop-color="#FFF9E6"/>
+      <stop offset="1" stop-color="#FBF1F0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="480" height="400" rx="28" fill="url(#sparkleBg)"/>
+
+  <circle cx="80" cy="340" r="90" fill="#F5DEDD" opacity="0.6"/>
+  <circle cx="420" cy="60" r="70" fill="#FFE699" opacity="0.5"/>
+  <circle cx="420" cy="60" r="34" fill="#FFDC66" opacity="0.6"/>
+
+  <g transform="translate(150 118)">
+    <circle cx="90" cy="82" r="62" fill="none" stroke="#A12828" stroke-width="20"/>
+    <circle cx="90" cy="82" r="62" fill="none" stroke="#A12828" stroke-width="20" stroke-dasharray="0 999" opacity="0"/>
+    <path d="M 90 20 a 62 62 0 0 1 62 62" fill="none" stroke="#FFFFFF" stroke-width="14"/>
+    <circle cx="90" cy="82" r="62" fill="none" stroke="url(#goldRing)" stroke-width="16"/>
+    <path d="M 90 20 a 62 62 0 0 0 -62 62" fill="none" stroke="url(#goldRing)" stroke-width="16" opacity="0.85"/>
+    <path d="M 90 82 m -7 0 a 7 7 0 1 0 14 0 a 7 7 0 1 0 -14 0" fill="#FFC400"/>
+    <path d="M 138 34 l 6 12 l 13 2 l -9 9 l 2 13 l -12 -6 l -12 6 l 2 -13 l -9 -9 l 13 -2 z" fill="#FFDC66" opacity="0.9"/>
+  </g>
+</svg>

@@ -1,0 +1,122 @@
+/* ==========================================================
+  BERNADA.ID COMPONENTS
+  ----------------------------------------------------------
+  Document : Badge Component · Category : Components
+  Version  : 1.0.0 · Status : ✅ Stable · Update : 04-08-2026
+
+  Single Responsibility : Label kecil untuk status / kategori.
+  Design Token Source   : assets/css/variables.css
+  ========================================================== */
+
+
+/* ==========================================================
+  1. BADGE BASE
+  ----------------------------------------------------------
+  Base style untuk semua varian badge.
+  Menggunakan token: --spacing-xs, --spacing-sm,
+  --border-radius-pill, --font-size-sm, --font-weight-semibold
+  ========================================================== */
+
+.badge {
+    display: inline-block;
+    padding: var(--spacing-2xs) var(--spacing-sm);
+    border-radius: var(--border-radius-pill);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-normal);
+    letter-spacing: var(--letter-spacing-wide);
+}
+
+
+/* ==========================================================
+  2. BADGE VARIANTS
+  ----------------------------------------------------------
+  Varian warna untuk konteks berbeda.
+  ========================================================== */
+
+/* ------------------------------------------
+  PRIMARY
+  Badge untuk status utama / aktif
+------------------------------------------ */
+
+.badge-primary {
+    background: var(--color-primary-50);
+    color: var(--color-primary-700);
+}
+
+/* ------------------------------------------
+  SUCCESS
+  Badge untuk status berhasil / aktif
+------------------------------------------ */
+
+.badge-success {
+    background: var(--color-success-50);
+    color: var(--color-success-700);
+}
+
+/* ------------------------------------------
+  WARNING
+  Badge untuk status peringatan / pending
+------------------------------------------ */
+
+.badge-warning {
+    background: var(--color-warning-50);
+    color: var(--color-warning-700);
+}
+
+/* ------------------------------------------
+  DANGER
+  Badge untuk status error / gagal
+------------------------------------------ */
+
+.badge-danger {
+    background: var(--color-danger-50);
+    color: var(--color-danger-700);
+}
+
+
+/* ==========================================================
+  3. BADGE SIZES
+  ----------------------------------------------------------
+  Varian ukuran untuk konteks berbeda.
+  ========================================================== */
+
+/* ------------------------------------------
+  SMALL
+  Untuk ruang terbatas / inline
+------------------------------------------ */
+
+.badge-sm {
+    padding: 2px var(--spacing-xs);
+    font-size: var(--font-size-xs);
+}
+
+/* ------------------------------------------
+  LARGE
+  Untuk penekanan lebih kuat
+------------------------------------------ */
+
+.badge-lg {
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: var(--font-size-base);
+}
+
+
+/* ==========================================================
+  4. BADGE WITH ICON
+  ----------------------------------------------------------
+  Badge yang mengandung ikon di samping teks.
+  ========================================================== */
+
+.badge-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-2xs);
+}
+
+.badge-icon svg,
+.badge-icon img {
+    width: 1em;
+    height: 1em;
+    flex-shrink: 0;
+}

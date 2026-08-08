@@ -1,0 +1,113 @@
+/*
+  BERNADA.ID ENGINEERING HANDBOOK
+  Document : Main Stylesheet · Category : Entry Point
+  Version  : 1.0.0 · Status : ✅ Stable · Update : 04-08-2026
+
+  Single Entry Point untuk seluruh CSS Framework BERNADA.ID.
+  File ini HANYA berisi import — tidak ada styling CSS.
+
+  Struktur Layer:
+  ─────────────────────────────────────────────────────────
+  1. Foundation    → Token, reset, base styling
+  2. Utilities     → Helper classes
+  3. Layout        → Container, grid, spacing global
+  4. Components    → UI components (button, card, badge, form)
+  5. Sections      → Page-specific sections
+  6. Animations    → Keyframes & transitions
+  7. Responsive    → Media queries (Mobile First)
+  ─────────────────────────────────────────────────────────
+*/
+
+/* ==========================================================
+  BERNADA.ID CSS FRAMEWORK
+  ----------------------------------------------------------
+  Single entry point — import seluruh layer CSS framework.
+  Gunakan file ini di HTML:
+    <link rel="stylesheet" href="assets/css/main.css">
+  ========================================================== */
+
+/* Webfont (Google Fonts) — Playfair Display & Plus Jakarta Sans.
+   Import wajib di paling atas sebelum @import lokal (aturan CSS). */
+
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap");
+
+
+/* ==========================================================
+  1. FOUNDATION
+  ----------------------------------------------------------
+  Fondasi CSS framework:
+  - variables.css : Design token (warna, tipografi, spacing)
+  - reset.css     : Normalisasi browser
+  - base.css      : Styling dasar elemen HTML
+  ========================================================== */
+
+@import url("variables.css");
+@import url("reset.css");
+@import url("base.css");
+
+
+/* ==========================================================
+  2. UTILITIES
+  ----------------------------------------------------------
+  Helper classes untuk styling cepat tanpa inline CSS.
+  Contoh: text alignment, spacing, display.
+  ========================================================== */
+
+@import url("utilities.css");
+
+
+/* ==========================================================
+  3. LAYOUT
+  ----------------------------------------------------------
+  Komponen layout global:
+  - Container, section, grid, flex, stack, cluster
+  - Sidebar, content width, aspect ratio
+  ========================================================== */
+
+@import url("layout.css");
+
+
+/* ==========================================================
+  4. COMPONENTS
+  ----------------------------------------------------------
+  UI components — satu file per komponen (Single Responsibility).
+  - button.css : Tombol interaktif (8 varian, 3 ukuran)
+  - card.css   : Kontainer konten (4 varian)
+  - badge.css  : Label status/kategori (4 varian)
+  - form.css   : Elemen input form (input, textarea, select, dll.)
+  ========================================================== */
+
+@import url("components/button.css");
+@import url("components/card.css");
+@import url("components/badge.css");
+@import url("components/form.css");
+
+
+/* ==========================================================
+  5. SECTIONS
+  ----------------------------------------------------------
+  Styling spesifik per section halaman.
+  (Hero, features, pricing, footer, dll.)
+  ========================================================== */
+
+@import url("sections.css");
+
+
+/* ==========================================================
+  6. ANIMATIONS
+  ----------------------------------------------------------
+  Keyframes animasi & transisi untuk elemen UI.
+  ========================================================== */
+
+@import url("animations.css");
+
+
+/* ==========================================================
+  7. RESPONSIVE
+  ----------------------------------------------------------
+  Media queries Mobile First (min-width).
+  Breakpoint: xs (480px), sm (576px), md (768px),
+              lg (992px), xl (1200px), 2xl (1400px)
+  ========================================================== */
+
+@import url("responsive.css");

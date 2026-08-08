@@ -1,0 +1,306 @@
+/* ==========================================================
+    BERNADA.ID LAYOUT
+    ----------------------------------------------------------
+    Global Layout System
+    Version : 1.0.0
+    Last Update : 03 Agustus 2026
+    ==========================================================
+
+    File ini mengatur STRUKTUR halaman (layout reusable).
+    TIDAK mengatur styling visual komponen (warna, tipografi,
+    navbar, hero, card, button, footer, pricing).
+
+    Posisi lapisan :
+        variables → reset → base → utilities → LAYOUT →
+        components → sections → animations → responsive
+
+    Prinsip :
+    1. Mobile First : nilai default untuk layar kecil, lalu
+        ditingkatkan lewat media query min-width.
+    2. Reusable Layout : satu class = satu pola layout yang
+        dipakai ulang di seluruh halaman.
+    3. Design Token Only : semua ukuran dari variables.css.
+    4. Separation of Concerns : layout hanya struktur, bukan
+        tampilan.
+  ========================================================== */
+
+/* ==========================================================
+    1. CONTAINER
+    ----------------------------------------------------------
+    Kontainer horizontal utama : membatasi lebar, memusatkan,
+    dan memberi padding kiri-kanan. Gunakan pada seluruh bagian
+    halaman agar konsisten.
+  ========================================================== */
+
+.container {
+    width: 100%;
+    max-width: var(--container-max-width);
+    margin-inline: auto;
+    padding-inline: var(--container-padding-x);
+}
+
+/* ==========================================================
+    2. SECTION
+    ----------------------------------------------------------
+    Pemisah vertikal antar bagian halaman. Hierarki ukuran :
+    sm (kecil), default (sedang), lg (besar).
+  ========================================================== */
+
+.section {
+    padding-block: var(--spacing-5xl);
+}
+
+.section-sm {
+    padding-block: var(--spacing-4xl);
+}
+
+.section-lg {
+    padding-block: var(--spacing-7xl);
+}
+
+/* ==========================================================
+    3. GRID SYSTEM
+    ----------------------------------------------------------
+    Grid kolom seimbang. Mobile First : grid 3 & 4 kolom runtuh
+    menjadi 2 kolom di layar kecil. Jarak antar sel memakai
+    utilitas .gap-* di utilities.css.
+  ========================================================== */
+
+.grid {
+    display: grid;
+    gap:var(--spacing-lg);
+}
+
+.grid-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid-3,
+.grid-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.grid-auto {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+@media (min-width: 768px) {
+
+    /* 768px = --breakpoint-md */
+    .grid-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (min-width: 992px) {
+
+    /* 992px = --breakpoint-lg */
+    .grid-4 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+/* ==========================================================
+    4. FLEX SYSTEM
+    ----------------------------------------------------------
+    Pola flex dasar : arah, wrap, dan posisi. Untuk posisi item
+    (items-*, justify-*) dan jarak (.gap-*) lihat utilities.css.
+  ========================================================== */
+
+.flex {
+    display: flex;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.flex-center{
+    justify-content:center;
+    align-items:center;
+}
+
+.flex-between{
+    justify-content:space-between;
+    align-items:center;
+}
+
+.flex-1 {
+    flex: 1 1 0%;
+}
+
+.flex-none {
+    flex: none;
+}
+
+.flex-grow {
+    flex-grow: 1;
+}
+
+/* ==========================================================
+    5. STACK LAYOUT
+    ----------------------------------------------------------
+    Menumpuk elemen secara vertikal dengan jarak antar anak
+    yang konsisten (tanpa jarak di luar elemen). Ubah jarak
+    lewat --stack-gap atau varian .stack-sm / .stack-lg.
+  ========================================================== */
+
+.stack {
+    --stack-gap: var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+}
+
+.stack-sm {
+    --stack-gap: var(--spacing-sm);
+}
+
+.stack-lg {
+    --stack-gap: var(--spacing-lg);
+}
+
+.stack > * + * {
+    margin-block-start: var(--stack-gap);
+}
+
+/* ==========================================================
+    6. CLUSTER LAYOUT
+    ----------------------------------------------------------
+    Elemen dalam satu baris yang membungkus (wrap) saat ruang
+    sempit, dengan jarak seragam. Ubah jarak lewat --cluster-gap.
+  ========================================================== */
+
+.cluster {
+    --cluster-gap: var(--spacing-md);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    gap: var(--cluster-gap);
+}
+
+/* ==========================================================
+    7. SIDEBAR LAYOUT
+    ----------------------------------------------------------
+    Area konten + sidebar. Default : sidebar di kiri (anak
+    pertama). Tambah .sidebar-right untuk sidebar di kanan.
+    Lebar sidebar diatur --sidebar-width.
+  ========================================================== */
+
+.sidebar {
+    --sidebar-width: 320px; /* default; token container tidak cocok untuk lebar ini */
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+    align-items: start;
+}
+
+@media (min-width: 992px) {
+
+    /* 992px = --breakpoint-lg */
+    .sidebar {
+        grid-template-columns: minmax(0, var(--sidebar-width)) minmax(0, 1fr);
+    }
+
+    .sidebar-right {
+        grid-template-columns: minmax(0, 1fr) minmax(0, var(--sidebar-width));
+    }
+}
+
+/* ==========================================================
+    8. CONTENT WIDTH
+    ----------------------------------------------------------
+    Batas lebar konten bacaan agar baris tidak terlalu panjang
+    dan nyaman dibaca. Nilai mengikuti token container.
+  ========================================================== */
+
+.content-sm {
+    max-width: var(--container-sm);
+    margin-inline: auto;
+}
+
+.content-md {
+    max-width: var(--container-md);
+    margin-inline: auto;
+}
+
+.content-lg {
+    max-width: var(--container-lg);
+    margin-inline: auto;
+}
+
+.content-xl {
+    max-width: var(--container-xl);
+    margin-inline: auto;
+}
+
+/* ==========================================================
+    9. ASPECT RATIO HELPERS
+    ----------------------------------------------------------
+    Menjaga rasio aspek wadah gambar/video agar tidak berubah
+    saat responsif. Pasangkan dengan lebar (mis. width:100%);
+    media di dalamnya memakai object-fit:cover.
+  ========================================================== */
+
+.aspect-square {
+    aspect-ratio: 1 / 1;
+}
+
+.aspect-4-3 {
+    aspect-ratio: 4 / 3;
+}
+
+.aspect-3-2 {
+    aspect-ratio: 3 / 2;
+}
+
+.aspect-16-9 {
+    aspect-ratio: 16 / 9;
+}
+
+.aspect-21-9 {
+    aspect-ratio: 21 / 9;
+}
+
+/* ==========================================================
+    10. OVERFLOW HELPERS
+    ----------------------------------------------------------
+    Mengontrol perilaku luapan konten : potong (hidden) atau
+    gulir (auto / scroll) pada satu atau kedua sumbu.
+  ========================================================== */
+
+.overflow-hidden {
+    overflow: hidden;
+}
+
+.overflow-visible {
+    overflow: visible;
+}
+
+.overflow-auto {
+    overflow: auto;
+}
+
+.overflow-scroll {
+    overflow: scroll;
+}
+
+.overflow-x-auto {
+    overflow-x: auto;
+}
+
+.overflow-y-auto {
+    overflow-y: auto;
+}
+
+.overflow-x-hidden {
+    overflow-x: hidden;
+}
+
+.overflow-y-hidden {
+    overflow-y: hidden;
+}

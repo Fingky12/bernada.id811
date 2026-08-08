@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 520" role="img" aria-label="Thumbnail template undangan pita emas">
+  <rect width="400" height="520" fill="#FFFFFF"/>
+  <rect y="0" width="400" height="90" fill="#A12828"/>
+  <rect y="90" width="400" height="6" fill="#FFC400"/>
+  <text x="200" y="60" text-anchor="middle" font-family="Georgia, serif" font-size="26" fill="#FFE066">A &amp; B</text>
+  <text x="200" y="170" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-style="italic" fill="#6B665F">bersama keluarga,</text>
+  <text x="200" y="200" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-style="italic" fill="#6B665F">mengundang Anda hadir</text>
+  <path d="M 200 250 q 30 -34 60 0 q 30 34 0 68 q -30 -34 -60 0 q -30 -34 0 -68" fill="none" stroke="#A12828" stroke-width="2"/>
+  <text x="200" y="380" text-anchor="middle" font-family="Georgia, serif" font-size="34" fill="#A12828">A&amp;B</text>
+  <line x1="160" y1="410" x2="240" y2="410" stroke="#FFC400" stroke-width="2"/>
+  <text x="200" y="452" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" letter-spacing="4" fill="#6B665F">08.08.2026</text>
+</svg>

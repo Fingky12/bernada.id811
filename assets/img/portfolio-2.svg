@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 520" role="img" aria-label="Thumbnail template undangan merah elegan">
+  <rect width="400" height="520" fill="#A12828"/>
+  <rect x="22" y="22" width="356" height="476" rx="16" fill="none" stroke="#FFC400" stroke-width="2.5"/>
+  <rect x="34" y="34" width="332" height="452" rx="10" fill="#6D0E1B"/>
+  <text x="200" y="168" text-anchor="middle" font-family="Georgia, serif" font-size="26" font-style="italic" fill="#FFE066">Undangan Pernikahan</text>
+  <text x="200" y="250" text-anchor="middle" font-family="Georgia, serif" font-size="52" fill="#FFC400">A&amp;B</text>
+  <path d="M 160 282 h 80" stroke="#FFE066" stroke-width="1.5"/>
+  <path d="M 200 282 v 12" stroke="#FFC400" stroke-width="2"/>
+  <text x="200" y="340" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" letter-spacing="4" fill="#F5DEDD">08 . 08 . 2026</text>
+  <text x="200" y="372" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" letter-spacing="3" fill="#EBBDBB">JAKARTA</text>
+  <circle cx="200" cy="450" r="6" fill="#FFC400"/>
+  <circle cx="200" cy="450" r="12" fill="none" stroke="#FFC400" stroke-width="1"/>
+</svg>

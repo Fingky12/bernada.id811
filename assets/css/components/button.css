@@ -1,0 +1,347 @@
+/* ==========================================================
+    BERNADA.ID COMPONENTS
+    ----------------------------------------------------------
+    Document : Button Component · Category : Components
+    Version  : 1.0.0 · Status : ✅ Stable · Update : 04-08-2026
+
+    Single Responsibility : Tombol interaktif untuk aksi user.
+    Design Token Source   : assets/css/variables.css
+  ========================================================== */
+
+
+/* ==========================================================
+    1. BUTTON BASE
+    ----------------------------------------------------------
+    Base style untuk semua varian button.
+    Menggunakan token: --spacing-sm, --border-radius-pill,
+    --font-family-body, --font-size-base, --font-weight-semibold,
+    --transition-normal
+  ========================================================== */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    color: var(--color-text-inverse);
+    border: none;
+    border-radius: var(--border-radius-pill);
+    cursor: pointer;
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    transition: var(--transition-normal);
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+
+/* ==========================================================
+    2. BUTTON VARIANTS
+    ----------------------------------------------------------
+    Varian warna untuk konteks berbeda.
+  ========================================================== */
+
+/* ------------------------------------------
+    PRIMARY
+    Tombol utama untuk aksi utama (CTA)
+------------------------------------------ */
+
+.btn-primary {
+    background: var(--color-primary-500);
+    color: var(--color-text-inverse);
+}
+
+.btn-primary:hover {
+    background: var(--color-primary-600);
+    transform: translateY(-3px);
+    color: var(--color-text-inverse);
+}
+
+.btn-primary:active {
+    background: var(--color-primary-700);
+    transform: translateY(0);
+}
+
+.btn-primary:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+}
+
+/* ------------------------------------------
+    SECONDARY
+    Tombol sekunder untuk aksi tambahan
+------------------------------------------ */
+
+.btn-secondary {
+    background: var(--color-gray-200);
+    color: var(--color-gray-800);
+}
+
+.btn-secondary:hover {
+    background: var(--color-gray-300);
+}
+
+.btn-secondary:active {
+    background: var(--color-gray-400);
+}
+
+.btn-secondary:focus-visible {
+    outline: 2px solid var(--color-gray-500);
+    outline-offset: 2px;
+}
+
+/* ------------------------------------------
+    OUTLINE
+    Tombol dengan border untuk aksi alternatif
+------------------------------------------ */
+
+.btn-outline {
+    border: 2px solid var(--color-primary-500);
+    color: var(--color-primary-500);
+    background: transparent;
+}
+
+.btn-outline:hover {
+    background: var(--color-primary-500);
+    color: var(--color-text-inverse);
+}
+
+.btn-outline:active {
+    background: var(--color-primary-600);
+}
+
+.btn-outline:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+}
+
+/* ------------------------------------------
+    GHOST
+    Tombol transparan untuk aksi minimal
+------------------------------------------ */
+
+.btn-ghost {
+    background: transparent;
+    color: var(--color-primary-500);
+}
+
+.btn-ghost:hover {
+    background: var(--color-primary-50);
+}
+
+.btn-ghost:active {
+    background: var(--color-primary-100);
+}
+
+.btn-ghost:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+}
+
+/* ------------------------------------------
+    LINK
+    Tombol seperti tautan untuk navigasi
+------------------------------------------ */
+
+.btn-link {
+    background: transparent;
+    color: var(--color-primary-500);
+    text-decoration: none;
+    padding: 0;
+    border-radius: 0;
+}
+
+.btn-link:hover {
+    color: var(--color-primary-600);
+}
+
+.btn-link:active {
+    color: var(--color-primary-700);
+}
+
+.btn-link:focus-visible {
+    outline: 2px solid var(--color-primary-500);
+    outline-offset: 2px;
+}
+
+/* ------------------------------------------
+    SUCCESS
+    Tombol untuk aksi positif / konfirmasi
+------------------------------------------ */
+
+.btn-success {
+    background: var(--color-success-500);
+    color: var(--color-text-inverse);
+}
+
+.btn-success:hover {
+    background: var(--color-success-600);
+    transform: translateY(-3px);
+}
+
+.btn-success:active {
+    background: var(--color-success-700);
+    transform: translateY(0);
+}
+
+.btn-success:focus-visible {
+    outline: 2px solid var(--color-success-500);
+    outline-offset: 2px;
+}
+
+/* ------------------------------------------
+    DANGER
+    Tombol untuk aksi destruktif / hapus
+------------------------------------------ */
+
+.btn-danger {
+    background: var(--color-danger-500);
+    color: var(--color-text-inverse);
+}
+
+.btn-danger:hover {
+    background: var(--color-danger-600);
+    transform: translateY(-3px);
+}
+
+.btn-danger:active {
+    background: var(--color-danger-700);
+    transform: translateY(0);
+}
+
+.btn-danger:focus-visible {
+    outline: 2px solid var(--color-danger-500);
+    outline-offset: 2px;
+}
+
+/* ------------------------------------------
+    GOLD
+    Tombol aksen emas untuk tema premium
+    Gunakan hemat — aksen premium, bukan utama
+------------------------------------------ */
+
+.btn-gold {
+    background: var(--color-gold-500);
+    color: var(--color-text-inverse);
+}
+
+.btn-gold:hover {
+    background: var(--color-gold-600);
+    transform: translateY(-3px);
+}
+
+.btn-gold:active {
+    background: var(--color-gold-700);
+    transform: translateY(0);
+}
+
+.btn-gold:focus-visible {
+    outline: 2px solid var(--color-gold-500);
+    outline-offset: 2px;
+}
+
+
+/* ==========================================================
+    3. BUTTON SIZES
+    ----------------------------------------------------------
+    Varian ukuran untuk konteks tata letak berbeda.
+  ========================================================== */
+
+/* ------------------------------------------
+    SMALL
+    Untuk ruang terbatas / inline actions
+------------------------------------------ */
+
+.btn-sm {
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: var(--font-size-sm);
+}
+
+/* ------------------------------------------
+    MEDIUM (DEFAULT)
+    Ukuran default — tidak perlu class tambahan
+------------------------------------------ */
+
+.btn-md {
+    padding: var(--spacing-sm) var(--spacing-lg);
+    font-size: var(--font-size-base);
+}
+
+/* ------------------------------------------
+    LARGE
+    Untuk CTA utama / hero section
+------------------------------------------ */
+
+.btn-lg {
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: var(--font-size-md);
+}
+
+
+/* ==========================================================
+    4. BUTTON STATES
+    ----------------------------------------------------------
+    State komponen: disabled, loading (opsional).
+  ========================================================== */
+
+/* ------------------------------------------
+    DISABLED
+    Tombol nonaktif — tidak bisa diklik
+------------------------------------------ */
+
+.btn:disabled {
+    opacity: var(--opacity-disabled);
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* ------------------------------------------
+    LOADING (OPSIONAL)
+    Untuk operasi async — gunakan dengan JS
+------------------------------------------ */
+
+.btn-loading {
+    position: relative;
+    color: transparent !important;
+    pointer-events: none;
+}
+
+.btn-loading::after {
+    content: "";
+    position: absolute;
+    width: 1.25em;
+    height: 1.25em;
+    border: 2px solid var(--color-text-inverse);
+    border-top-color: transparent;
+    border-radius: var(--border-radius-full);
+    animation: btn-spin 0.6s linear infinite;
+}
+
+@keyframes btn-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* ==========================================================
+    REKOMENDASI TOKEN BARU
+    ----------------------------------------------------------
+    Nilai hardcoded yang perlu ditambahkan ke variables.css:
+
+    1. --btn-transform-hover: translateY(-3px);
+        Untuk efek hover naik pada button.
+        Digunakan di: .btn-primary, .btn-success, .btn-danger, .btn-gold
+
+    2. --btn-transform-active: translateY(0);
+        Untuk efek aktif kembali ke posisi semula.
+        Digunakan di: semua button dengan transform hover.
+
+    Catatan: Saat ini menggunakan nilai hardcoded karena
+    CSS Custom Properties tidak bisa digunakan untuk
+    transform di semua browser. Pertimbangkan untuk
+    menggunakan variabel di masa depan.
+  ========================================================== */

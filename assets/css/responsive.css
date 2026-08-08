@@ -1,0 +1,169 @@
+/* ==========================================================
+    BERNADA.ID RESPONSIVE
+    ----------------------------------------------------------
+    Mobile First Breakpoints
+    Version : 1.1.0
+    Last Update : 05 Agustus 2026
+    ==========================================================
+
+    File ini berisi media query untuk responsive design
+    (Sprint 2 — The First Experience). Gaya dasar mobile ada
+    di sections.css; di sini hanya peningkatan per breakpoint.
+
+    Breakpoint :
+    - xs  : 480px  (Smartphone kecil)
+    - sm  : 576px  (Smartphone)
+    - md  : 768px  (Tablet)
+    - lg  : 992px  (Laptop)
+    - xl  : 1200px (Desktop)
+    - 2xl : 1400px (Desktop besar)
+
+    Catatan : CSS Custom Properties tidak bisa dipakai
+    di dalam media query. Nilai pixel langsung ditulis
+    dengan komentar referensi token.
+
+    Posisi lapisan :
+    variables → reset → base → utilities → layout →
+    components → sections → animations → RESPONSIVE
+  ========================================================== */
+
+/* ==========================================================
+    XS — SMARTPHONE KECIL (480px)
+    ----------------------------------------------------------
+    Referensi: --breakpoint-xs: 480px
+    Tidak ada penyesuaian khusus — desain mobile default sudah
+    sesuai untuk layar 480px ke bawah.
+  ========================================================== */
+
+@media (min-width: 480px) {
+}
+
+/* ==========================================================
+    SM — SMARTPHONE (576px)
+    ----------------------------------------------------------
+    Referensi: --breakpoint-sm: 576px
+  ========================================================== */
+
+@media (min-width: 576px) {
+    /* Visual hero sedikit lebih besar di layar smartphone */
+    .hero-visual {
+        max-width: var(--size-hero-visual-sm);
+    }
+}
+
+/* ==========================================================
+    MD — TABLET (768px)
+    ----------------------------------------------------------
+    Referensi: --breakpoint-md: 768px
+  ========================================================== */
+
+@media (min-width: 768px) {
+    /* Hero: padding lebih lega */
+    .hero {
+        padding-block: calc(var(--header-height) + var(--spacing-6xl))
+            var(--spacing-7xl);
+    }
+
+    /* Pricing: 3 tier sejajar satu baris */
+    .pricing-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    /* CTA banner: padding lebih besar */
+    .cta-banner {
+        padding: var(--spacing-4xl) var(--spacing-4xl);
+    }
+
+    /* Footer: 2 kolom */
+    .footer-top {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* ==========================================================
+    LG — LAPTOP (992px)
+    ----------------------------------------------------------
+    Referensi: --breakpoint-lg: 992px
+  ========================================================== */
+
+@media (min-width: 992px) {
+    /* Navbar: menu menjadi baris statis, hamburger disembunyikan */
+    .nav-menu {
+        position: static;
+        top: auto;
+        right: auto;
+        bottom: auto;
+        flex-direction: row;
+        align-items: center;
+        gap: var(--spacing-xl);
+        width: auto;
+        height: auto;
+        padding: 0;
+        background: none;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        box-shadow: none;
+        transform: none;
+    }
+
+    .nav-list {
+        flex-direction: row;
+        gap: var(--spacing-lg);
+    }
+
+    .nav-cta {
+        margin-top: 0;
+        align-self: auto;
+    }
+
+    .nav-toggle {
+        display: none;
+    }
+
+    /* Hero: teks kiri + visual kanan */
+    .hero-inner {
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+        gap: var(--spacing-2xl);
+    }
+
+    .hero-visual {
+        max-width: none;
+    }
+
+    /* About: visual kiri + konten kanan */
+    .about-inner {
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+        gap: var(--spacing-2xl);
+    }
+
+    /* Footer: brand + 3 kolom */
+    .footer-top {
+        grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* ==========================================================
+    XL — DESKTOP (1200px)
+    ----------------------------------------------------------
+    Referensi: --breakpoint-xl: 1200px
+  ========================================================== */
+
+@media (min-width: 1200px) {
+    /* Jarak antar section makin lega di layar lebar */
+    .section-head {
+        margin-bottom: var(--spacing-4xl);
+    }
+}
+
+/* ==========================================================
+    2XL — DESKTOP BESAR (1400px)
+    ----------------------------------------------------------
+    Referensi: --breakpoint-2xl: 1400px
+  ========================================================== */
+
+@media (min-width: 1400px) {
+    /* Hero visual sedikit diperbesar pada layar sangat lebar */
+    .hero-visual img {
+        box-shadow: var(--shadow-2xl);
+    }
+}
