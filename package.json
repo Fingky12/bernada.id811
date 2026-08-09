@@ -1,0 +1,23 @@
+{
+  "name": "bernada",
+  "version": "1.1.0",
+  "description": "BERNADA.ID — Digital Wedding Invitation Platform",
+  "private": true,
+  "type": "module",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server/index.js",
+    "dev": "node --watch --env-file-if-exists=.env server/index.js",
+    "migrate": "node --env-file-if-exists=.env database/migrate.js",
+    "db:create": "node --env-file-if-exists=.env database/create-db.js"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.0.0",
+    "helmet": "^8.0.0",
+    "pg": "^8.13.0"
+  }
+}
