@@ -39,11 +39,11 @@ html {
 }
 
 /* ==========================================================
-  2. BODY
-  ----------------------------------------------------------
-  Dasar tipografi & warna teks seluruh dokumen. Nilai di sini
-  diwariskan (inherited) ke semua elemen dan dapat di-override
-  per elemen / komponen.
+    2. BODY
+    ----------------------------------------------------------
+    Dasar tipografi & warna teks seluruh dokumen. Nilai di sini
+    diwariskan (inherited) ke semua elemen dan dapat di-override
+    per elemen / komponen.
   ========================================================== */
 
 body {
@@ -60,11 +60,11 @@ body {
 }
 
 /* ==========================================================
-  3. TYPOGRAPHY
-  ----------------------------------------------------------
-  Default elemen teks (selain paragraf & heading yang diatur
-  di bagian 4 & 5). Elemen teknis memakai font mono; elemen
-  penekanan memakai semibold.
+    3. TYPOGRAPHY
+    ----------------------------------------------------------
+    Default elemen teks (selain paragraf & heading yang diatur
+    di bagian 4 & 5). Elemen teknis memakai font mono; elemen
+    penekanan memakai semibold.
   ========================================================== */
 
 /* Elemen kode / teknis */

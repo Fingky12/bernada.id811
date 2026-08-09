@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dasbor Undangan — BERNADA.ID</title>
+    <meta name="description" content="Kelola dan buat undangan digital Anda di dasbor BERNADA.ID.">
+    <link rel="icon" type="image/svg+xml" href="../assets/img/favicon.svg">
+    <link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+
+    <header class="app-header">
+        <div class="container app-header-inner">
+            <a class="app-brand" href="../index.html" aria-label="BERNADA.ID — beranda">
+                <span class="app-brand-mark" aria-hidden="true">B</span>
+                <span class="brand-text">BERNADA<em>.ID</em></span>
+            </a>
+            <div class="app-user">
+                <span id="app-user-name" class="app-user-name"></span>
+                <button id="logout-btn" class="btn btn-outline btn-sm" type="button">Keluar</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="app-main">
+        <div class="container">
+
+            <!-- ================================
+                 LIHAT: DAFTAR UNDANGAN
+            ================================= -->
+            <section id="list-view" aria-label="Daftar undangan">
+                <div class="page-head">
+                    <div>
+                        <h1 class="page-title">Undangan Saya</h1>
+                        <p class="page-subtitle">Buat, kelola, dan publikasikan undangan digital Anda.</p>
+                    </div>
+                    <button id="create-btn" class="btn btn-primary" type="button">+ Buat Undangan</button>
+                </div>
+
+                <div id="invitation-grid" class="invitation-grid" aria-live="polite"></div>
+
+                <div id="empty-state" class="empty-state d-none">
+                    <div class="empty-state-icon" aria-hidden="true">💌</div>
+                    <h2 class="empty-state-title">Belum ada undangan</h2>
+                    <p class="empty-state-text">Mulai buat undangan digital pertama Anda — pilih template, sesuaikan tema, dan bagikan ke orang tercinta.</p>
+                    <button id="empty-create-btn" class="btn btn-primary" type="button">Buat Undangan</button>
+                </div>
+            </section>
+
+            <!-- ================================
+                 LIHAT: EDITOR
+            ================================= -->
+            <section id="editor-view" class="d-none" aria-label="Editor undangan">
+                <div class="page-head">
+                    <div>
+                        <button id="back-btn" class="btn btn-ghost btn-sm" type="button">← Kembali</button>
+                        <h1 id="editor-title" class="page-title">Buat Undangan</h1>
+                        <p class="page-subtitle">Lengkapi detail acara, pilih template, dan sesuaikan tema.</p>
+                    </div>
+                </div>
+
+                <form id="invitation-form" novalidate>
+                    <div class="editor-grid">
+                        <div class="editor-form">
+
+                            <section class="editor-section">
+                                <h2 class="editor-section-title">Detail Undangan</h2>
+                                <p class="editor-section-hint">Informasi utama yang tampil pada undangan.</p>
+                                <div class="editor-form">
+                                    <div class="form-group">
+                                        <label class="form-label" for="f-title">Judul Undangan</label>
+                                        <input class="input" id="f-title" name="title" type="text"
+                                               placeholder="Misal: Pernikahan Kami" required maxlength="150">
+                                    </div>
+                                    <div class="editor-form-row">
+                                        <div class="form-group">
+                                            <label class="form-label" for="f-slug">Link (slug)</label>
+                                            <input class="input" id="f-slug" name="slug" type="text"
+                                                   placeholder="nama-undangan" required maxlength="60">
+                                            <p class="form-hint">Contoh: <span id="slug-preview">nama-undangan</span></p>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label" for="f-couple">Nama Pasangan</label>
+                                            <input class="input" id="f-couple" name="couple" type="text"
+                                                   placeholder="Misal: Rara &amp; Bima" maxlength="120">
+                                        </div>
+                                    </div>
+                                    <div class="editor-form-row">
+                                        <div class="form-group">
+                                            <label class="form-label" for="f-date">Tanggal Acara</label>
+                                            <input class="input" id="f-date" name="eventDate" type="date">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label" for="f-time">Waktu Acara</label>
+                                            <input class="input" id="f-time" name="eventTime" type="text"
+                                                   placeholder="Misal: 19:00 WIB" maxlength="20">
+                                        </div>
+                                    </div>
+                                    <div class="editor-form-row">
+                                        <div class="form-group">
+                                            <label class="form-label" for="f-venue">Tempat</label>
+                                            <input class="input" id="f-venue" name="venue" type="text"
+                                                   placeholder="Misal: Gedung Serbaguna" maxlength="200">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label" for="f-location">Alamat</label>
+                                            <input class="input" id="f-location" name="location" type="text"
+                                                   placeholder="Kota / alamat lengkap" maxlength="300">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="f-message">Sambutan / Pesan</label>
+                                        <textarea class="input textarea" id="f-message" name="message"
+                                                  placeholder="Tulis sambutan singkat untuk para tamu..." maxlength="2000"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="f-music">URL Musik Latar</label>
+                                        <input class="input" id="f-music" name="musicUrl" type="url"
+                                               placeholder="https://..." maxlength="500">
+                                        <p class="form-hint">Opsional — tautan audio yang diputar saat undangan dibuka.</p>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <section class="editor-section">
+                                <h2 class="editor-section-title">Pilih Template</h2>
+                                <p class="editor-section-hint">Klik salah satu template untuk memakainya.</p>
+                                <div id="template-grid" class="template-grid"></div>
+                            </section>
+
+                            <section class="editor-section">
+                                <h2 class="editor-section-title">Tema &amp; Warna</h2>
+                                <p class="editor-section-hint">Sesuaikan warna utama dan aksen undangan.</p>
+                                <div class="color-grid">
+                                    <div class="color-field">
+                                        <label class="color-swatch" for="f-theme-primary" title="Warna utama">
+                                            <input class="color-swatch" id="f-theme-primary" type="color" value="#A12828">
+                                        </label>
+                                        <span class="color-label">
+                                            <span class="color-name">Warna utama</span>
+                                            <input class="color-value" id="f-theme-primary-hex" type="text" value="#A12828" maxlength="7">
+                                        </span>
+                                    </div>
+                                    <div class="color-field">
+                                        <label class="color-swatch" for="f-theme-accent" title="Warna aksen">
+                                            <input class="color-swatch" id="f-theme-accent" type="color" value="#FFC400">
+                                        </label>
+                                        <span class="color-label">
+                                            <span class="color-name">Warna aksen</span>
+                                            <input class="color-value" id="f-theme-accent-hex" type="text" value="#FFC400" maxlength="7">
+                                        </span>
+                                    </div>
+                                </div>
+                            </section>
+
+                            <div class="editor-actions flex gap-sm">
+                                <button id="save-btn" class="btn btn-primary" type="submit">Simpan Undangan</button>
+                                <button id="cancel-btn" class="btn btn-outline" type="button">Batal</button>
+                            </div>
+                        </div>
+
+                        <div class="preview-sticky">
+                            <aside class="preview-window" aria-label="Pratinjau undangan">
+                                <div class="preview-hero">
+                                    <p class="preview-hero-eyebrow">Undangan Pernikahan</p>
+                                    <h2 id="preview-couple" class="preview-couple">Rara &amp; Bima</h2>
+                                    <p id="preview-date" class="preview-date">Kamis, 08 Oktober 2026</p>
+                                </div>
+                                <div class="preview-body">
+                                    <div class="preview-accents" aria-hidden="true">
+                                        <span class="preview-accent-line"></span>
+                                        <span class="preview-accent-dot"></span>
+                                        <span class="preview-accent-line"></span>
+                                    </div>
+                                    <p id="preview-message" class="preview-message">Dengan memohon rahmat dan ridho Allah SWT, kami mengundang Bapak/Ibu/Saudara/i untuk hadir dalam acara pernikahan kami.</p>
+                                    <p id="preview-venue" class="preview-location">Gedung Serbaguna</p>
+                                    <p id="preview-location" class="preview-location">Surabaya</p>
+                                    <div class="preview-cta">
+                                        <span class="btn btn-gold btn-sm">Simpan Tanggal</span>
+                                    </div>
+                                </div>
+                            </aside>
+                        </div>
+                    </div>
+                </form>
+            </section>
+
+        </div>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script type="module" src="../assets/js/builder.js"></script>
+</body>
+</html>

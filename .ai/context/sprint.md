@@ -1,18 +1,24 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Sprint Context · Category : Context (living document)
-  Version  : 1.0.7 · Status : ✅ Closed · Update : 05-08-2026
+  Version  : 1.0.8 · Status : 🟠 Proses · Update : 09-08-2026
 -->
 
 # Sprint
 
-> Status sprint yang sedang berjalan. **Referensi lengkap**: `.docs/sprint-1.md` & `.docs/sprint-2.md`. Perbarui file ini saat sprint dimulai, berubah, atau selesai.
+> Status sprint yang sedang berjalan. **Referensi lengkap**: `.docs/sprint-1.md`, `.docs/sprint-2.md`, `.docs/sprint-3.md`. Perbarui file ini saat sprint dimulai, berubah, atau selesai.
 
 ---
 
 ## Sprint Berjalan (Active)
 
-Belum ada sprint aktif. Sprint berikutnya direncanakan di `.docs/roadmap.md` (Fase 2 — Core Features).
+| Item | Detail |
+| --- | --- |
+| Sprint | Sprint 3 — The Core Features (Builder Undangan) |
+| Tujuan | Autentikasi + builder undangan + template & personalisasi (API + halaman UI) |
+| Status | 🟠 Proses (Planning) |
+| Release | v1.2.0 — The Core Features Release |
+| Referensi | `.docs/sprint-3.md` |
 
 ## Sprint Sebelumnya (Closed)
 
@@ -54,14 +60,15 @@ Belum ada sprint aktif. Sprint berikutnya direncanakan di `.docs/roadmap.md` (Fa
 - Dokumentasi — ✅ selesai (component docs, engineering workflow, release policy)
 - Audit — ✅ PASS (Internal Code Review, Architecture, QA, Engineering)
 - Halaman inti & navigasi — ✅ selesai (Sprint 2: landing page 9 section)
-- Setup awal server & database — 🟡 belum
+- Setup awal server & database — ✅ selesai (Fase 1: Express ESM + skema awal + migrasi)
 
-## Lingkup Sprint 3 (Potensi — Fase 2 Core Features)
+## Lingkup Sprint 3 (Disetujui)
 
-- Builder / editor undangan digital
-- Template undangan & personalisasi
-- Manajemen tamu & RSVP
-- Autentikasi pengguna
+- Autentikasi pengguna (register, login, logout, refresh, me)
+- Builder / editor undangan digital (CRUD + publish, owner-scoped)
+- Template undangan & personalisasi (list template aktif + tema)
+- Halaman UI: `pages/login.html` & `pages/builder.html` (disajikan Express)
+- Manajemen tamu & RSVP — 🟡 ditunda ke Sprint 4
 
 ## Aturan Sprint
 
@@ -73,6 +80,7 @@ Belum ada sprint aktif. Sprint berikutnya direncanakan di `.docs/roadmap.md` (Fa
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.0.8 | 09-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 3 dimulai — Planning (Auth + Builder + Template) |
 | 1.0.7 | 05-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Closed | Sprint 2 closed — Audit PASS + Release v1.1.0 The First Experience (tag v1.1.0) |
 | 1.0.6 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 2 — Development selesai (9 section + interaksi + aset); Review & Documentation |
 | 1.0.4 | 04-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Sprint 1 closed — Release v1.0.0 The Foundation Release |

@@ -26,6 +26,11 @@ function parsePort(value) {
 const env = getEnv('NODE_ENV', 'development');
 const port = parsePort(getEnv('PORT', '3000'));
 const corsOrigin = getEnv('CORS_ORIGIN', env === 'production' ? '' : '*');
+const jwtSecret = getEnv('JWT_SECRET', env === 'production' ? '' : 'dev-secret-bernada-jangan-dipakai-produksi');
+
+if (env === 'production' && !jwtSecret) {
+  throw new Error('Environment variable JWT_SECRET wajib diisi pada mode production.');
+}
 
 export const config = {
   env,
@@ -36,4 +41,8 @@ export const config = {
     'postgresql://bernada:bernada@localhost:5432/bernada',
   ),
   appVersion: packageJson.version,
+  jwtSecret,
+  jwtAccessExpires: getEnv('JWT_ACCESS_EXPIRES', '15m'),
+  refreshTokenExpiryDays: Number.parseInt(getEnv('REFRESH_TOKEN_EXPIRY_DAYS', '30'), 10),
+  cookieName: 'bernada_refresh',
 };

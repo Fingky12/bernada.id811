@@ -1,9 +1,14 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import { config } from './config.js';
 import { apiRouter } from '../api/index.js';
 import { notFoundHandler, errorHandler } from './middleware/error-handler.js';
+
+const ROOT_DIR = path.resolve(fileURLToPath(new URL('../', import.meta.url)));
 
 function resolveCorsOrigins(raw) {
   if (raw === '' || raw === '*') {
@@ -21,9 +26,16 @@ export function createApp() {
   app.disable('x-powered-by');
   app.use(helmet());
   app.use(cors({ origin: resolveCorsOrigins(config.corsOrigin) }));
+  app.use(cookieParser());
   app.use(express.json({ limit: '1mb' }));
 
   app.use('/api', apiRouter);
+
+  app.use('/assets', express.static(path.join(ROOT_DIR, 'assets')));
+  app.use('/pages', express.static(path.join(ROOT_DIR, 'pages')));
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(ROOT_DIR, 'index.html'));
+  });
 
   app.use(notFoundHandler);
   app.use(errorHandler);

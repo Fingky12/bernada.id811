@@ -146,7 +146,8 @@
     Tombol seperti tautan untuk navigasi
 ------------------------------------------ */
 
-.btn-link {
+.btn-link,
+.btn-link:visited {
     background: transparent;
     color: var(--color-primary-500);
     text-decoration: none;

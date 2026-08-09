@@ -1,0 +1,629 @@
+/* ==========================================================
+    BERNADA.ID PAGES
+    ----------------------------------------------------------
+    Sprint 3 — The Core Features
+    Halaman khusus: auth (login/registrasi) & builder undangan.
+    Seluruh nilai memakai design token (assets/css/variables.css).
+  ========================================================== */
+
+/* ==========================================================
+    1. AUTH PAGE (login/registrasi)
+    ----------------------------------------------------------
+    Layout satu kolom terpusat di atas latar gradien.
+  ========================================================== */
+
+.auth-page {
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-xl) var(--spacing-md);
+    background: var(--gradient-soft);
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 28rem;
+    background: var(--color-surface);
+    border-radius: var(--border-radius-2xl);
+    padding: var(--spacing-xl);
+    box-shadow: var(--shadow-lg);
+}
+
+.auth-card:hover {
+    transform: none;
+    box-shadow: var(--shadow-lg);
+}
+
+.auth-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-lg);
+}
+
+.auth-brand-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-icon-tile-md);
+    height: var(--size-icon-tile-md);
+    border-radius: var(--border-radius-md);
+    background: var(--gradient-brand);
+    color: var(--color-text-inverse);
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+}
+
+.auth-title {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-display-sm);
+    text-align: center;
+    margin-bottom: var(--spacing-2xs);
+}
+
+.auth-subtitle {
+    text-align: center;
+    color: var(--color-text-muted);
+    margin-bottom: var(--spacing-lg);
+}
+
+.auth-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs);
+    margin-bottom: var(--spacing-lg);
+    background: var(--color-surface-alt);
+    border-radius: var(--border-radius-lg);
+}
+
+.auth-tab {
+    padding: var(--spacing-xs) var(--spacing-md);
+    border: none;
+    border-radius: var(--border-radius-md);
+    background: transparent;
+    color: var(--color-text-muted);
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: var(--transition-normal);
+}
+
+.auth-tab:hover {
+    color: var(--color-text-primary);
+}
+
+.auth-tab.is-active {
+    background: var(--color-surface);
+    color: var(--color-primary-600);
+    box-shadow: var(--shadow-sm);
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.auth-alert {
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-normal);
+}
+
+.auth-alert-danger {
+    background: var(--color-danger-50);
+    color: var(--color-danger-700);
+    border: 1px solid var(--color-danger-500);
+}
+
+.auth-alert-success {
+    background: var(--color-success-50);
+    color: var(--color-success-700);
+    border: 1px solid var(--color-success-500);
+}
+
+.auth-footer {
+    margin-top: var(--spacing-lg);
+    text-align: center;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+
+.auth-footer a {
+    color: var(--color-text-link);
+    font-weight: var(--font-weight-semibold);
+}
+
+/* ==========================================================
+    2. APP SHELL (builder)
+    ----------------------------------------------------------
+    Header aplikasi + area konten utama.
+  ========================================================== */
+
+.app-header {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-index-header);
+    background: var(--color-surface-translucent);
+    -webkit-backdrop-filter: blur(var(--blur-md));
+    backdrop-filter: blur(var(--blur-md));
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.app-header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    min-height: var(--header-height);
+    padding-block: var(--spacing-sm);
+}
+
+.app-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    text-decoration: none;
+    color: var(--color-text-primary);
+    font-weight: var(--font-weight-bold);
+    font-family: var(--font-family-heading);
+}
+
+.app-brand-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size-icon-tile-md);
+    height: var(--size-icon-tile-md);
+    border-radius: var(--border-radius-md);
+    background: var(--gradient-brand);
+    color: var(--color-text-inverse);
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-lg);
+}
+
+.app-user {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+}
+
+.app-user-name {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+}
+
+.app-main {
+    padding-block: var(--spacing-xl) var(--spacing-4xl);
+}
+
+.page-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+    margin-bottom: var(--spacing-xl);
+}
+
+.page-title {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-display-sm);
+}
+
+.page-subtitle {
+    color: var(--color-text-muted);
+    margin-top: var(--spacing-xs);
+}
+
+/* ==========================================================
+    3. DAFTAR UNDANGAN
+    ----------------------------------------------------------
+    Grid kartu undangan milik pengguna.
+  ========================================================== */
+
+.invitation-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+}
+
+.invitation-card {
+    background: var(--color-surface);
+    border-radius: var(--border-radius-xl);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-xs);
+    transition: var(--transition-normal);
+}
+
+.invitation-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.invitation-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-sm);
+}
+
+.invitation-title {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-lg);
+    color: var(--color-text-primary);
+}
+
+.invitation-couple {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+
+.invitation-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    margin-block: var(--spacing-sm);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+}
+
+.invitation-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-2xs);
+}
+
+.invitation-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    padding-top: var(--spacing-md);
+    border-top: 1px solid var(--color-border-light);
+}
+
+.invitation-slug {
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    overflow-wrap: anywhere;
+}
+
+.empty-state {
+    text-align: center;
+    padding: var(--spacing-4xl) var(--spacing-xl);
+    background: var(--color-surface);
+    border: 1px dashed var(--color-border-strong);
+    border-radius: var(--border-radius-2xl);
+}
+
+.empty-state-icon {
+    font-size: var(--font-size-4xl);
+    margin-bottom: var(--spacing-md);
+}
+
+.empty-state-title {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--spacing-xs);
+}
+
+.empty-state-text {
+    color: var(--color-text-muted);
+    max-width: 32rem;
+    margin: 0 auto var(--spacing-lg);
+}
+
+/* ==========================================================
+    4. EDITOR UNDANGAN
+    ----------------------------------------------------------
+    Form + pemilihan template + tema + pratinjau live.
+  ========================================================== */
+
+.editor-section {
+    margin-bottom: var(--spacing-xl);
+}
+
+.editor-section-title {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-xs);
+}
+
+.editor-section-hint {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-bottom: var(--spacing-md);
+}
+
+.editor-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xl);
+    align-items: start;
+}
+
+.editor-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+}
+
+.editor-form-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+}
+
+.template-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-md);
+}
+
+.template-option {
+    position: relative;
+    padding: var(--spacing-xs);
+    border: 2px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    background: var(--color-surface);
+    cursor: pointer;
+    transition: var(--transition-normal);
+    text-align: left;
+}
+
+.template-option:hover {
+    border-color: var(--color-gray-400);
+}
+
+.template-option.is-selected {
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 3px var(--color-focus-ring);
+}
+
+.template-option-thumb {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    border-radius: var(--border-radius-sm);
+    background: var(--color-surface-alt);
+    display: block;
+}
+
+.template-option-name {
+    display: block;
+    margin-top: var(--spacing-xs);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+}
+
+.template-option-check {
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: var(--border-radius-full);
+    background: var(--color-primary-500);
+    color: var(--color-text-inverse);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+}
+
+.template-option.is-selected .template-option-check {
+    display: inline-flex;
+}
+
+.color-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+}
+
+.color-field {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius-lg);
+    background: var(--color-surface);
+}
+
+.color-swatch {
+    width: 2.25rem;
+    height: 2.25rem;
+    border: none;
+    border-radius: var(--border-radius-sm);
+    background: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.color-label {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.color-name {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+}
+
+.color-value {
+    font-family: var(--font-family-mono);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    border: none;
+    background: transparent;
+    width: 6.5rem;
+}
+
+/* ==========================================================
+    5. PRATINJAU LIVE
+    ----------------------------------------------------------
+    Kartu undangan yang merefleksikan input pengguna.
+    Warna tema lewat CSS custom properties di-set dari JS.
+  ========================================================== */
+
+.preview-sticky {
+    position: sticky;
+    top: calc(var(--header-height) + var(--spacing-lg));
+}
+
+.preview-window {
+    max-width: 24rem;
+    margin-inline: auto;
+    background: var(--color-surface);
+    border-radius: var(--border-radius-2xl);
+    box-shadow: var(--shadow-xl);
+    overflow: hidden;
+}
+
+.preview-hero {
+    background: var(--preview-primary, var(--color-primary-500));
+    padding: var(--spacing-3xl) var(--spacing-xl);
+    text-align: center;
+    color: var(--color-text-inverse);
+}
+
+.preview-hero-eyebrow {
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-widest);
+    opacity: 0.85;
+    margin-bottom: var(--spacing-sm);
+}
+
+.preview-couple {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-3xl);
+    line-height: var(--line-height-tight);
+    margin-bottom: var(--spacing-xs);
+}
+
+.preview-date {
+    font-size: var(--font-size-sm);
+    opacity: 0.9;
+}
+
+.preview-body {
+    padding: var(--spacing-xl);
+    text-align: center;
+}
+
+.preview-accents {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+}
+
+.preview-accent-line {
+    width: 3rem;
+    height: 2px;
+    background: var(--preview-accent, var(--color-accent));
+}
+
+.preview-accent-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: var(--border-radius-full);
+    background: var(--preview-accent, var(--color-accent));
+}
+
+.preview-message {
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-relaxed);
+    margin-bottom: var(--spacing-lg);
+}
+
+.preview-location {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+
+.preview-cta {
+    margin-top: var(--spacing-lg);
+}
+
+/* ==========================================================
+    6. TOAST NOTIFICATION
+    ----------------------------------------------------------
+    Notifikasi singkat di sudut bawah layar.
+  ========================================================== */
+
+.toast {
+    position: fixed;
+    bottom: var(--spacing-lg);
+    left: 50%;
+    transform: translate(-50%, 150%);
+    z-index: var(--z-index-toast);
+    max-width: min(92vw, 28rem);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    border-radius: var(--border-radius-lg);
+    background: var(--color-gray-800);
+    color: var(--color-text-inverse);
+    font-size: var(--font-size-sm);
+    box-shadow: var(--shadow-lg);
+    transition: transform var(--transition-normal);
+}
+
+.toast.is-visible {
+    transform: translate(-50%, 0);
+}
+
+.toast-success {
+    background: var(--color-success-600);
+}
+
+.toast-danger {
+    background: var(--color-danger-600);
+}
+
+/* ==========================================================
+    7. RESPONSIVE (Mobile First)
+    ----------------------------------------------------------
+    Penyesuaian tata letak halaman pada layar lebih besar.
+  ========================================================== */
+
+@media (min-width: 576px) {
+    .invitation-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .editor-form-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .auth-card {
+        padding: var(--spacing-2xl);
+    }
+}
+
+@media (min-width: 992px) {
+    .invitation-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .editor-grid {
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    }
+
+    .template-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}

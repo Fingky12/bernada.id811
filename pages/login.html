@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masuk — BERNADA.ID</title>
+    <meta name="description" content="Masuk ke akun BERNADA.ID untuk membuat dan mengelola undangan digital Anda.">
+    <link rel="icon" type="image/svg+xml" href="../assets/img/favicon.svg">
+    <link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body class="auth-page">
+
+    <main class="auth-card" aria-labelledby="auth-title">
+        <div class="auth-brand">
+            <span class="auth-brand-mark" aria-hidden="true">B</span>
+            <span class="brand-text">BERNADA<em>.ID</em></span>
+        </div>
+
+        <h1 id="auth-title" class="auth-title">Selamat Datang</h1>
+        <p id="auth-subtitle" class="auth-subtitle">Masuk untuk melanjutkan ke dasbor undangan Anda.</p>
+
+        <div class="auth-tabs" role="tablist" aria-label="Pilihan masuk atau daftar">
+            <button id="tab-login" class="auth-tab is-active" type="button" role="tab"
+                    aria-selected="true" aria-controls="panel-login">Masuk</button>
+            <button id="tab-register" class="auth-tab" type="button" role="tab"
+                    aria-selected="false" aria-controls="panel-register">Daftar</button>
+        </div>
+
+        <div id="auth-alert" class="auth-alert auth-alert-danger d-none" role="alert" aria-live="polite"></div>
+
+        <!-- Form masuk -->
+        <form id="login-form" class="auth-form" novalidate>
+            <div class="form-group">
+                <label class="form-label" for="login-email">Email</label>
+                <input class="input" id="login-email" name="email" type="email"
+                       autocomplete="email" placeholder="nama@contoh.com" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="login-password">Password</label>
+                <input class="input" id="login-password" name="password" type="password"
+                       autocomplete="current-password" placeholder="Minimal 8 karakter" required minlength="8">
+            </div>
+            <button class="btn btn-primary w-100" type="submit">Masuk</button>
+        </form>
+
+        <!-- Form daftar -->
+        <form id="register-form" class="auth-form d-none" novalidate>
+            <div class="form-group">
+                <label class="form-label" for="register-name">Nama Lengkap</label>
+                <input class="input" id="register-name" name="fullName" type="text"
+                       autocomplete="name" placeholder="Nama Anda" required maxlength="100">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="register-email">Email</label>
+                <input class="input" id="register-email" name="email" type="email"
+                       autocomplete="email" placeholder="nama@contoh.com" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="register-password">Password</label>
+                <input class="input" id="register-password" name="password" type="password"
+                       autocomplete="new-password" placeholder="Minimal 8 karakter" required minlength="8">
+            </div>
+            <button class="btn btn-primary w-100" type="submit">Buat Akun</button>
+        </form>
+
+        <p class="auth-footer">
+            <a href="../index.html">← Kembali ke beranda</a>
+        </p>
+    </main>
+
+    <script type="module" src="../assets/js/login.js"></script>
+</body>
+</html>
