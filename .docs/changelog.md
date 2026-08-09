@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Changelog · Category : Catatan (living document)
-  Version  : 1.0.5 · Status : ✅ Stable · Update : 05-08-2026
+  Version  : 1.0.6 · Status : ✅ Stable · Update : 05-08-2026
 -->
 
 # Changelog
@@ -15,6 +15,8 @@
 ### Release
 
 - 🚀 **Release v1.1.0 — The First Experience Release** (Status: ✅ Stable) — Landing page pertama BERNADA.ID (9 section) di atas CSS Framework Sprint 1. Detail: `.docs/releases/v1.1.0-first-experience.md`.
+- ✅ **Audit Sprint 2 PASS** — 20 PASS · 7 WARNING (LOW, non-blocking) · 0 ERROR. Landing page siap rilis (`.docs/audit/LAPORAN-AUDIT-SPRINT-2.html`).
+- 🏷️ **Tag git v1.1.0** dibuat — release disetujui Product Owner, Senior Engineer & AI Pair Programmer; **Sprint 2 closed**.
 
 ### Homepage
 
@@ -100,6 +102,7 @@
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.0.6 | 05-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Sprint 2 closed — Audit PASS + Release v1.1.0 The First Experience (tag v1.1.0) |
 | 1.0.5 | 05-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Sprint 2 — Landing page 9 section + interaksi + Release v1.1.0 The First Experience |
 | 1.0.4 | 04-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Release v1.0.0 The Foundation Release + Engineering Workflow |
 | 1.0.3 | 03-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Catat penulisan ulang layout.css & dedup utilities.css |
