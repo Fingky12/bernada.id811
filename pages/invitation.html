@@ -101,6 +101,56 @@
             <blockquote id="message" class="inv-message">…</blockquote>
         </section>
 
+        <!-- Galeri foto -->
+        <section id="gallery-section" class="inv-section d-none">
+            <h2 class="inv-section-title">Galeri Foto</h2>
+            <div id="gallery" class="inv-gallery"></div>
+        </section>
+
+        <!-- RSVP & buku tamu -->
+        <section class="inv-section inv-rsvp-section">
+            <h2 class="inv-section-title">Konfirmasi &amp; Buku Tamu</h2>
+            <p class="inv-section-hint">Kirim ucapan dan konfirmasi kehadiran untuk kedua mempelai.</p>
+
+            <form id="rsvp-form" class="inv-rsvp-form" novalidate>
+                <div id="rsvp-alert" class="inv-rsvp-alert d-none" role="alert" aria-live="polite"></div>
+                <div class="form-group">
+                    <label class="form-label" for="rsvp-name">Nama</label>
+                    <input class="input" id="rsvp-name" name="guestName" type="text"
+                           placeholder="Nama lengkap Anda" required maxlength="120" autocomplete="name">
+                </div>
+                <div class="inv-rsvp-row">
+                    <div class="form-group">
+                        <label class="form-label" for="rsvp-attendance">Kehadiran</label>
+                        <select class="input" id="rsvp-attendance" name="attendance">
+                            <option value="hadir">Hadir</option>
+                            <option value="tidak-hadir">Tidak Hadir</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="rsvp-count">Jumlah Tamu</label>
+                        <input class="input" id="rsvp-count" name="guestsCount" type="number"
+                               min="1" max="10" value="1" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="rsvp-message">Ucapan &amp; Doa</label>
+                    <textarea class="input textarea" id="rsvp-message" name="message" rows="3"
+                              maxlength="1000" placeholder="Tulis ucapan untuk kedua mempelai..."></textarea>
+                </div>
+                <button class="btn btn-gold w-100" type="submit">Kirim Ucapan</button>
+            </form>
+
+            <div class="inv-guestbook-head">
+                <h3 class="inv-guestbook-title">Buku Tamu</h3>
+                <span id="guestbook-count" class="inv-guestbook-count"></span>
+            </div>
+            <div id="guestbook" class="inv-guestbook" aria-live="polite"></div>
+            <p id="guestbook-note" class="inv-guestbook-note d-none">
+                Pratinjau — data tersimpan lokal di perangkat ini.
+            </p>
+        </section>
+
         <!-- Footer -->
         <footer class="inv-footer">
             <p class="inv-footer-text">

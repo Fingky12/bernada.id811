@@ -111,11 +111,13 @@ function updatePreview() {
 
   elements.preview.couple.textContent =
     document.getElementById('f-couple').value.trim() || 'Nama Pasangan';
-  elements.preview.date.textContent = formatEventDate(
+  const dateText = formatEventDate(
     document.getElementById('f-date').value
       ? `${document.getElementById('f-date').value}T12:00:00`
       : null,
   );
+  const timeText = document.getElementById('f-time').value.trim();
+  elements.preview.date.textContent = timeText ? `${dateText} · ${timeText}` : dateText;
   elements.preview.message.textContent =
     document.getElementById('f-message').value.trim() ||
     'Dengan memohon rahmat dan ridho Allah SWT, kami mengundang Bapak/Ibu/Saudara/i untuk hadir dalam acara pernikahan kami.';
@@ -242,6 +244,7 @@ function populateForm(invitation) {
   document.getElementById('f-location').value = invitation?.location || '';
   document.getElementById('f-message').value = invitation?.message || '';
   document.getElementById('f-music').value = invitation?.musicUrl || '';
+  document.getElementById('f-gallery').value = (invitation?.gallery || []).join('\n');
 
   const theme = { ...DEFAULT_THEME, ...(invitation?.theme || {}) };
   document.getElementById('f-theme-primary').value = theme.primaryColor;
@@ -255,9 +258,14 @@ function populateForm(invitation) {
 }
 
 function buildPayload() {
+  const gallery = document
+    .getElementById('f-gallery')
+    .value.split('\n')
+    .map((url) => url.trim())
+    .filter(Boolean);
   return {
     title: document.getElementById('f-title').value.trim(),
-    slug: document.getElementById('f-slug').value.trim(),
+    slug: document.getElementById('f-slug').value.trim() || autoSlug,
     couple: document.getElementById('f-couple').value.trim(),
     eventDate: document.getElementById('f-date').value
       ? `${document.getElementById('f-date').value}T12:00:00`
@@ -267,6 +275,7 @@ function buildPayload() {
     location: document.getElementById('f-location').value.trim(),
     message: document.getElementById('f-message').value.trim(),
     musicUrl: document.getElementById('f-music').value.trim(),
+    gallery,
     theme: getTheme(),
     templateId: elements.templateGrid.querySelector('input[name="templateId"]:checked')
       ? elements.templateGrid.querySelector('input[name="templateId"]:checked').value
@@ -281,6 +290,10 @@ function updateSlugPreview() {
 
 async function saveInvitation() {
   const payload = buildPayload();
+  if (!payload.slug) {
+    showToast('Judul diperlukan untuk membuat link undangan.', 'danger');
+    return;
+  }
   setLoading(elements.saveBtn, true);
   try {
     if (currentInvitationId) {
@@ -327,7 +340,7 @@ async function handleGridAction(event) {
 }
 
 function wireEditorEvents() {
-  const formFields = ['f-title', 'f-couple', 'f-date', 'f-venue', 'f-location', 'f-message'];
+  const formFields = ['f-title', 'f-couple', 'f-date', 'f-time', 'f-venue', 'f-location', 'f-message'];
   formFields.forEach((id) => {
     document.getElementById(id).addEventListener('input', updatePreview);
   });

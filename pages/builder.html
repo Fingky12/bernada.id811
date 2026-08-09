@@ -27,7 +27,7 @@
         <div class="container">
 
             <!-- ================================
-                 LIHAT: DAFTAR UNDANGAN
+                LIHAT: DAFTAR UNDANGAN
             ================================= -->
             <section id="list-view" aria-label="Daftar undangan">
                 <div class="page-head">
@@ -49,7 +49,7 @@
             </section>
 
             <!-- ================================
-                 LIHAT: EDITOR
+                LIHAT: EDITOR
             ================================= -->
             <section id="editor-view" class="d-none" aria-label="Editor undangan">
                 <div class="page-head">
@@ -119,6 +119,12 @@
                                         <input class="input" id="f-music" name="musicUrl" type="url"
                                                placeholder="https://..." maxlength="500">
                                         <p class="form-hint">Opsional — tautan audio yang diputar saat undangan dibuka.</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" for="f-gallery">Galeri Foto (URL)</label>
+                                        <textarea class="input textarea" id="f-gallery" name="gallery" rows="3"
+                                                  placeholder="https://...&#10;https://..." maxlength="2000"></textarea>
+                                        <p class="form-hint">Opsional — satu URL gambar per baris. Tampil sebagai galeri di undangan.</p>
                                     </div>
                                 </div>
                             </section>

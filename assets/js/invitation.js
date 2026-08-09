@@ -9,6 +9,8 @@
     - Tautan lokasi (Google Maps) & unduhan kalender
   ========================================================== */
 
+import { DEMO_INVITATIONS, demoGuestbook, galleryPlaceholder } from './demo-invitations.js';
+
 const DEFAULT_THEME = { primaryColor: '#A12828', accentColor: '#FFC400' };
 
 const elements = {
@@ -35,10 +37,20 @@ const elements = {
   music: document.getElementById('bg-music'),
   musicBtn: document.getElementById('music-btn'),
   musicIcon: document.getElementById('music-icon'),
+  gallerySection: document.getElementById('gallery-section'),
+  gallery: document.getElementById('gallery'),
+  rsvpForm: document.getElementById('rsvp-form'),
+  rsvpAlert: document.getElementById('rsvp-alert'),
+  guestbook: document.getElementById('guestbook'),
+  guestbookCount: document.getElementById('guestbook-count'),
+  guestbookNote: document.getElementById('guestbook-note'),
 };
 
 let invitation = null;
 let musicOn = false;
+let guestbookEntries = [];
+
+const GUESTBOOK_KEY = (slug) => `bernada:guestbook:${slug}`;
 
 function getSlug() {
   const segments = window.location.pathname.split('/').filter(Boolean);
@@ -120,6 +132,194 @@ function render() {
     elements.music.src = inv.musicUrl;
     elements.musicBtn.classList.remove('d-none');
   }
+
+  renderGallery();
+}
+
+function renderGallery() {
+  const photos = (invitation.invitation.gallery || []).filter(Boolean);
+  if (photos.length === 0) {
+    elements.gallerySection.classList.add('d-none');
+    elements.gallery.innerHTML = '';
+    return;
+  }
+  elements.gallerySection.classList.remove('d-none');
+  const fallback = galleryPlaceholder(invitation.invitation.theme, 'B');
+  elements.gallery.innerHTML = photos
+    .map(
+      (url, index) => `
+      <figure class="inv-gallery-item">
+        <img src="${escapeHtml(url)}" alt="Foto galeri ${index + 1}" loading="lazy" width="400" height="500"
+             onerror="this.onerror=null;this.src='${fallback}';">
+      </figure>`,
+    )
+    .join('');
+}
+
+/* ==========================================================
+    RSVP & BUKU TAMU
+  ========================================================== */
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+function formatGuestbookDate(iso) {
+  if (!iso) return '';
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return '';
+  return new Intl.DateTimeFormat('id-ID', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(date);
+}
+
+function guestbookEntryHtml(entry) {
+  const hadir = entry.attendance === 'hadir';
+  const badge = hadir ? 'Hadir' : 'Tidak Hadir';
+  const badgeClass = hadir
+    ? 'inv-guestbook-entry-attendance-hadir'
+    : 'inv-guestbook-entry-attendance-tidak-hadir';
+  const message = entry.message
+    ? `<p class="inv-guestbook-entry-message">${escapeHtml(entry.message)}</p>`
+    : '';
+  return `
+    <article class="inv-guestbook-entry">
+      <div class="inv-guestbook-entry-top">
+        <span class="inv-guestbook-entry-name">${escapeHtml(entry.guestName)}</span>
+        <span class="inv-guestbook-entry-attendance ${badgeClass}">${badge}</span>
+      </div>
+      <p class="inv-guestbook-entry-date">${formatGuestbookDate(entry.createdAt)} · ${entry.guestsCount || 1} tamu</p>
+      ${message}
+    </article>`;
+}
+
+function renderGuestbook() {
+  if (guestbookEntries.length === 0) {
+    elements.guestbook.innerHTML =
+      '<p class="inv-guestbook-empty">Belum ada ucapan. Jadilah yang pertama!</p>';
+    elements.guestbookCount.textContent = '';
+    return;
+  }
+  elements.guestbookCount.textContent = `${guestbookEntries.length} ucapan`;
+  elements.guestbook.innerHTML = guestbookEntries.map(guestbookEntryHtml).join('');
+}
+
+function setRsvpAlert(message, type) {
+  const cls =
+    type === 'danger'
+      ? 'inv-rsvp-alert inv-rsvp-alert-danger'
+      : type === 'success'
+        ? 'inv-rsvp-alert inv-rsvp-alert-success'
+        : 'inv-rsvp-alert d-none';
+  elements.rsvpAlert.className = cls;
+  elements.rsvpAlert.textContent = message || '';
+}
+
+function useLocalGuestbook() {
+  elements.guestbookNote.classList.remove('d-none');
+  const demo = demoGuestbook(getSlug()) || [];
+  const saved = [];
+  try {
+    saved.push(...JSON.parse(localStorage.getItem(GUESTBOOK_KEY(getSlug())) || '[]'));
+  } catch {
+    /* data lokal rusak — abaikan */
+  }
+  guestbookEntries = [...saved, ...demo];
+}
+
+async function loadGuestbook() {
+  const slug = getSlug();
+  try {
+    const res = await fetch(`/api/invitations/public/${encodeURIComponent(slug)}/guestbook`);
+    const data = await res.json().catch(() => null);
+    if (res.ok) {
+      guestbookEntries = data?.entries || [];
+      renderGuestbook();
+      return;
+    }
+  } catch {
+    /* lanjut ke fallback lokal */
+  }
+  useLocalGuestbook();
+  renderGuestbook();
+}
+
+function saveLocalGuestbook(payload) {
+  elements.guestbookNote.classList.remove('d-none');
+  const entry = {
+    id: `local-${Date.now()}`,
+    guestName: payload.guestName,
+    attendance: payload.attendance,
+    guestsCount: payload.guestsCount,
+    message: payload.message,
+    createdAt: new Date().toISOString(),
+  };
+  guestbookEntries = [entry, ...guestbookEntries];
+  renderGuestbook();
+
+  const slug = getSlug();
+  const saved = [];
+  try {
+    saved.push(...JSON.parse(localStorage.getItem(GUESTBOOK_KEY(slug)) || '[]'));
+  } catch {
+    /* abaikan */
+  }
+  saved.unshift(entry);
+  try {
+    localStorage.setItem(GUESTBOOK_KEY(slug), JSON.stringify(saved.slice(0, 100)));
+  } catch {
+    /* kuota penuh — abaikan */
+  }
+}
+
+async function submitRsvp(event) {
+  event.preventDefault();
+  const slug = getSlug();
+
+  const guestName = document.getElementById('rsvp-name').value.trim();
+  const attendance = document.getElementById('rsvp-attendance').value;
+  const guestsCount = Number(document.getElementById('rsvp-count').value) || 1;
+  const message = document.getElementById('rsvp-message').value.trim();
+
+  setRsvpAlert('', '');
+  if (!guestName) {
+    setRsvpAlert('Nama wajib diisi.', 'danger');
+    return;
+  }
+
+  const payload = { guestName, attendance, guestsCount, message };
+
+  try {
+    const res = await fetch(`/api/invitations/public/${encodeURIComponent(slug)}/guestbook`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+      credentials: 'same-origin',
+    });
+    const data = await res.json().catch(() => null);
+    if (!res.ok) {
+      throw new Error(data?.error?.message || 'Gagal mengirim ucapan.');
+    }
+    guestbookEntries = [data.entry, ...guestbookEntries];
+    renderGuestbook();
+    setRsvpAlert('Ucapan berhasil dikirim. Terima kasih!', 'success');
+  } catch {
+    saveLocalGuestbook(payload);
+    setRsvpAlert('Ucapan terkirim (pratinjau lokal).', 'success');
+  }
+
+  event.target.reset();
+  document.getElementById('rsvp-count').value = 1;
+  document.getElementById('rsvp-attendance').value = 'hadir';
 }
 
 function setCountdown(target) {
@@ -226,28 +426,41 @@ async function init() {
     return;
   }
 
+  const demo = DEMO_INVITATIONS[slug];
+
   try {
     const res = await fetch(`/api/invitations/public/${encodeURIComponent(slug)}`);
     const data = await res.json();
-    if (!res.ok) {
+    if (res.ok) {
+      invitation = data;
+    } else if (demo) {
+      invitation = demo;
+    } else {
       showError(data?.error?.message);
       return;
     }
-    invitation = data;
-    applyTheme(invitation.invitation.theme);
-    render();
-
-    if (invitation.invitation.eventDate) {
-      const target = new Date(invitation.invitation.eventDate);
-      setCountdown(target);
-    }
-
-    elements.openBtn.addEventListener('click', openInvitation);
-    elements.musicBtn.addEventListener('click', toggleMusic);
-    elements.calendarBtn.addEventListener('click', downloadCalendar);
   } catch {
-    showError('Gagal memuat undangan. Periksa koneksi Anda.');
+    if (demo) {
+      invitation = demo;
+    } else {
+      showError('Gagal memuat undangan. Periksa koneksi Anda.');
+      return;
+    }
   }
+
+  applyTheme(invitation.invitation.theme);
+  render();
+
+  if (invitation.invitation.eventDate) {
+    const target = new Date(invitation.invitation.eventDate);
+    setCountdown(target);
+  }
+
+  loadGuestbook();
+  elements.rsvpForm.addEventListener('submit', submitRsvp);
+  elements.openBtn.addEventListener('click', openInvitation);
+  elements.musicBtn.addEventListener('click', toggleMusic);
+  elements.calendarBtn.addEventListener('click', downloadCalendar);
 }
 
 init();

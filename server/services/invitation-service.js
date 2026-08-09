@@ -4,7 +4,7 @@ import { getTemplateById } from './template-service.js';
 
 const COLUMNS = `
   id, owner_id, template_id, slug, title, event_date, event_time,
-  venue, location, couple, message, theme, music_url,
+  venue, location, couple, message, theme, music_url, gallery,
   is_published, published_at, created_at, updated_at
 `;
 
@@ -23,6 +23,7 @@ function toInvitationDto(row) {
     message: row.message,
     theme: row.theme,
     musicUrl: row.music_url,
+    gallery: row.gallery || [],
     isPublished: row.is_published,
     publishedAt: row.published_at,
     createdAt: row.created_at,
@@ -61,8 +62,8 @@ export async function createInvitation(ownerId, data) {
   const { rows } = await pool.query(
     `INSERT INTO invitations
        (owner_id, template_id, slug, title, event_date, event_time,
-        venue, location, couple, message, theme, music_url)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+        venue, location, couple, message, theme, music_url, gallery)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
      RETURNING ${COLUMNS}`,
     [
       ownerId,
@@ -77,6 +78,7 @@ export async function createInvitation(ownerId, data) {
       data.message,
       data.theme,
       data.musicUrl,
+      data.gallery,
     ],
   );
   return toInvitationDto(rows[0]);
@@ -114,6 +116,7 @@ export async function updateInvitation(id, ownerId, changes) {
     message: changes.message,
     theme: changes.theme,
     music_url: changes.musicUrl,
+    gallery: changes.gallery,
   };
 
   const entries = Object.entries(mapping).filter(([, value]) => value !== undefined);
@@ -179,7 +182,7 @@ export async function getPublishedInvitationBySlug(slug) {
   const { rows } = await pool.query(
     `SELECT i.id, i.slug, i.title, i.event_date, i.event_time,
             i.venue, i.location, i.couple, i.message, i.theme, i.music_url,
-            i.published_at,
+            i.gallery, i.published_at,
             t.name  AS template_name,
             t.category AS template_category,
             t.preview_url AS template_preview_url
@@ -209,6 +212,7 @@ export async function getPublishedInvitationBySlug(slug) {
       message: row.message,
       theme: row.theme,
       musicUrl: row.music_url,
+      gallery: row.gallery || [],
       publishedAt: row.published_at,
     },
     template: row.template_name

@@ -87,3 +87,32 @@ export function validateJsonObject(value, field, { optional = false } = {}) {
   }
   return data;
 }
+
+export function validateStringArray(value, field, { max = 100, itemMax = 500 } = {}) {
+  if (value === undefined || value === null) {
+    return [];
+  }
+  let data = value;
+  if (typeof value === 'string') {
+    try {
+      data = JSON.parse(value);
+    } catch {
+      badRequest(`${field} bukan JSON yang valid.`);
+    }
+  }
+  if (!Array.isArray(data)) {
+    badRequest(`${field} harus berupa daftar teks.`);
+  }
+  if (data.length > max) {
+    badRequest(`${field} maksimal ${max} item.`);
+  }
+  return data.map((item) => {
+    if (typeof item !== 'string' || item.trim() === '') {
+      badRequest(`${field} hanya boleh berisi teks.`);
+    }
+    if (item.trim().length > itemMax) {
+      badRequest(`${field} maksimal ${itemMax} karakter per item.`);
+    }
+    return item.trim();
+  });
+}

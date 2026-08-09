@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { requireAuth } from '../../server/middleware/require-auth.js';
+import { HttpError } from '../../server/lib/http-error.js';
 import {
   parseId,
   requiredString,
@@ -7,8 +8,10 @@ import {
   validateSlug,
   validateIsoDate,
   validateJsonObject,
+  validateStringArray,
 } from '../../server/lib/validation.js';
 import * as invitationService from '../../server/services/invitation-service.js';
+import * as guestbookService from '../../server/services/guestbook-service.js';
 
 export const invitationsRouter = Router();
 
@@ -16,6 +19,49 @@ invitationsRouter.get('/public/:slug', async (req, res) => {
   const slug = validateSlug(req.params.slug, 'slug');
   const result = await invitationService.getPublishedInvitationBySlug(slug);
   res.status(200).json(result);
+});
+
+const ATTENDANCE_OPTIONS = ['hadir', 'tidak-hadir'];
+
+function validateAttendance(value) {
+  const attendance = requiredString(value, 'attendance', { max: 20 }).toLowerCase();
+  if (!ATTENDANCE_OPTIONS.includes(attendance)) {
+    throw new HttpError(400, 'VALIDATION_ERROR', 'Kehadiran tidak valid.');
+  }
+  return attendance;
+}
+
+function validateGuestsCount(value) {
+  if (value === undefined || value === null || value === '') {
+    return 1;
+  }
+  const count = Number(value);
+  if (!Number.isInteger(count) || count < 1 || count > 10) {
+    throw new HttpError(400, 'VALIDATION_ERROR', 'Jumlah tamu harus angka 1–10.');
+  }
+  return count;
+}
+
+function validateGuestbookFields(body) {
+  return {
+    guestName: requiredString(body.guestName, 'guestName', { max: 120 }),
+    attendance: validateAttendance(body.attendance),
+    guestsCount: validateGuestsCount(body.guestsCount),
+    message: optionalString(body.message, 'message', { max: 1000 }),
+  };
+}
+
+invitationsRouter.get('/public/:slug/guestbook', async (req, res) => {
+  const slug = validateSlug(req.params.slug, 'slug');
+  const entries = await guestbookService.listGuestbook(slug);
+  res.status(200).json({ entries });
+});
+
+invitationsRouter.post('/public/:slug/guestbook', async (req, res) => {
+  const slug = validateSlug(req.params.slug, 'slug');
+  const data = validateGuestbookFields(req.body ?? {});
+  const entry = await guestbookService.addGuestbookEntry(slug, data);
+  res.status(201).json({ entry });
 });
 
 invitationsRouter.use(requireAuth);
@@ -35,6 +81,7 @@ function validateCreateFields(body) {
     message: optionalString(body.message, 'message', { max: 2000 }),
     theme: validateJsonObject(body.theme, 'theme', { optional: true }),
     musicUrl: optionalString(body.musicUrl, 'musicUrl', { max: 500 }),
+    gallery: validateStringArray(body.gallery, 'gallery'),
   };
 }
 
@@ -74,6 +121,9 @@ function validateUpdateFields(body) {
   }
   if (body.musicUrl !== undefined) {
     changes.musicUrl = optionalString(body.musicUrl, 'musicUrl', { max: 500 });
+  }
+  if (body.gallery !== undefined) {
+    changes.gallery = validateStringArray(body.gallery, 'gallery');
   }
   return changes;
 }
