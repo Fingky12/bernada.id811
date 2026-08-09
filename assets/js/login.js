@@ -53,7 +53,7 @@ async function submit(form, handler) {
   try {
     const formData = new FormData(form);
     await handler(Object.fromEntries(formData.entries()));
-    window.location.href = 'builder.html';
+    window.location.href = '/builder';
   } catch (error) {
     showAlert(error.message);
     setLoading(button, false);

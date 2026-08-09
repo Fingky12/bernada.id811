@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Changelog · Category : Catatan (living document)
-  Version  : 1.0.7 · Status : ✅ Stable · Update : 05-08-2026
+  Version  : 1.0.8 · Status : ✅ Stable · Update : 09-08-2026
 -->
 
 # Changelog
@@ -10,9 +10,32 @@
 
 ---
 
+## 09-08-2026 — Halaman Publik Undangan (`/u/:slug`)
+
+### Backend — 09-08-2026
+
+- Menambahkan `getPublishedInvitationBySlug` di `server/services/invitation-service.js` — query join `invitations` + `templates`, hanya `is_published = TRUE`, tanpa mengekspos `owner_id`.
+- Menambahkan endpoint publik `GET /api/invitations/public/:slug` (`api/routes/invitations.js`) — terdaftar sebelum `requireAuth`, slug divalidasi, 404 bila tidak ditemukan/belum terbit.
+- Menambahkan route halaman `GET /u/:slug` di `server/app.js` yang menyajikan `pages/invitation.html` (same-origin).
+
+### Frontend
+
+- Membuat `pages/invitation.html` — cover "The Wedding Of" + tombol buka, section hitung mundur, detail acara, lokasi (Google Maps + unduhan kalender `.ics`), kata sambutan, footer, & tombol musik mengambang.
+- Membuat `assets/js/invitation.js` — fetch data publik, render konten via `textContent` (anti-XSS), terapkan tema warna (CSS custom properties), hitung mundur real-time, toggle musik, unduh `.ics`, state error.
+- Membuat `assets/css/invitation.css` — halaman undangan murni design token, mobile-first, `prefers-reduced-motion`, tema lewat `--inv-primary`/`--inv-accent`; diimpor di `main.css`.
+- Mengubah tautan "Buka link" di builder (`assets/js/builder.js`) dari `/<slug>` menjadi `/u/<slug>`.
+
+### Documentation — 09-08-2026
+
+- Memperbarui `.docs/api.md` (endpoint publik + konvensi autentikasi JWT), `.docs/sprint-3.md` (halaman publik masuk scope, keluar dari out-of-scope), `.ai/context/sprint.md`.
+
+> Catatan: pengujian E2E endpoint publik tertunda karena PostgreSQL di mesin pengembangan belum berjalan (server tetap hidup, error DB ditutup menjadi 500 generik).
+
+---
+
 ## 05-08-2026 — Fase 1 Selesai: Setup Server & Database Awal
 
-### Backend
+### Backend — 05-08-2026
 
 - Membuat `package.json` (ESM, Node ≥22) — dependency: `express` (v5), `pg`, `helmet`, `cors`; 0 vulnerability.
 - Membangun `server/` — `config.js` (env + validasi PORT, CORS, DATABASE_URL), `db.js` (pool `pg` + health check), `app.js` (helmet, CORS, JSON, notFound & error handler terpusat), `index.js` (entry point).
@@ -26,7 +49,7 @@
 - Script `database/create-db.js` (`npm run db:create`) untuk membuat database tanpa `psql`.
 - `.env.example` dibuat; `.gitignore` mengecualikan `.env` & `node_modules`.
 
-### Documentation
+### Documentation — 05-08-2026
 
 - Mengisi `.docs/database.md` & `.docs/api.md`; memperbarui `.docs/architecture.md`, `.ai/context/architecture.md`, `.ai/context/project.md`, `.docs/roadmap.md`, `.ai/context/roadmap.md`, `README.md`.
 - Verifikasi: server berjalan, health check 503 (DB belum ada), 404 handler berfungsi, migrasi gagal graceful dengan pesan jelas.
@@ -35,7 +58,7 @@
 
 ## Release v1.1.0 — The First Experience Release (05-08-2026)
 
-### Release
+### Release — v1.1.0
 
 - 🚀 **Release v1.1.0 — The First Experience Release** (Status: ✅ Stable) — Landing page pertama BERNADA.ID (9 section) di atas CSS Framework Sprint 1. Detail: `.docs/releases/v1.1.0-first-experience.md`.
 - ✅ **Audit Sprint 2 PASS** — 20 PASS · 7 WARNING (LOW, non-blocking) · 0 ERROR. Landing page siap rilis (`.docs/audit/LAPORAN-AUDIT-SPRINT-2.html`).
@@ -69,7 +92,7 @@
 
 ## Release v1.0.0 — The Foundation Release (04-08-2026)
 
-### Release
+### Release — v1.0.0
 
 - 🚀 **Release v1.0.0 — The Foundation Release** (Status: ✅ Stable) — Release resmi pertama BERNADA.ID. Menandai selesainya seluruh fondasi CSS Framework. Detail: `.docs/releases/v1.0.0-foundation.md`.
 
@@ -125,6 +148,7 @@
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.0.8 | 09-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Halaman publik undangan `/u/:slug` — endpoint publik + cover, countdown, tema, musik, lokasi & kalender |
 | 1.0.7 | 05-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Fase 1 selesai — setup server (Express ESM) & database awal (skema + migrasi) |
 | 1.0.6 | 05-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Sprint 2 closed — Audit PASS + Release v1.1.0 The First Experience (tag v1.1.0) |
 | 1.0.5 | 05-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Sprint 2 — Landing page 9 section + interaksi + Release v1.1.0 The First Experience |

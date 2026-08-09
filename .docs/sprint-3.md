@@ -37,7 +37,8 @@ Menghadirkan **fitur inti platform**: pengguna dapat membuat akun, masuk, lalu m
 3. **Autentikasi** — register, login, logout, refresh token (rotasi, httpOnly cookie), `GET /api/auth/me`, middleware `requireAuth`.
 4. **Template API** — `GET /api/templates` (publik, hanya aktif).
 5. **Invitation API** — CRUD + publish (auth, scoped per pemilik): list, create, get, update, delete, publish/unpublish.
-6. **Frontend** — halaman `pages/login.html` (login/registrasi) & `pages/builder.html` (daftar undangan, form, pilih template, personalisasi tema, pratinjau live); disajikan statis oleh Express (same-origin).
+6. **Frontend** — halaman `pages/login.html` (login/registrasi), `pages/builder.html` (daftar undangan, form, pilih template, personalisasi tema, pratinjau live), & `pages/invitation.html` (halaman publik `/u/:slug`); disajikan statis oleh Express (same-origin).
+7. **Halaman publik undangan** — endpoint publik `GET /api/invitations/public/:slug` (hanya terbit) + halaman `/u/:slug` (cover, hitung mundur, tema warna, musik latar, tautan lokasi & kalender).
 7. **Documentation** — `api.md`, `database.md`, `changelog.md`, README, sinkron context.
 8. **Audit** — laporan + perbaikan temuan.
 9. **Release** — v1.2.0 **The Core Features Release** + tag git + sprint closed.
@@ -50,7 +51,6 @@ Menghadirkan **fitur inti platform**: pengguna dapat membuat akun, masuk, lalu m
 | --- | --- |
 | Manajemen tamu & RSVP | Dipindah ke Sprint 4 |
 | Buku tamu & amplop digital | Bergantung `guests`/`gifts` — Sprint 4 |
-| Halaman undangan publik yang bisa dibuka tamu | Bergantung builder selesai; Sprint 4 |
 | Payment / pricing engine | Tetap placeholder |
 | Admin panel | Belum diperlukan |
 
@@ -65,7 +65,8 @@ Menghadirkan **fitur inti platform**: pengguna dapat membuat akun, masuk, lalu m
 | Password | `bcryptjs` (hash) — tanpa build step, aman di Windows |
 | Validasi input | Helper `server/lib/validation.js` (tanpa dependency baru) |
 | Serving frontend | Express `express.static` — frontend & API same-origin |
-| Halaman baru | `pages/login.html`, `pages/builder.html` + `assets/js/api.js`, `assets/css/pages.css` |
+| Halaman baru | `pages/login.html`, `pages/builder.html`, `pages/invitation.html` + `assets/js/api.js`, `assets/js/invitation.js`, `assets/css/pages.css`, `assets/css/invitation.css` |
+| URL publik undangan | `GET /u/:slug` (halaman) → `GET /api/invitations/public/:slug` (data) |
 | Template awal | Seed 6 template dari portofolio landing page |
 | Git | Commit per milestone sesuai `rules/06` |
 

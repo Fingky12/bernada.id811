@@ -33,9 +33,17 @@ export function createApp() {
 
   app.use('/assets', express.static(path.join(ROOT_DIR, 'assets')));
   app.use('/pages', express.static(path.join(ROOT_DIR, 'pages')));
+
+  const page = (file) => (req, res) => {
+    res.sendFile(path.join(ROOT_DIR, 'pages', file));
+  };
+
   app.get('/', (req, res) => {
     res.sendFile(path.join(ROOT_DIR, 'index.html'));
   });
+  app.get('/login', page('login.html'));
+  app.get('/builder', page('builder.html'));
+  app.get('/u/:slug', page('invitation.html'));
 
   app.use(notFoundHandler);
   app.use(errorHandler);

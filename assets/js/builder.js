@@ -166,7 +166,7 @@ function renderInvitations(invitations) {
             ${published
               ? `<button class="btn btn-ghost btn-sm" type="button" data-action="unpublish" data-id="${invitation.id}">Nonaktifkan</button>`
               : `<button class="btn btn-primary btn-sm" type="button" data-action="publish" data-id="${invitation.id}">Terbitkan</button>`}
-            <a class="btn btn-link btn-sm" href="/${escapeHtml(invitation.slug)}" target="_blank" rel="noopener">Buka link</a>
+            <a class="btn btn-link btn-sm" href="/u/${escapeHtml(invitation.slug)}" target="_blank" rel="noopener">Buka link</a>
             <button class="btn btn-danger btn-sm" type="button" data-action="delete" data-id="${invitation.id}">Hapus</button>
           </div>
         </article>`;
@@ -363,7 +363,7 @@ async function init() {
   wireEditorEvents();
 
   if (!(await api.initSession())) {
-    window.location.href = 'login.html';
+    window.location.href = '/login';
     return;
   }
 
@@ -371,7 +371,7 @@ async function init() {
     const user = await api.me();
     elements.userName.textContent = user.fullName || user.email;
   } catch {
-    window.location.href = 'login.html';
+    window.location.href = '/login';
     return;
   }
 
@@ -394,7 +394,7 @@ async function init() {
 
   elements.logoutBtn.addEventListener('click', async () => {
     await api.logout();
-    window.location.href = 'login.html';
+    window.location.href = '/login';
   });
 }
 

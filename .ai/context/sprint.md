@@ -67,7 +67,8 @@
 - Autentikasi pengguna (register, login, logout, refresh, me)
 - Builder / editor undangan digital (CRUD + publish, owner-scoped)
 - Template undangan & personalisasi (list template aktif + tema)
-- Halaman UI: `pages/login.html` & `pages/builder.html` (disajikan Express)
+- Halaman UI: `pages/login.html`, `pages/builder.html` & `pages/invitation.html` (disajikan Express)
+- Halaman publik undangan `/u/:slug` — cover, hitung mundur, tema, musik, lokasi & kalender
 - Manajemen tamu & RSVP — 🟡 ditunda ke Sprint 4
 
 ## Aturan Sprint

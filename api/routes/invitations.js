@@ -12,6 +12,12 @@ import * as invitationService from '../../server/services/invitation-service.js'
 
 export const invitationsRouter = Router();
 
+invitationsRouter.get('/public/:slug', async (req, res) => {
+  const slug = validateSlug(req.params.slug, 'slug');
+  const result = await invitationService.getPublishedInvitationBySlug(slug);
+  res.status(200).json(result);
+});
+
 invitationsRouter.use(requireAuth);
 
 function validateCreateFields(body) {

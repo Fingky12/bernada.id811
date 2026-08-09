@@ -1,0 +1,395 @@
+/* ==========================================================
+    BERNADA.ID INVITATION PAGE
+    ----------------------------------------------------------
+    Halaman publik undangan (/u/:slug).
+    Tema warna lewat CSS custom properties --inv-primary &
+    --inv-accent yang di-set dari JavaScript (invitation.js).
+    Seluruh nilai memakai design token (assets/css/variables.css).
+  ========================================================== */
+
+.invitation-page {
+  --inv-primary: var(--color-primary);
+  --inv-accent: var(--color-accent);
+  min-height: 100dvh;
+  background: var(--color-background);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-body);
+}
+
+/* ==========================================================
+    1. COVER
+    ----------------------------------------------------------
+    Pembuka full-screen dengan latar warna tema.
+  ========================================================== */
+
+.inv-cover {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl) var(--container-padding-x);
+  text-align: center;
+  color: var(--color-text-inverse);
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.12), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(255, 255, 255, 0.1), transparent 40%),
+    linear-gradient(rgba(20, 8, 8, 0.35), rgba(20, 8, 8, 0.35)),
+    var(--inv-primary);
+  transition: opacity var(--transition-slow), transform var(--transition-slow);
+}
+
+.inv-cover.is-open {
+  opacity: 0;
+  transform: scale(1.04);
+}
+
+.inv-cover-inner {
+  max-width: var(--container-sm);
+  animation: inv-fade-up 0.8s var(--transition-timing-ease-out) both;
+}
+
+.inv-eyebrow {
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-widest);
+  color: var(--inv-accent, var(--color-accent));
+  margin-bottom: var(--spacing-sm);
+}
+
+.inv-eyebrow-inline {
+  margin-bottom: var(--spacing-md);
+}
+
+.inv-cover-ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  margin-block: var(--spacing-md);
+}
+
+.inv-cover-line {
+  width: 3.5rem;
+  height: 1px;
+  background: var(--inv-accent, var(--color-accent));
+  opacity: var(--opacity-80);
+}
+
+.inv-cover-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: var(--border-radius-full);
+  background: var(--inv-accent, var(--color-accent));
+}
+
+.inv-couple {
+  font-family: var(--font-family-heading);
+  font-size: clamp(2.25rem, 9vw, 4rem);
+  font-weight: var(--font-weight-bold);
+  line-height: var(--line-height-tight);
+  margin-bottom: var(--spacing-sm);
+}
+
+@supports (text-wrap: balance) {
+  .inv-couple {
+    text-wrap: balance;
+  }
+}
+
+.inv-cover-date {
+  font-size: var(--font-size-md);
+  letter-spacing: var(--letter-spacing-wide);
+  opacity: var(--opacity-90);
+  margin-bottom: var(--spacing-xl);
+}
+
+.inv-open-btn {
+  margin-inline: auto;
+}
+
+/* ==========================================================
+    2. KONTEN UTAMA
+    ----------------------------------------------------------
+    Section berurutan, satu kolom terpusat.
+  ========================================================== */
+
+.inv-main {
+  padding-block: var(--spacing-4xl) var(--spacing-2xl);
+}
+
+.inv-section {
+  max-width: var(--container-md);
+  margin-inline: auto;
+  padding: var(--spacing-3xl) var(--container-padding-x);
+  text-align: center;
+}
+
+.inv-section-title {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--inv-primary, var(--color-primary));
+  margin-bottom: var(--spacing-lg);
+}
+
+.inv-main-couple {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-display-sm);
+  line-height: var(--line-height-tight);
+  color: var(--inv-primary, var(--color-primary));
+  margin-bottom: var(--spacing-xs);
+}
+
+.inv-main-date {
+  font-size: var(--font-size-md);
+  color: var(--color-text-secondary);
+}
+
+/* ==========================================================
+    3. HITUNG MUNDUR
+    ----------------------------------------------------------
+    Grid 4 kotak: hari, jam, menit, detik.
+  ========================================================== */
+
+.inv-countdown-section {
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border-light);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.inv-countdown {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--spacing-sm);
+}
+
+.inv-count-box {
+  padding: var(--spacing-md) var(--spacing-xs);
+  background: var(--color-surface-alt);
+  border-radius: var(--border-radius-lg);
+  border-bottom: 2px solid var(--inv-accent, var(--color-accent));
+}
+
+.inv-count-num {
+  display: block;
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--inv-primary, var(--color-primary));
+  line-height: var(--line-height-tight);
+}
+
+.inv-count-label {
+  display: block;
+  margin-top: var(--spacing-2xs);
+  font-size: var(--font-size-xs);
+  text-transform: uppercase;
+  letter-spacing: var(--letter-spacing-wide);
+  color: var(--color-text-muted);
+}
+
+/* ==========================================================
+    4. LOKASI ACARA
+    ----------------------------------------------------------
+    Kartu lokasi + tautan maps & kalender.
+  ========================================================== */
+
+.inv-location-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--border-radius-2xl);
+  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-xl);
+}
+
+.inv-venue {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-xl);
+  color: var(--color-text-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.inv-location {
+  color: var(--color-text-secondary);
+  line-height: var(--line-height-relaxed);
+  max-width: 34rem;
+  margin-inline: auto;
+  margin-bottom: var(--spacing-lg);
+}
+
+.inv-location-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--spacing-xs);
+}
+
+/* ==========================================================
+    5. KATA SAMBUTAN
+    ----------------------------------------------------------
+    Kutipan pesan dari pasangan / penyelenggara.
+  ========================================================== */
+
+.inv-message {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-md);
+  font-style: italic;
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-secondary);
+  quotes: "\201C" "\201D";
+  max-width: 36rem;
+  margin-inline: auto;
+}
+
+.inv-message::before {
+  content: open-quote;
+  font-size: var(--font-size-4xl);
+  line-height: 0;
+  color: var(--inv-accent, var(--color-accent));
+  display: block;
+  margin-bottom: var(--spacing-sm);
+}
+
+/* ==========================================================
+    6. FOOTER
+    ----------------------------------------------------------
+    Kredit & ajakan membuat undangan sendiri.
+  ========================================================== */
+
+.inv-footer {
+  max-width: var(--container-md);
+  margin-inline: auto;
+  padding: var(--spacing-2xl) var(--container-padding-x) var(--spacing-3xl);
+  text-align: center;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  border-top: 1px solid var(--color-border-light);
+}
+
+.inv-footer-text {
+  margin-bottom: var(--spacing-xs);
+}
+
+.inv-footer-link a,
+.inv-footer-text a {
+  color: var(--inv-primary, var(--color-primary));
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ==========================================================
+    7. TOMBOL MUSIK
+    ----------------------------------------------------------
+    Toggle musik mengambang di pojok kanan bawah.
+  ========================================================== */
+
+.inv-music-btn {
+  position: fixed;
+  right: var(--spacing-lg);
+  bottom: var(--spacing-lg);
+  z-index: var(--z-index-sticky);
+  width: 3rem;
+  height: 3rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--border-radius-full);
+  background: var(--inv-primary, var(--color-primary));
+  color: var(--color-text-inverse);
+  font-size: var(--font-size-lg);
+  box-shadow: var(--shadow-lg);
+  cursor: pointer;
+  transition: var(--transition-normal);
+}
+
+.inv-music-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-xl);
+}
+
+.inv-music-btn:focus-visible {
+  outline: 3px solid var(--color-focus-ring);
+  outline-offset: 2px;
+}
+
+/* ==========================================================
+    8. STATE ERROR
+    ----------------------------------------------------------
+    Halaman saat undangan tidak ditemukan / belum terbit.
+  ========================================================== */
+
+.inv-error {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl) var(--container-padding-x);
+  background: var(--gradient-soft);
+}
+
+.inv-error-card {
+  max-width: 28rem;
+  width: 100%;
+  background: var(--color-surface);
+  border-radius: var(--border-radius-2xl);
+  padding: var(--spacing-2xl);
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+
+.inv-error-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-icon-tile-md);
+  height: var(--size-icon-tile-md);
+  border-radius: var(--border-radius-md);
+  background: var(--gradient-brand);
+  color: var(--color-text-inverse);
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--spacing-md);
+}
+
+.inv-error-title {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--spacing-xs);
+}
+
+.inv-error-text {
+  color: var(--color-text-muted);
+  margin-bottom: var(--spacing-lg);
+}
+
+/* ==========================================================
+    9. ANIMASI & RESPONSIVE
+    ----------------------------------------------------------
+    Fade-up pembuka + penyesuaian layar besar.
+  ========================================================== */
+
+@keyframes inv-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inv-cover,
+  .inv-cover-inner {
+    animation: none;
+    transition: none;
+  }
+}
+
+@media (min-width: 576px) {
+  .inv-countdown {
+    gap: var(--spacing-md);
+  }
+}

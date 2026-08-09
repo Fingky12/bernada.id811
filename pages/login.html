@@ -21,15 +21,15 @@
 
         <div class="auth-tabs" role="tablist" aria-label="Pilihan masuk atau daftar">
             <button id="tab-login" class="auth-tab is-active" type="button" role="tab"
-                    aria-selected="true" aria-controls="panel-login">Masuk</button>
+                    aria-selected="true" aria-controls="login-form">Masuk</button>
             <button id="tab-register" class="auth-tab" type="button" role="tab"
-                    aria-selected="false" aria-controls="panel-register">Daftar</button>
+                    aria-selected="false" aria-controls="register-form">Daftar</button>
         </div>
 
         <div id="auth-alert" class="auth-alert auth-alert-danger d-none" role="alert" aria-live="polite"></div>
 
         <!-- Form masuk -->
-        <form id="login-form" class="auth-form" novalidate>
+        <form id="login-form" class="auth-form" role="tabpanel" aria-labelledby="tab-login" novalidate>
             <div class="form-group">
                 <label class="form-label" for="login-email">Email</label>
                 <input class="input" id="login-email" name="email" type="email"
@@ -64,7 +64,7 @@
         </form>
 
         <p class="auth-footer">
-            <a href="../index.html">← Kembali ke beranda</a>
+            <a href="/">← Kembali ke beranda</a>
         </p>
     </main>
 

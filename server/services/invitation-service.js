@@ -174,3 +174,49 @@ export async function deleteInvitation(id, ownerId) {
     throw notFound();
   }
 }
+
+export async function getPublishedInvitationBySlug(slug) {
+  const { rows } = await pool.query(
+    `SELECT i.id, i.slug, i.title, i.event_date, i.event_time,
+            i.venue, i.location, i.couple, i.message, i.theme, i.music_url,
+            i.published_at,
+            t.name  AS template_name,
+            t.category AS template_category,
+            t.preview_url AS template_preview_url
+     FROM invitations i
+     LEFT JOIN templates t ON t.id = i.template_id
+     WHERE i.slug = $1 AND i.is_published = TRUE`,
+    [slug],
+  );
+  if (rows.length === 0) {
+    throw new HttpError(
+      404,
+      'NOT_FOUND',
+      'Undangan tidak ditemukan atau belum diterbitkan.',
+    );
+  }
+  const row = rows[0];
+  return {
+    invitation: {
+      id: row.id,
+      slug: row.slug,
+      title: row.title,
+      eventDate: row.event_date,
+      eventTime: row.event_time,
+      venue: row.venue,
+      location: row.location,
+      couple: row.couple,
+      message: row.message,
+      theme: row.theme,
+      musicUrl: row.music_url,
+      publishedAt: row.published_at,
+    },
+    template: row.template_name
+      ? {
+          name: row.template_name,
+          category: row.template_category,
+          previewUrl: row.template_preview_url,
+        }
+      : null,
+  };
+}

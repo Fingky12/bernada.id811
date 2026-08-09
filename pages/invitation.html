@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Undangan — BERNADA.ID</title>
+    <meta name="description" content="Undangan digital pribadi — lihat detail acara, hitung mundur, dan informasi lokasi.">
+    <meta name="robots" content="noindex">
+    <link rel="icon" type="image/svg+xml" href="../assets/img/favicon.svg">
+    <link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body class="invitation-page">
+
+    <!-- ==========================================================
+        STATE ERROR — undangan tidak ditemukan / belum terbit 
+    ========================================================== -->
+    <section id="inv-error" class="inv-error d-none" aria-live="polite">
+        <div class="inv-error-card">
+            <span class="inv-error-mark" aria-hidden="true">B</span>
+            <h1 class="inv-error-title">Undangan Tidak Tersedia</h1>
+            <p id="inv-error-text" class="inv-error-text">
+                Undangan tidak ditemukan atau belum diterbitkan oleh pemiliknya.
+            </p>
+            <a class="btn btn-primary" href="/">Kembali ke Beranda</a>
+        </div>
+    </section>
+
+    <!-- ==========================================================
+        COVER — pembuka undangan
+    ========================================================== -->
+    <section id="cover" class="inv-cover" aria-label="Pembuka undangan">
+        <div class="inv-cover-inner">
+            <p class="inv-eyebrow">The Wedding Of</p>
+            <div class="inv-cover-ornament" aria-hidden="true">
+                <span class="inv-cover-line"></span>
+                <span class="inv-cover-dot"></span>
+                <span class="inv-cover-line"></span>
+            </div>
+            <h1 id="cover-couple" class="inv-couple">Nama Pasangan</h1>
+            <p id="cover-date" class="inv-cover-date">Tanggal Acara</p>
+            <button id="open-btn" class="btn btn-gold btn-lg inv-open-btn" type="button">
+                Buka Undangan
+            </button>
+        </div>
+    </section>
+
+    <!-- ==========================================================
+        KONTEN UTAMA
+    ========================================================== -->
+    <main id="inv-main" class="inv-main" hidden>
+
+        <!-- Hitung mundur -->
+        <section id="countdown-section" class="inv-section inv-countdown-section">
+            <h2 class="inv-section-title">Menuju Hari Bahagia</h2>
+            <div class="inv-countdown" id="countdown" role="timer" aria-label="Hitung mundur menuju acara">
+                <div class="inv-count-box">
+                    <span class="inv-count-num" id="cd-days">0</span>
+                    <span class="inv-count-label">Hari</span>
+                </div>
+                <div class="inv-count-box">
+                    <span class="inv-count-num" id="cd-hours">0</span>
+                    <span class="inv-count-label">Jam</span>
+                </div>
+                <div class="inv-count-box">
+                    <span class="inv-count-num" id="cd-minutes">0</span>
+                    <span class="inv-count-label">Menit</span>
+                </div>
+                <div class="inv-count-box">
+                    <span class="inv-count-num" id="cd-seconds">0</span>
+                    <span class="inv-count-label">Detik</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Detail acara -->
+        <section class="inv-section">
+            <p class="inv-eyebrow inv-eyebrow-inline">Dengan memohon rahmat dan ridho Allah SWT</p>
+            <h2 id="main-couple" class="inv-main-couple">Nama Pasangan</h2>
+            <p id="main-date" class="inv-main-date">Tanggal &amp; Waktu Acara</p>
+        </section>
+
+        <!-- Lokasi -->
+        <section class="inv-section inv-location-section">
+            <div class="inv-location-card">
+                <h2 class="inv-section-title">Lokasi Acara</h2>
+                <p id="venue" class="inv-venue">Tempat Acara</p>
+                <p id="location" class="inv-location">Alamat Lengkap</p>
+                <div class="inv-location-actions">
+                    <a id="maps-btn" class="btn btn-outline btn-sm" href="#" target="_blank" rel="noopener">
+                        Buka di Google Maps
+                    </a>
+                    <button id="calendar-btn" class="btn btn-ghost btn-sm" type="button">
+                        Tambah ke Kalender
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kata sambutan -->
+        <section id="message-section" class="inv-section">
+            <blockquote id="message" class="inv-message">…</blockquote>
+        </section>
+
+        <!-- Footer -->
+        <footer class="inv-footer">
+            <p class="inv-footer-text">
+                Undangan dibuat dengan <span aria-hidden="true">❤</span>
+                oleh <a href="/">BERNADA<em>.ID</em></a>
+            </p>
+            <p class="inv-footer-link">
+                Ingin undangan seperti ini? <a href="/login">Buat undangan Anda</a>
+            </p>
+        </footer>
+    </main>
+
+    <!-- Musik latar (opsional) -->
+    <audio id="bg-music" loop preload="none"></audio>
+    <button id="music-btn" class="inv-music-btn d-none" type="button" aria-label="Matikan musik">
+        <span id="music-icon" aria-hidden="true">🔊</span>
+    </button>
+
+    <script type="module" src="../assets/js/invitation.js"></script>
+</body>
+</html>
