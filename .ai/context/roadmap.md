@@ -1,14 +1,14 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Roadmap Context · Category : Context (living document)
-  Version  : 1.0.6 · Status : 🟠 Proses · Update : 05-08-2026
+  Version  : 1.0.7 · Status : 🟠 Proses · Update : 05-08-2026
 -->
 
 # Roadmap
 
 > Arah pengembangan jangka panjang BERNADA.ID. **Sumber kebenaran tetap** ada di `.docs/roadmap.md`; file ini adalah ringkasan untuk AI agar tidak menebak fase pengembangan.
 >
-> **Sprint aktif:** Sprint 2 — The First Experience (Homepage) · `.docs/sprint-2.md`.
+> **Sprint aktif:** belum ada — Sprint 2 telah Closed. Berikutnya: Fase 2 — Core Features (Beta).
 
 ---
 
@@ -25,7 +25,7 @@
 - Animation system (`animations.css`) ✅
 - Main entry point (`main.css`) ✅
 - Release v1.0.0 — The Foundation Release ✅
-- Halaman inti & navigasi 🟠 — Sprint 2: `index.html` 9 section selesai dibangun; menunggu audit & Release v1.1.0
+- Halaman inti & navigasi ✅ — Sprint 2 closed: `index.html` 9 section + interaksi; Release v1.1.0 (tag `v1.1.0`)
 - Setup server & database awal 🟡
 
 ### 🟠 Fase 2 — Core Features (Beta) · v1.0.0 Beta
@@ -60,6 +60,7 @@
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.0.7 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 2 closed — Release v1.1.0 The First Experience; Fase 1 selesai |
 | 1.0.6 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Homepage 9 section selesai dibangun — menunggu audit & Release v1.1.0 |
 | 1.0.4 | 04-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Review | Sprint 1 selesai — Release v1.0.0 The Foundation Release |
 | 1.0.2 | 03-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Review | Tambah base.css (base stylesheet) pada progres Fase 1 |

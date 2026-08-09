@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Sprint Context · Category : Context (living document)
-  Version  : 1.0.6 · Status : 🟠 Proses · Update : 05-08-2026
+  Version  : 1.0.7 · Status : ✅ Closed · Update : 05-08-2026
 -->
 
 # Sprint
@@ -12,15 +12,17 @@
 
 ## Sprint Berjalan (Active)
 
+Belum ada sprint aktif. Sprint berikutnya direncanakan di `.docs/roadmap.md` (Fase 2 — Core Features).
+
+## Sprint Sebelumnya (Closed)
+
 | Item | Detail |
 | --- | --- |
 | Sprint | Sprint 2 — The First Experience (Homepage) |
 | Tujuan | Landing page pertama (9 section) di atas CSS Framework Sprint 1, responsive + interaksi |
-| Status | 🟠 Proses (Development selesai — Review & Refactor + Documentation) |
+| Status | ✅ Closed |
 | Release | v1.1.0 — The First Experience Release |
 | Referensi | `.docs/sprint-2.md` |
-
-## Sprint Sebelumnya (Closed)
 
 | Item | Detail |
 | --- | --- |
@@ -28,6 +30,16 @@
 | Tujuan | Membangun fondasi desain, struktur, dan halaman inti |
 | Status | ✅ Closed |
 | Release | v1.0.0 — The Foundation Release |
+
+## Hasil Sprint 2
+
+- Landing page 9 section (`index.html`) — ✅ selesai
+- `sections.css` v1.1.0 & `responsive.css` v1.1.0 — ✅ selesai
+- Interaksi vanilla JS (`navigation.js`, `accordion.js`, `scroll-effects.js`) — ✅ selesai
+- SVG placeholder di `assets/img/` — ✅ selesai
+- Dokumentasi & Audit — ✅ Audit PASS (20 PASS / 7 WARNING LOW / 0 ERROR)
+- Release v1.1.0 — The First Experience Release (tag `v1.1.0`) — ✅ Stable
+- Sprint 2 — ✅ Closed
 
 ## Hasil Sprint 1
 
@@ -41,16 +53,15 @@
 - Main entry point — ✅ selesai (`main.css`)
 - Dokumentasi — ✅ selesai (component docs, engineering workflow, release policy)
 - Audit — ✅ PASS (Internal Code Review, Architecture, QA, Engineering)
-- Halaman inti & navigasi — 🟠 dipindah ke Sprint 2 (landing page 9 section)
+- Halaman inti & navigasi — ✅ selesai (Sprint 2: landing page 9 section)
 - Setup awal server & database — 🟡 belum
 
-## Lingkup Sprint 2 (Ringkas)
+## Lingkup Sprint 3 (Potensi — Fase 2 Core Features)
 
-- `index.html` — landing page 9 section (navbar, hero, about, features, pricing, portfolio, CTA, FAQ, footer)
-- `sections.css` & `responsive.css` diisi
-- `assets/js/` — navigation, accordion, scroll-effects
-- SVG placeholder di `assets/img/`
-- Documentation & Audit & Release v1.1.0
+- Builder / editor undangan digital
+- Template undangan & personalisasi
+- Manajemen tamu & RSVP
+- Autentikasi pengguna
 
 ## Aturan Sprint
 
@@ -62,6 +73,7 @@
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.0.7 | 05-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Closed | Sprint 2 closed — Audit PASS + Release v1.1.0 The First Experience (tag v1.1.0) |
 | 1.0.6 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 2 — Development selesai (9 section + interaksi + aset); Review & Documentation |
 | 1.0.4 | 04-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Sprint 1 closed — Release v1.0.0 The Foundation Release |
 | 1.0.2 | 03-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Review | Tambah base.css pada item base stylesheet (selesai) |

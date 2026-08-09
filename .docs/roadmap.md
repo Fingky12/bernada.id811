@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Roadmap · Category : Panduan (source of truth)
-  Version  : 1.0.5 · Status : 🟠 Proses · Update : 05-08-2026
+  Version  : 1.0.6 · Status : 🟠 Proses · Update : 05-08-2026
 -->
 
 # Roadmap BERNADA.ID
@@ -10,7 +10,7 @@
 >
 > Status item: 🟡 Belum · 🟠 Proses/sebagian · ✅ Selesai.
 >
-> **Sprint aktif:** Sprint 2 — The First Experience (Homepage) · `.docs/sprint-2.md`.
+> **Sprint aktif:** belum ada — Sprint 2 telah Closed. Berikutnya: Fase 2 — Core Features (Beta).
 
 ---
 
@@ -27,7 +27,7 @@
 | Komponen UI dasar | ✅ | button, card, badge, form di `assets/css/components/` (modular, satu file per komponen) |
 | Animation system | ✅ | `animations.css` — keyframes, utility classes, duration, delay, easing, fill mode |
 | Main entry point | ✅ | `main.css` — single entry point CSS Framework |
-| Halaman inti & navigasi | 🟠 | Sprint 2 — `index.html` 9 section selesai dibangun; menunggu audit & Release v1.1.0 (`.docs/sprint-2.md`) |
+| Halaman inti & navigasi | ✅ | Sprint 2 closed — `index.html` 9 section + interaksi; Release v1.1.0 The First Experience (tag `v1.1.0`) |
 | Setup server & database awal | 🟡 | belum dimulai |
 
 ## Fase 2 — Core Features (Beta) · v1.0.0 Beta
@@ -62,6 +62,7 @@
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.0.6 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 2 closed — Release v1.1.0 The First Experience; Fase 1 selesai (server & database belum) |
 | 1.0.5 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Homepage 9 section selesai dibangun — menunggu audit & Release v1.1.0 |
 | 1.0.3 | 04-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Review | Sprint 1 selesai — Release v1.0.0 The Foundation Release |
 | 1.0.2 | 03-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Review | Layout system selesai (layout.css 10 bagian) |
