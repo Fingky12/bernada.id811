@@ -26,7 +26,7 @@
 - Main entry point (`main.css`) ✅
 - Release v1.0.0 — The Foundation Release ✅
 - Halaman inti & navigasi ✅ — Sprint 2 closed: `index.html` 9 section + interaksi; Release v1.1.0 (tag `v1.1.0`)
-- Setup server & database awal 🟡
+- Setup server & database awal ✅ — Express (ESM) + `/api/health`; skema users/templates/invitations + migrasi; PostgreSQL belum diinstall lokal
 
 ### 🟠 Fase 2 — Core Features (Beta) · v1.0.0 Beta
 
@@ -60,6 +60,7 @@
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.0.8 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Fase 1 selesai — setup server & database awal |
 | 1.0.7 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 2 closed — Release v1.1.0 The First Experience; Fase 1 selesai |
 | 1.0.6 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Homepage 9 section selesai dibangun — menunggu audit & Release v1.1.0 |
 | 1.0.4 | 04-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Review | Sprint 1 selesai — Release v1.0.0 The Foundation Release |

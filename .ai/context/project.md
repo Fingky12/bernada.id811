@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Project Context · Category : Context (living document)
-  Version  : 1.0.3 · Status : ✅ Stable · Update : 04-08-2026
+  Version  : 1.0.4 · Status : ✅ Stable · Update : 05-08-2026
 -->
 
 # Konteks Project
@@ -53,12 +53,12 @@ BERNADA/
 
 ## Status Saat Ini
 
-- **Fase:** Alpha — fondasi tampilan dan struktur.
+- **Fase:** Alpha — fondasi tampilan, server, dan database.
 - **Design system:** ✅ selesai — `variables.css` (Merah & Emas) + dokumentasi `.docs/design-system.md`.
-- **Reset CSS:** ✅ selesai — `assets/css/reset.css` murni reset 12 bagian, tanpa design token.
-- **Komponen UI dasar:** 🟠 sebagian — button, card, badge, form di `assets/css/components/` (modular, satu file per komponen).
-- **Halaman inti & navigasi:** 🟡 belum — `index.html` masih kosong; `sections.css` belum diisi.
-- **API & database:** 🟡 belum — masih tahap perancangan awal.
+- **Landing page:** ✅ selesai — v1.1.0 The First Experience (9 section + interaksi, tag `v1.1.0`).
+- **Server (Node.js/Express):** 🟠 berjalan — ESM, `server/` (config, db pool, app, error handler) + `api/` (router, endpoint health). Jalankan: `npm install` → `npm run dev`.
+- **Database (PostgreSQL):** 🟠 skema awal + migrasi — `database/migrations/0001_init.sql` (users, templates, invitations) + runner `database/migrate.js`. PostgreSQL belum diinstall lokal; buat DB via `npm run db:create` lalu `npm run migrate`.
+- **API & dokumentasi:** `.docs/api.md` & `.docs/database.md` terisi; endpoint health `/api/health`.
 
 ## Referensi Dokumentasi
 
@@ -70,6 +70,7 @@ BERNADA/
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.0.4 | 05-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Fase 1 selesai — server Express + database awal (skema & migrasi) |
 | 1.0.3 | 04-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Update referensi style.css → main.css, tambah Engineering Workflow |
 | 1.0.2 | 03-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Tambah base.css ke lapisan stylesheet & Google Fonts di style.css |
 | 1.0.1 | 03-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Sinkronkan status: reset.css & komponen dasar selesai, halaman inti belum |

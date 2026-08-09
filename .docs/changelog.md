@@ -1,12 +1,35 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Changelog · Category : Catatan (living document)
-  Version  : 1.0.6 · Status : ✅ Stable · Update : 05-08-2026
+  Version  : 1.0.7 · Status : ✅ Stable · Update : 05-08-2026
 -->
 
 # Changelog
 
 > Catatan perubahan penting project BERNADA.ID. Ditulis dari perubahan paling baru.
+
+---
+
+## 05-08-2026 — Fase 1 Selesai: Setup Server & Database Awal
+
+### Backend
+
+- Membuat `package.json` (ESM, Node ≥22) — dependency: `express` (v5), `pg`, `helmet`, `cors`; 0 vulnerability.
+- Membangun `server/` — `config.js` (env + validasi PORT, CORS, DATABASE_URL), `db.js` (pool `pg` + health check), `app.js` (helmet, CORS, JSON, notFound & error handler terpusat), `index.js` (entry point).
+- Membangun `api/` — router + endpoint `GET /api/health` (200 `ok` / 503 `degraded`).
+- Error 5xx generik di response, detail dicatat di log server (rules/07).
+
+### Database
+
+- Migrasi awal `database/migrations/0001_init.sql` — tabel inti: `users`, `templates`, `invitations` + trigger `updated_at`.
+- Runner migrasi `database/migrate.js` (append-only, transaksi per file, catat di `schema_migrations`).
+- Script `database/create-db.js` (`npm run db:create`) untuk membuat database tanpa `psql`.
+- `.env.example` dibuat; `.gitignore` mengecualikan `.env` & `node_modules`.
+
+### Documentation
+
+- Mengisi `.docs/database.md` & `.docs/api.md`; memperbarui `.docs/architecture.md`, `.ai/context/architecture.md`, `.ai/context/project.md`, `.docs/roadmap.md`, `.ai/context/roadmap.md`, `README.md`.
+- Verifikasi: server berjalan, health check 503 (DB belum ada), 404 handler berfungsi, migrasi gagal graceful dengan pesan jelas.
 
 ---
 
@@ -102,6 +125,7 @@
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.0.7 | 05-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Fase 1 selesai — setup server (Express ESM) & database awal (skema + migrasi) |
 | 1.0.6 | 05-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Sprint 2 closed — Audit PASS + Release v1.1.0 The First Experience (tag v1.1.0) |
 | 1.0.5 | 05-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Sprint 2 — Landing page 9 section + interaksi + Release v1.1.0 The First Experience |
 | 1.0.4 | 04-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Release v1.0.0 The Foundation Release + Engineering Workflow |

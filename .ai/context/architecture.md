@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Architecture Context · Category : Context (living document)
-  Version  : 1.0.0 · Status : 🟠 Review · Update : 03-08-2026
+  Version  : 1.0.1 · Status : 🟠 Proses · Update : 05-08-2026
 -->
 
 # Arsitektur
@@ -46,8 +46,23 @@ Setiap keputusan arsitektur penting (pola, teknologi, struktur data) wajib:
 - Ditulis di `.docs/architecture.md` atau changelog.
 - Menyertakan **alasan**, **alternatif**, serta **kelebihan dan kekurangan**.
 
+## Status Saat Ini
+
+- **Frontend:** ✅ Landing page 9 section (v1.1.0).
+- **Backend:** 🟠 Node.js + Express (ESM) berjalan — `server/` (config, db, app, error handler) + `api/` (health).
+- **Database:** 🟠 Skema awal `0001_init.sql` (users, templates, invitations) + runner `database/migrate.js`; PostgreSQL belum diinstall lokal.
+
+## Keputusan Arsitektur Kunci
+
+- **ESM** (`"type": "module"`) — standar modern, tanpa build step.
+- **`pg` + migrasi SQL mentah** — parameter binding, tanpa ORM.
+- **Migrasi append-only** di `database/migrations/` (rollback transaksi per file).
+- **Konfigurasi via env** (`.env.example` → `.env`), secret tidak masuk kode.
+- **Pool lazy + health check** — server tetap hidup saat DB mati.
+
 ---
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.0.1 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Backend & database awal (Fase 1) |
 | 1.0.0 | 03-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Review | Ringkasan arsitektur alpha |

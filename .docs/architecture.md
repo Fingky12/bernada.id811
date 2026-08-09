@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Architecture · Category : Panduan (source of truth)
-  Version  : 1.0.0 · Status : 🟠 Review · Update : 03-08-2026
+  Version  : 1.0.1 · Status : 🟠 Proses · Update : 05-08-2026
 -->
 
 # Arsitektur BERNADA.ID
@@ -47,9 +47,9 @@ Arsitektur tiga lapis (three-tier) yang terpisah jelas:
 
 | Lapisan | Status | Catatan |
 | --- | --- | --- |
-| Frontend | 🟠 Sebagian | design system & komponen dasar selesai; halaman inti belum |
-| Backend | 🟡 Belum | Node.js + Express belum dimulai |
-| Database | 🟡 Belum | PostgreSQL belum dirancang |
+| Frontend | ✅ Selesai (v1.1.0) | Landing page 9 section di atas design system & komponen |
+| Backend | 🟠 Sebagian | Node.js + Express berjalan: config, app, error handler, health check |
+| Database | 🟠 Sebagian | Skema awal (users, templates, invitations) + alur migrasi; PostgreSQL belum diinstall lokal |
 
 ## Keputusan Arsitektur
 
@@ -63,9 +63,15 @@ Setiap keputusan arsitektur penting (pola, teknologi, struktur data) wajib:
 | Keputusan | Alasan | Alternatif | Kelebihan | Kekurangan |
 | --- | --- | --- | --- | --- |
 | Design System berbasis CSS Custom Properties | Satu sumber token untuk seluruh tampilan | Preprocessor (Sass/Less) | Native, mudah di-override & di-*runtime*, tanpa build step | Tidak ada fitur programatik (loop, function) |
+| Node.js ESM (`"type": "module"`) | Standar JavaScript modern, async/await top-level, tanpa build step | CommonJS | Ekosistem aktif, `import` eksplisit | Beberapa pustaka lama hanya CJS (perlu interop) |
+| Driver `pg` + migrasi SQL mentah | Kontrol penuh atas SQL, parameter binding, tanpa ORM/build step | Prisma/Sequelize | Ringan, transparan, sesuai prinsip vanilla project | Menulis migrasi manual, tanpa type-safety ORM |
+| Migrasi append-only + runner `database/migrate.js` | Riwayat skema terjamin, rollback transaksi per file | Tool eksternal (node-pg-migrate) | Tanpa dependency ekstra | Runner minimal, fitur downgrade tidak disediakan |
+| Konfigurasi via environment (`.env` + `--env-file-if-exists`) | Secret tidak masuk kode (rules/07) | dotenv | Tanpa dependency, didukung native Node 22 | File `.env` harus dibuat manual dari contoh |
+| Pool `pg` di `server/db.js` + lazy health check | Server tetap hidup saat DB mati; health endpoint lapor status | Koneksi wajib saat boot | Toleran kegagalan, mudah di-debug | Health check perlu pemantauan |
 
 ---
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.0.1 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Backend & database awal (Fase 1) — keputusan arsitektur baru |
 | 1.0.0 | 03-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Review | Ringkasan arsitektur alpha |

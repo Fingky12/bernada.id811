@@ -18,6 +18,8 @@
 
 **Tujuan:** membangun fondasi desain, struktur kode, dan halaman inti.
 
+> ✅ **Fase 1 selesai (05-08-2026).** Server & database awal telah dibangun (Node.js/Express + skema PostgreSQL + alur migrasi). Catatan: PostgreSQL belum diinstall di mesin lokal — pengujian end-to-end menunggu instalasi. Item berikutnya masuk ke Fase 2.
+
 | Item | Status | Catatan |
 | --- | --- | --- |
 | Design System resmi (Merah & Emas) | ✅ | `assets/css/variables.css`, `.docs/design-system.md` |
@@ -28,7 +30,7 @@
 | Animation system | ✅ | `animations.css` — keyframes, utility classes, duration, delay, easing, fill mode |
 | Main entry point | ✅ | `main.css` — single entry point CSS Framework |
 | Halaman inti & navigasi | ✅ | Sprint 2 closed — `index.html` 9 section + interaksi; Release v1.1.0 The First Experience (tag `v1.1.0`) |
-| Setup server & database awal | 🟡 | belum dimulai |
+| Setup server & database awal | ✅ | Node.js/Express (ESM) + health check (`/api/health`); skema awal users/templates/invitations + alur migrasi (`database/migrations/`); PostgreSQL belum diinstall lokal |
 
 ## Fase 2 — Core Features (Beta) · v1.0.0 Beta
 
@@ -62,6 +64,7 @@
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.0.7 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Fase 1 selesai — setup server & database awal |
 | 1.0.6 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 2 closed — Release v1.1.0 The First Experience; Fase 1 selesai (server & database belum) |
 | 1.0.5 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Homepage 9 section selesai dibangun — menunggu audit & Release v1.1.0 |
 | 1.0.3 | 04-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Review | Sprint 1 selesai — Release v1.0.0 The Foundation Release |
