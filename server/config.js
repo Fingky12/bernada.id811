@@ -26,6 +26,10 @@ function parsePort(value) {
 const env = getEnv('NODE_ENV', 'development');
 const port = parsePort(getEnv('PORT', '3000'));
 const corsOrigin = getEnv('CORS_ORIGIN', env === 'production' ? '' : '*');
+
+// JWT_SECRET wajib diisi pada production.
+// Di development, jika tidak di-set, dipakai default 'dev-secret-bernada-jangan-dipakai-produksi'
+// HANYA untuk keperluan lokal. Jangan pernah memakai nilai default ini di environment lain.
 const jwtSecret = getEnv('JWT_SECRET', env === 'production' ? '' : 'dev-secret-bernada-jangan-dipakai-produksi');
 
 if (env === 'production' && !jwtSecret) {

@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { requireAuth } from '../../server/middleware/require-auth.js';
+import { rateLimit } from '../../server/middleware/rate-limit.js';
 import { HttpError } from '../../server/lib/http-error.js';
 import {
   parseId,
@@ -7,15 +8,18 @@ import {
   optionalString,
   validateSlug,
   validateIsoDate,
-  validateJsonObject,
   validateStringArray,
+  validateThemeColors,
 } from '../../server/lib/validation.js';
 import * as invitationService from '../../server/services/invitation-service.js';
 import * as guestbookService from '../../server/services/guestbook-service.js';
 
 export const invitationsRouter = Router();
 
-invitationsRouter.get('/public/:slug', async (req, res) => {
+const publicLimiter = rateLimit({ windowMs: 60 * 1000, max: 120 });
+const guestbookLimiter = rateLimit({ windowMs: 60 * 1000, max: 20 });
+
+invitationsRouter.get('/public/:slug', publicLimiter, async (req, res) => {
   const slug = validateSlug(req.params.slug, 'slug');
   const result = await invitationService.getPublishedInvitationBySlug(slug);
   res.status(200).json(result);
@@ -51,13 +55,13 @@ function validateGuestbookFields(body) {
   };
 }
 
-invitationsRouter.get('/public/:slug/guestbook', async (req, res) => {
+invitationsRouter.get('/public/:slug/guestbook', publicLimiter, async (req, res) => {
   const slug = validateSlug(req.params.slug, 'slug');
   const entries = await guestbookService.listGuestbook(slug);
   res.status(200).json({ entries });
 });
 
-invitationsRouter.post('/public/:slug/guestbook', async (req, res) => {
+invitationsRouter.post('/public/:slug/guestbook', guestbookLimiter, async (req, res) => {
   const slug = validateSlug(req.params.slug, 'slug');
   const data = validateGuestbookFields(req.body ?? {});
   const entry = await guestbookService.addGuestbookEntry(slug, data);
@@ -79,7 +83,7 @@ function validateCreateFields(body) {
     location: optionalString(body.location, 'location', { max: 300 }),
     couple: optionalString(body.couple, 'couple', { max: 120 }),
     message: optionalString(body.message, 'message', { max: 2000 }),
-    theme: validateJsonObject(body.theme, 'theme', { optional: true }),
+    theme: validateThemeColors(body.theme),
     musicUrl: optionalString(body.musicUrl, 'musicUrl', { max: 500 }),
     gallery: validateStringArray(body.gallery, 'gallery'),
   };
@@ -117,7 +121,7 @@ function validateUpdateFields(body) {
     changes.message = optionalString(body.message, 'message', { max: 2000 });
   }
   if (body.theme !== undefined) {
-    changes.theme = validateJsonObject(body.theme, 'theme', { optional: true });
+    changes.theme = validateThemeColors(body.theme);
   }
   if (body.musicUrl !== undefined) {
     changes.musicUrl = optionalString(body.musicUrl, 'musicUrl', { max: 500 });

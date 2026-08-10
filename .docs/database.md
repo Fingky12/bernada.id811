@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Database · Category : Panduan (source of truth)
-  Version  : 1.1.0 · Status : ✅ Stable · Update : 10-08-2026
+  Version  : 1.1.0 · Status : 🟠 Proses · Update : 10-08-2026
 -->
 
 # Database BERNADA.ID
@@ -17,7 +17,7 @@
 | Engine | PostgreSQL 13+ |
 | Driver Node.js | `pg` (parameter binding / prepared statement) |
 | Migrasi | SQL mentah di `database/migrations/` (dijalankan `database/migrate.js`) |
-| Status | ✅ Skema inti (Fase 2) — users, templates, invitations, refresh_tokens, guestbook |
+| Status | ✅ Skema inti (Fase 2) — users, templates, invitations, refresh_tokens, guestbook · 🟠 Sprint 4 — guests, gift_accounts |
 
 ---
 
@@ -131,17 +131,50 @@ Index: `idx_guestbook_invitation_id` (invitation_id), `idx_guestbook_created_at`
 
 ---
 
-## Rencana Tabel Berikutnya (Sprint 4+ — Fase 2 lanjutan)
+### Migrasi `0004_guests_gift_accounts.sql` — Manajemen Tamu & Amplop Digital
+
+#### guests — daftar tamu yang dikelola pemilik
+
+| Kolom | Tipe | Keterangan |
+| --- | --- | --- |
+| `id` | UUID PK | |
+| `invitation_id` | UUID FK → invitations `ON DELETE CASCADE` | undangan pemilik |
+| `full_name` | TEXT | nama tamu (wajib) |
+| `phone` | TEXT | kontak (opsional, default `''`) |
+| `guest_group` | TEXT | kelompok tamu, mis. Keluarga/Sahabat (opsional, default `''`) |
+| `status` | TEXT | `diundang` \| `hadir` \| `tidak-hadir` (default `diundang`) |
+| `created_at` / `updated_at` | TIMESTAMPTZ | otomatis |
+
+Index: `idx_guests_invitation_id` (invitation_id).
+
+#### gift_accounts — info transfer / amplop digital
+
+| Kolom | Tipe | Keterangan |
+| --- | --- | --- |
+| `id` | UUID PK | |
+| `invitation_id` | UUID FK → invitations `ON DELETE CASCADE` | undangan pemilik |
+| `bank_name` | TEXT | nama bank (wajib) |
+| `account_number` | TEXT | nomor rekening (wajib) |
+| `account_name` | TEXT | atas nama (default `''`) |
+| `is_active` | BOOLEAN | tampil di publik (default TRUE) |
+| `sort_order` | INT | urutan tampil (default 0) |
+| `created_at` / `updated_at` | TIMESTAMPTZ | otomatis |
+
+Index: `idx_gift_accounts_invitation_id` (invitation_id).
+
+---
+
+## Rencana Tabel Berikutnya (Sprint 5+ — Fase 2 lanjutan / Fase 3)
 
 Tabel pendukung fitur yang dijanjikan landing page, dibuat lewat migrasi baru (bukan mengubah file yang sudah ada):
 
-- `guests` — manajemen tamu & RSVP (pemilik undangan)
-- `gifts` — amplop digital
+- `gift_items` — wishlist hadiah (ditunda dari Sprint 4)
 - `template_categories` / fitur pembayaran & penagihan (Fase 3)
 
 ---
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.1.0 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Migrasi 0004 (guests & gift_accounts) — Sprint 4 |
 | 1.0.1 | 10-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Migrasi 0002 (refresh_tokens + seed templates) & 0003 (gallery + guestbook) |
 | 1.0.0 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Skema awal (users, templates, invitations) + alur migrasi |

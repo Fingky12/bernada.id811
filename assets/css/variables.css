@@ -165,6 +165,17 @@
   --color-focus-ring: rgba(161, 40, 40, 0.35); /* Ring fokus aksesibilitas */
 
   /* ------------------------------------------
+    OVERLAY COLOR
+    Overlay dekoratif semi-transparan di atas foto/cover.
+    Tersedia putih (light) dan hitam (dark) dengan 2 tingkat intensitas.
+  ------------------------------------------ */
+
+  --color-overlay-white-soft: rgba(255, 255, 255, 0.12);  /* kilau putih tipis */
+  --color-overlay-white-faint: rgba(255, 255, 255, 0.1);  /* kilau putih sangat tipis */
+  --color-overlay-dark-soft: rgba(20, 8, 8, 0.35);        /* peredam gelap untuk teks */
+  --color-overlay-dark: rgba(20, 8, 8, 0.5);              /* peredam gelap lebih kuat */
+
+  /* ------------------------------------------
     BACKWARD COMPATIBILITY ALIAS
     Alias nama variabel lama agar komponen yang sudah ada
     tetap berfungsi. Kode baru sebaiknya memakai awalan --color-.

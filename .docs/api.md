@@ -400,6 +400,84 @@ Menonaktifkan undangan dari publik.
 
 ---
 
+## Endpoint Tamu (Terproteksi)
+
+Seluruh endpoint tamu wajib header `Authorization: Bearer <accessToken>` (owner undangan).
+
+### GET `/api/invitations/:id/guests`
+
+Daftar tamu sebuah undangan (opsional query `status` = `diundang` | `hadir` | `tidak-hadir`).
+
+**Response 200:** `{ guests: [{ id, invitationId, fullName, phone, guestGroup, status, createdAt, updatedAt }] }`.
+
+### POST `/api/invitations/:id/guests`
+
+Tambah tamu (tunggal atau batch). Body:
+- tunggal: `{ fullName, phone?, guestGroup?, status? }` (status default `diundang`)
+- batch: `{ guests: [{ fullName, phone?, guestGroup? }, ...] }` (maks 50 per batch)
+
+**Response 201:** `{ guests: [...] }` — daftar tamu yang berhasil dibuat.
+
+### GET `/api/invitations/:id/guests/stats`
+
+Statistik tamu undangan.
+
+**Response 200:** `{ stats: { total, hadir, tidakHadir, diundang } }`.
+
+### GET `/api/guests/:guestId`
+
+Detail satu tamu (wajib owner undangan terkait).
+
+**Response 200:** `{ guest: {...} }`.
+
+### PATCH `/api/guests/:guestId`
+
+Perbarui tamu — `fullName`, `phone`, `guestGroup`, `status` (opsional).
+
+**Response 200:** `{ guest: {...} }`.
+
+### DELETE `/api/guests/:guestId`
+
+Hapus tamu.
+
+**Response 204:** tanpa body.
+
+---
+
+## Endpoint Amplop Digital (Gift Account)
+
+### GET `/api/invitations/public/:slug/gift-accounts`
+
+Amplop digital publik untuk undangan terbit.
+
+**Response 200:** `{ accounts: [{ id, bankName, accountNumber, accountName }] }` — hanya yang aktif (`isActive: true`).
+
+### GET `/api/invitations/:id/gift-accounts`
+
+Daftar amplop owner (termasuk non-aktif).
+
+**Response 200:** `{ accounts: [...] }`.
+
+### POST `/api/invitations/:id/gift-accounts`
+
+Tambah amplop — `{ bankName, accountNumber, accountName?, isActive?, sortOrder? }`.
+
+**Response 201:** `{ account: {...} }`.
+
+### PATCH `/api/gift-accounts/:giftAccountId`
+
+Perbarui amplop (field opsional).
+
+**Response 200:** `{ account: {...} }`.
+
+### DELETE `/api/gift-accounts/:giftAccountId`
+
+Hapus amplop.
+
+**Response 204:** tanpa body.
+
+---
+
 ## Middleware
 
 | Middleware | Fungsi |
@@ -409,6 +487,7 @@ Menonaktifkan undangan dari publik.
 | `cookieParser` | Baca cookie (refresh token httpOnly) |
 | `express.json` | Parse body JSON (limit 1mb) |
 | `requireAuth` | Wajib autentikasi untuk endpoint terproteksi (verify JWT `Bearer`) |
+| `rateLimit` | Rate limiting in-memory per IP+route (auth 10/mnt, guestbook 20/mnt, publik 120/mnt) — header `X-RateLimit-*` & `Retry-After` |
 | `notFoundHandler` | 404 JSON untuk route yang tidak dikenal |
 | `errorHandler` | Error terpusat: 5xx generik, <5xx mengikuti `err.status` |
 
@@ -429,6 +508,7 @@ Aset statis disajikan via `/assets` dan `/pages`.
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.0.3 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Endpoint tamu (CRUD + stats) & amplop digital (owner + publik), middleware rate limit |
 | 1.0.2 | 10-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Endpoint auth, templates, undangan CRUD/publish, guestbook publik & galeri |
 | 1.0.1 | 09-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Endpoint publik `GET /api/invitations/public/:slug` + konvensi autentikasi JWT |
 | 1.0.0 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Konvensi API + endpoint health |

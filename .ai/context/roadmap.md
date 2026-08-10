@@ -1,14 +1,14 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Roadmap Context · Category : Context (living document)
-  Version  : 1.0.9 · Status : 🟠 Proses · Update : 10-08-2026
+  Version  : 1.1.0 · Status : 🟠 Proses · Update : 10-08-2026
 -->
 
 # Roadmap
 
 > Arah pengembangan jangka panjang BERNADA.ID. **Sumber kebenaran tetap** ada di `.docs/roadmap.md`; file ini adalah ringkasan untuk AI agar tidak menebak fase pengembangan.
 >
-> **Sprint aktif:** belum ada — Sprint 3 telah Closed (Release v1.2.0, tag `v1.2.0`). Berikutnya: Sprint 4 — Manajemen Tamu & Amplop Digital.
+> **Sprint aktif:** Sprint 4 — The Guest Experience (🟠 Proses, release v1.3.0). Development: manajemen tamu + amplop digital selesai; menunggu verifikasi PostgreSQL & E2E.
 
 ---
 
@@ -37,7 +37,7 @@
 - Builder / editor undangan digital ✅ (CRUD + publish, owner-scoped)
 - Halaman publik `/u/:slug` ✅ (cover, countdown, tema, musik, lokasi, kalender, galeri)
 - RSVP & buku tamu ✅ (tabel `guestbook`, endpoint publik, fallback demo)
-- Manajemen tamu & amplop digital (`guests`/`gifts`) 🟡 — Sprint 4
+- Manajemen tamu & amplop digital (`guests`/`gifts`) 🟠 — Sprint 4 (Development; transfer info; wishlist 🟡 ditunda)
 
 ### 🟢 Fase 3 — Launch · v1.0.0 GA
 
@@ -64,6 +64,7 @@
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.1.0 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 4 dimulai — Manajemen tamu + amplop digital + hardening LOW (Development) |
 | 1.0.9 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 3 closed — Release v1.2.0 The Core Features |
 | 1.0.8 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 3 Development selesai — Fase 2 (auth, template, builder, halaman publik, RSVP & galeri) |
 | 1.0.7 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Fase 1 selesai — setup server & database awal |

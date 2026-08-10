@@ -1,12 +1,12 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Sprint Context · Category : Context (living document)
-  Version  : 1.1.0 · Status : ✅ Closed · Update : 10-08-2026
+  Version  : 1.2.0 · Status : 🟠 Proses · Update : 10-08-2026
 -->
 
 # Sprint
 
-> Status sprint yang sedang berjalan. **Referensi lengkap**: `.docs/sprint-1.md`, `.docs/sprint-2.md`, `.docs/sprint-3.md`. Perbarui file ini saat sprint dimulai, berubah, atau selesai.
+> Status sprint yang sedang berjalan. **Referensi lengkap**: `.docs/sprint-1.md`, `.docs/sprint-2.md`, `.docs/sprint-3.md`, `.docs/sprint-4.md`. Perbarui file ini saat sprint dimulai, berubah, atau selesai.
 
 ---
 
@@ -14,11 +14,11 @@
 
 | Item | Detail |
 | --- | --- |
-| Sprint | Sprint 4 — (belum dijadwalkan) |
-| Tujuan | — |
-| Status | ⏸ Belum dimulai — menunggu Sprint 3 Closed lalu planning |
-| Release | — |
-| Referensi | — |
+| Sprint | Sprint 4 — The Guest Experience |
+| Tujuan | Manajemen tamu + amplop digital (transfer info), hardening audit LOW, verifikasi PostgreSQL & E2E |
+| Status | 🟠 Proses — Development |
+| Release | v1.3.0 — The Guest Experience Release |
+| Referensi | `.docs/sprint-4.md` |
 
 ## Sprint Sebelumnya (Closed)
 
@@ -96,6 +96,25 @@
 - ✅ Release v1.2.0 — The Core Features Release (tag `v1.2.0`) — Sprint 3 closed
 - 📌 Catatan: verifikasi E2E penuh (register→login→CRUD→publish→guestbook) menunggu PostgreSQL terpasang
 
+## Lingkup Sprint 4 (Disetujui)
+
+- Manajemen tamu — tabel `guests` + API CRUD + statistik (owner-scoped)
+- Amplop digital — tabel `gift_accounts` + API owner & publik (transfer info saja; wishlist/gift item 🟡 ditunda)
+- UI Builder: tampilan "Kelola" per undangan (statistik, tambah tunggal/bulk, filter, kelola rekening)
+- Halaman publik: section Amplop Digital dengan tombol salin
+- Hardening audit LOW — validasi hex tema, token `--color-overlay-*`, rate limiting, util bersama, dokumentasi JWT
+- Install PostgreSQL di mesin pengembangan + verifikasi E2E penuh (AC7)
+
+## Hasil Sprint 4 (Development)
+
+- ✅ Migrasi `0004_guests_gift_accounts.sql` — tabel `guests` (status diundang/hadir/tidak-hadir) + `gift_accounts` (bank/account, is_active, sort_order)
+- ✅ Guest API — `GET/POST /api/invitations/:id/guests`, `GET .../guests/stats`, `GET/PATCH/DELETE /api/guests/:guestId`
+- ✅ Gift-account API — owner `GET/POST /api/invitations/:id/gift-accounts`, `PATCH/DELETE /api/gift-accounts/:giftAccountId`; publik `GET /api/invitations/public/:slug/gift-accounts`
+- ✅ Builder UI "Kelola" — statistik tamu, tambah tunggal/bulk, filter status, kelola rekening (tambah/toggle/hapus)
+- ✅ Halaman publik — section Amplop Digital + tombol salin (fallback demo saat API tidak tersedia)
+- ✅ Hardening LOW — `validateThemeColors`, `--color-overlay-*`, `server/middleware/rate-limit.js`, `assets/js/util.js`, dokumentasi JWT dev secret
+- 🟡 Belum — verifikasi PostgreSQL & E2E penuh (menunggu instalasi PostgreSQL di mesin pengembangan)
+
 ## Aturan Sprint
 
 1. Pekerjaan baru masuk lingkup sprint harus disetujui terlebih dahulu.
@@ -106,6 +125,7 @@
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.2.0 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 4 dimulai — Manajemen tamu + amplop digital + hardening LOW (Development) |
 | 1.1.0 | 10-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Closed | Sprint 3 closed — Audit PASS + Release v1.2.0 The Core Features (tag v1.2.0) |
 | 1.0.9 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 3 Development selesai (auth, template, invitation API, halaman publik, RSVP & buku tamu, galeri) — Review/Documentation |
 | 1.0.8 | 09-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 3 dimulai — Planning (Auth + Builder + Template) |

@@ -31,9 +31,9 @@
   text-align: center;
   color: var(--color-text-inverse);
   background:
-    radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.12), transparent 45%),
-    radial-gradient(circle at 85% 80%, rgba(255, 255, 255, 0.1), transparent 40%),
-    linear-gradient(rgba(20, 8, 8, 0.35), rgba(20, 8, 8, 0.35)),
+    radial-gradient(circle at 20% 15%, var(--color-overlay-white-soft), transparent 45%),
+    radial-gradient(circle at 85% 80%, var(--color-overlay-white-faint), transparent 40%),
+    linear-gradient(var(--color-overlay-dark-soft), var(--color-overlay-dark-soft)),
     var(--inv-primary);
   transition: opacity var(--transition-slow), transform var(--transition-slow);
 }
@@ -292,6 +292,46 @@
   border-top: 1px solid var(--color-border-light);
   border-bottom: 1px solid var(--color-border-light);
 }
+
+.inv-gift-accounts {
+  display: grid;
+  gap: var(--spacing-md);
+  max-width: 26rem;
+  margin-inline: auto;
+  text-align: left;
+}
+
+.inv-gift-account {
+  padding: var(--spacing-lg);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--color-border-light);
+  background: var(--color-surface);
+}
+
+.inv-gift-account-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-xs);
+}
+
+.inv-gift-bank {
+  font-weight: 700;
+}
+
+.inv-gift-number {
+  font-family: var(--font-family-heading);
+  font-size: var(--font-size-lg);
+  letter-spacing: var(--letter-spacing-wide);
+}
+
+.inv-gift-name {
+  margin-top: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
 
 .inv-section-hint {
   color: var(--color-text-muted);

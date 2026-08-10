@@ -51,8 +51,7 @@
             <!-- ================================
                 LIHAT: EDITOR
             ================================= -->
-            <section id="editor-view" class="d-none" aria-label="Editor undangan">
-                <div class="page-head">
+            <section id="editor-view" class="d-none" aria-label="Editor undangan">                <div class="page-head">
                     <div>
                         <button id="back-btn" class="btn btn-ghost btn-sm" type="button">← Kembali</button>
                         <h1 id="editor-title" class="page-title">Buat Undangan</h1>
@@ -190,6 +189,109 @@
                         </div>
                     </div>
                 </form>
+            </section>
+
+            <!-- ================================
+                LIHAT: KELOLA (Tamu & Amplop Digital)
+            ================================= -->
+            <section id="manage-view" class="d-none" aria-label="Kelola tamu & amplop digital">
+                <div class="page-head">
+                    <div>
+                        <button id="manage-back-btn" class="btn btn-ghost btn-sm" type="button">← Kembali</button>
+                        <h1 id="manage-title" class="page-title">Kelola Undangan</h1>
+                        <p class="page-subtitle">Atur daftar tamu dan amplop digital untuk undangan ini.</p>
+                    </div>
+                </div>
+
+                <div class="manage-grid">
+                    <div class="editor-form">
+
+                        <!-- Statistik tamu -->
+                        <section class="editor-section">
+                            <h2 class="editor-section-title">Statistik Tamu</h2>
+                            <p class="editor-section-hint">Ringkasan konfirmasi kehadiran.</p>
+                            <div id="guest-stats" class="guest-stats">
+                                <div class="stat-box"><span class="stat-value" id="stat-total">0</span><span class="stat-label">Total</span></div>
+                                <div class="stat-box"><span class="stat-value" id="stat-hadir">0</span><span class="stat-label">Hadir</span></div>
+                                <div class="stat-box"><span class="stat-value" id="stat-tidak-hadir">0</span><span class="stat-label">Tidak Hadir</span></div>
+                                <div class="stat-box"><span class="stat-value" id="stat-diundang">0</span><span class="stat-label">Diundang</span></div>
+                            </div>
+                        </section>
+
+                        <!-- Tambah tamu -->
+                        <section class="editor-section">
+                            <h2 class="editor-section-title">Tambah Tamu</h2>
+                            <p class="editor-section-hint">Isi satu per satu, atau tempel banyak nama — satu nama per baris.</p>
+                            <div class="form-group">
+                                <label class="form-label" for="g-full-name">Nama Tamu</label>
+                                <input class="input" id="g-full-name" type="text" placeholder="Nama lengkap" maxlength="120">
+                            </div>
+                            <div class="editor-form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="g-phone">No. HP</label>
+                                    <input class="input" id="g-phone" type="text" placeholder="Opsional" maxlength="30">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="g-group">Kelompok</label>
+                                    <input class="input" id="g-group" type="text" placeholder="Keluarga / Sahabat" maxlength="60">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="g-bulk">Bulk (satu nama per baris)</label>
+                                <textarea class="input textarea" id="g-bulk" rows="3" placeholder="Nama Tamu 1&#10;Nama Tamu 2&#10;Nama Tamu 3" maxlength="5000"></textarea>
+                            </div>
+                            <div class="editor-actions flex gap-sm">
+                                <button id="g-add-btn" class="btn btn-primary" type="button">+ Tambah Tamu</button>
+                            </div>
+                        </section>
+
+                        <!-- Daftar tamu -->
+                        <section class="editor-section">
+                            <h2 class="editor-section-title">Daftar Tamu</h2>
+                            <div class="editor-form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="g-filter">Filter Status</label>
+                                    <select class="input" id="g-filter">
+                                        <option value="semua">Semua</option>
+                                        <option value="diundang">Diundang</option>
+                                        <option value="hadir">Hadir</option>
+                                        <option value="tidak-hadir">Tidak Hadir</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="guest-list" class="guest-list" aria-live="polite"></div>
+                        </section>
+
+                    </div>
+
+                    <div class="editor-form">
+
+                        <!-- Amplop digital -->
+                        <section class="editor-section">
+                            <h2 class="editor-section-title">Amplop Digital</h2>
+                            <p class="editor-section-hint">Rekening untuk kirim hadiah — tampil di halaman undangan publik.</p>
+                            <div class="editor-form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="ga-bank">Nama Bank</label>
+                                    <input class="input" id="ga-bank" type="text" placeholder="BCA" maxlength="80">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="ga-number">No. Rekening</label>
+                                    <input class="input" id="ga-number" type="text" placeholder="1234567890" maxlength="40">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="ga-name">Atas Nama</label>
+                                <input class="input" id="ga-name" type="text" placeholder="Nama pemilik rekening" maxlength="120">
+                            </div>
+                            <div class="editor-actions flex gap-sm">
+                                <button id="ga-add-btn" class="btn btn-primary" type="button">+ Tambah Rekening</button>
+                            </div>
+                            <div id="gift-account-list" class="gift-account-list" aria-live="polite"></div>
+                        </section>
+
+                    </div>
+                </div>
             </section>
 
         </div>

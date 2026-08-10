@@ -10,6 +10,7 @@
   ========================================================== */
 
 import { DEMO_INVITATIONS, demoGuestbook, galleryPlaceholder } from './demo-invitations.js';
+import { escapeHtml, formatDate, formatGuestbookDate } from './util.js';
 
 const DEFAULT_THEME = { primaryColor: '#A12828', accentColor: '#FFC400' };
 
@@ -39,6 +40,8 @@ const elements = {
   musicIcon: document.getElementById('music-icon'),
   gallerySection: document.getElementById('gallery-section'),
   gallery: document.getElementById('gallery'),
+  giftSection: document.getElementById('gift-section'),
+  giftAccounts: document.getElementById('gift-accounts'),
   rsvpForm: document.getElementById('rsvp-form'),
   rsvpAlert: document.getElementById('rsvp-alert'),
   guestbook: document.getElementById('guestbook'),
@@ -55,18 +58,6 @@ const GUESTBOOK_KEY = (slug) => `bernada:guestbook:${slug}`;
 function getSlug() {
   const segments = window.location.pathname.split('/').filter(Boolean);
   return segments[segments.length - 1] || '';
-}
-
-function formatDate(iso) {
-  if (!iso) return '';
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return '';
-  return new Intl.DateTimeFormat('id-ID', {
-    weekday: 'long',
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
-  }).format(date);
 }
 
 function formatTime(time) {
@@ -157,30 +148,63 @@ function renderGallery() {
 }
 
 /* ==========================================================
-    RSVP & BUKU TAMU
+    AMPLOP DIGITAL
   ========================================================== */
 
-function escapeHtml(value) {
-  return String(value ?? '')
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
+function renderGiftAccounts(accounts) {
+  if (!accounts || accounts.length === 0) {
+    elements.giftSection.classList.add('d-none');
+    elements.giftAccounts.innerHTML = '';
+    return;
+  }
+  elements.giftSection.classList.remove('d-none');
+  elements.giftAccounts.innerHTML = accounts
+    .map(
+      (account) => `
+      <div class="inv-gift-account">
+        <div class="inv-gift-account-top">
+          <span class="inv-gift-bank">${escapeHtml(account.bankName)}</span>
+          <button class="btn btn-gold btn-sm" type="button" data-copy="${escapeHtml(account.accountNumber)}">Salin</button>
+        </div>
+        <p class="inv-gift-number">${escapeHtml(account.accountNumber)}</p>
+        ${account.accountName ? `<p class="inv-gift-name">a.n. ${escapeHtml(account.accountName)}</p>` : ''}
+      </div>`,
+    )
+    .join('');
+
+  elements.giftAccounts.addEventListener('click', async (event) => {
+    const button = event.target.closest('button[data-copy]');
+    if (!button) return;
+    try {
+      await navigator.clipboard.writeText(button.dataset.copy);
+      button.textContent = 'Tersalin ✓';
+      setTimeout(() => {
+        button.textContent = 'Salin';
+      }, 1500);
+    } catch {
+      button.textContent = 'Salin';
+    }
+  });
 }
 
-function formatGuestbookDate(iso) {
-  if (!iso) return '';
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return '';
-  return new Intl.DateTimeFormat('id-ID', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(date);
+async function loadGiftAccounts() {
+  const slug = getSlug();
+  try {
+    const res = await fetch(`/api/invitations/public/${encodeURIComponent(slug)}/gift-accounts`);
+    const data = await res.json().catch(() => null);
+    if (res.ok) {
+      renderGiftAccounts(data?.accounts || []);
+      return;
+    }
+  } catch {
+    /* lanjut — tanpa amplop saat API tidak tersedia */
+  }
+  renderGiftAccounts([]);
 }
+
+/* ==========================================================
+    RSVP & BUKU TAMU
+  ========================================================== */
 
 function guestbookEntryHtml(entry) {
   const hadir = entry.attendance === 'hadir';
@@ -457,6 +481,7 @@ async function init() {
   }
 
   loadGuestbook();
+  loadGiftAccounts();
   elements.rsvpForm.addEventListener('submit', submitRsvp);
   elements.openBtn.addEventListener('click', openInvitation);
   elements.musicBtn.addEventListener('click', toggleMusic);

@@ -595,6 +595,97 @@
 }
 
 /* ==========================================================
+    6b. KELOLA — TAMU & AMPLOP DIGITAL
+    ----------------------------------------------------------
+    Statistik, daftar tamu, dan rekening amplop digital.
+  ========================================================== */
+
+.manage-grid {
+    display: grid;
+    gap: var(--spacing-xl);
+}
+
+.guest-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-sm);
+}
+
+.stat-box {
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-lg);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    text-align: center;
+}
+
+.stat-value {
+    display: block;
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-2xl);
+    font-weight: 700;
+    color: var(--color-primary-600);
+}
+
+.stat-label {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+}
+
+.guest-list,
+.gift-account-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-md);
+}
+
+.guest-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-lg);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+}
+
+.guest-item-main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    min-width: 0;
+}
+
+.guest-name {
+    font-size: var(--font-size-base);
+}
+
+.guest-meta {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+}
+
+.guest-status {
+    max-width: 11rem;
+    margin-top: var(--spacing-xs);
+}
+
+.input-sm {
+    padding: calc(var(--spacing-xs) / 2) var(--spacing-sm);
+    font-size: var(--font-size-sm);
+}
+
+@media (min-width: 992px) {
+    .manage-grid {
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    }
+}
+
+/* ==========================================================
     7. RESPONSIVE (Mobile First)
     ----------------------------------------------------------
     Penyesuaian tata letak halaman pada layar lebih besar.

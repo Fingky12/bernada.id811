@@ -10,12 +10,14 @@
   ========================================================== */
 
 import { api } from './api.js';
+import { escapeHtml, formatDate as formatEventDate } from './util.js';
 
 const elements = {
   userName: document.getElementById('app-user-name'),
   logoutBtn: document.getElementById('logout-btn'),
   listView: document.getElementById('list-view'),
   editorView: document.getElementById('editor-view'),
+  manageView: document.getElementById('manage-view'),
   grid: document.getElementById('invitation-grid'),
   emptyState: document.getElementById('empty-state'),
   createBtn: document.getElementById('create-btn'),
@@ -27,6 +29,28 @@ const elements = {
   templateGrid: document.getElementById('template-grid'),
   saveBtn: document.getElementById('save-btn'),
   toast: document.getElementById('toast'),
+  manage: {
+    backBtn: document.getElementById('manage-back-btn'),
+    title: document.getElementById('manage-title'),
+    stats: {
+      total: document.getElementById('stat-total'),
+      hadir: document.getElementById('stat-hadir'),
+      tidakHadir: document.getElementById('stat-tidak-hadir'),
+      diundang: document.getElementById('stat-diundang'),
+    },
+    fullName: document.getElementById('g-full-name'),
+    phone: document.getElementById('g-phone'),
+    group: document.getElementById('g-group'),
+    bulk: document.getElementById('g-bulk'),
+    addBtn: document.getElementById('g-add-btn'),
+    filter: document.getElementById('g-filter'),
+    list: document.getElementById('guest-list'),
+    bank: document.getElementById('ga-bank'),
+    number: document.getElementById('ga-number'),
+    name: document.getElementById('ga-name'),
+    addGiftBtn: document.getElementById('ga-add-btn'),
+    giftList: document.getElementById('gift-account-list'),
+  },
   preview: {
     couple: document.getElementById('preview-couple'),
     date: document.getElementById('preview-date'),
@@ -42,6 +66,10 @@ const DEFAULT_THEME = { primaryColor: '#A12828', accentColor: '#FFC400' };
 let currentInvitationId = null;
 let templates = [];
 let autoSlug = '';
+let currentManageInvitation = null;
+let guestsCache = [];
+let giftAccountsCache = [];
+let currentGuestFilter = 'semua';
 
 function slugify(value) {
   return value
@@ -64,16 +92,8 @@ function toDateInputValue(iso) {
   return `${year}-${month}-${day}`;
 }
 
-function formatEventDate(iso) {
-  if (!iso) return 'Tanggal acara';
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return 'Tanggal acara';
-  return new Intl.DateTimeFormat('id-ID', {
-    weekday: 'long',
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
-  }).format(date);
+function displayEventDate(iso) {
+  return formatEventDate(iso) || 'Tanggal acara';
 }
 
 function showToast(message, type = '') {
@@ -83,15 +103,6 @@ function showToast(message, type = '') {
   showToast._timer = setTimeout(() => {
     elements.toast.className = 'toast';
   }, 3000);
-}
-
-function escapeHtml(value) {
-  return String(value ?? '')
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
 }
 
 function setLoading(button, loading) {
@@ -111,7 +122,7 @@ function updatePreview() {
 
   elements.preview.couple.textContent =
     document.getElementById('f-couple').value.trim() || 'Nama Pasangan';
-  const dateText = formatEventDate(
+  const dateText = displayEventDate(
     document.getElementById('f-date').value
       ? `${document.getElementById('f-date').value}T12:00:00`
       : null,
@@ -160,11 +171,12 @@ function renderInvitations(invitations) {
             ${badge}
           </div>
           <div class="invitation-meta">
-            <span class="invitation-meta-item">📅 ${escapeHtml(formatEventDate(invitation.eventDate))}</span>
+            <span class="invitation-meta-item">📅 ${escapeHtml(displayEventDate(invitation.eventDate))}</span>
           </div>
           <p class="invitation-slug">/${escapeHtml(invitation.slug)}</p>
           <div class="invitation-actions">
             <button class="btn btn-outline btn-sm" type="button" data-action="edit" data-id="${invitation.id}">Edit</button>
+            <button class="btn btn-ghost btn-sm" type="button" data-action="manage" data-id="${invitation.id}" data-slug="${invitation.slug}">Kelola</button>
             ${published
               ? `<button class="btn btn-ghost btn-sm" type="button" data-action="unpublish" data-id="${invitation.id}">Nonaktifkan</button>`
               : `<button class="btn btn-primary btn-sm" type="button" data-action="publish" data-id="${invitation.id}">Terbitkan</button>`}
@@ -312,6 +324,234 @@ async function saveInvitation() {
 }
 
 /* ==========================================================
+    KELOLA — TAMU & AMPLOP DIGITAL
+  ========================================================== */
+
+function showManage(invitation) {
+  currentManageInvitation = invitation;
+  elements.listView.classList.add('d-none');
+  elements.editorView.classList.add('d-none');
+  elements.manageView.classList.remove('d-none');
+  elements.manage.title.textContent = `Kelola — ${invitation.title}`;
+  loadManageData();
+}
+
+async function loadManageData() {
+  try {
+    await Promise.all([loadGuestStats(), loadGuests(), loadGiftAccounts()]);
+  } catch (error) {
+    showToast(error.message, 'danger');
+  }
+}
+
+async function loadGuestStats() {
+  const stats = await api.getGuestStats(currentManageInvitation.id);
+  elements.manage.stats.total.textContent = stats.total;
+  elements.manage.stats.hadir.textContent = stats.hadir;
+  elements.manage.stats.tidakHadir.textContent = stats.tidakHadir;
+  elements.manage.stats.diundang.textContent = stats.diundang;
+}
+
+async function loadGuests() {
+  guestsCache = await api.listGuests(currentManageInvitation.id);
+  renderGuests();
+}
+
+function renderGuests() {
+  const filtered = guestsCache.filter(
+    (guest) => currentGuestFilter === 'semua' || guest.status === currentGuestFilter,
+  );
+  if (filtered.length === 0) {
+    elements.manage.list.innerHTML =
+      '<p class="form-hint">Belum ada tamu. Tambahkan nama untuk mulai mengelola.</p>';
+    return;
+  }
+  elements.manage.list.innerHTML = filtered
+    .map((guest) => {
+      const statusLabels = {
+        diundang: 'Diundang',
+        hadir: 'Hadir',
+        'tidak-hadir': 'Tidak Hadir',
+      };
+      const options = Object.entries(statusLabels)
+        .map(
+          ([value, label]) =>
+            `<option value="${value}"${guest.status === value ? ' selected' : ''}>${label}</option>`,
+        )
+        .join('');
+      return `
+        <article class="guest-item">
+          <div class="guest-item-main">
+            <strong class="guest-name">${escapeHtml(guest.fullName)}</strong>
+            <span class="guest-meta">${escapeHtml(guest.guestGroup || 'Tanpa kelompok')}${guest.phone ? ` · ${escapeHtml(guest.phone)}` : ''}</span>
+            <select class="input input-sm guest-status" data-id="${guest.id}" aria-label="Status ${escapeHtml(guest.fullName)}">${options}</select>
+          </div>
+          <button class="btn btn-danger btn-sm" type="button" data-action="delete-guest" data-id="${guest.id}">Hapus</button>
+        </article>`;
+    })
+    .join('');
+}
+
+async function addGuestsFromForm() {
+  const singleName = elements.manage.fullName.value.trim();
+  const bulkText = elements.manage.bulk.value.trim();
+  const nameLine = bulkText
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean);
+
+  const names = singleName ? [singleName] : nameLine;
+  if (names.length === 0) {
+    showToast('Masukkan nama tamu terlebih dahulu.', 'danger');
+    return;
+  }
+
+  const payload = {
+    fullName: names[0],
+    phone: elements.manage.phone.value.trim(),
+    guestGroup: elements.manage.group.value.trim(),
+  };
+
+  try {
+    if (names.length === 1) {
+      await api.addGuest(currentManageInvitation.id, payload);
+    } else {
+      await api.addGuestsBulk(
+        currentManageInvitation.id,
+        names.map((name) => ({ ...payload, fullName: name })),
+      );
+    }
+    elements.manage.fullName.value = '';
+    elements.manage.bulk.value = '';
+    showToast(`Berhasil menambahkan ${names.length} tamu.`, 'success');
+    await Promise.all([loadGuestStats(), loadGuests()]);
+  } catch (error) {
+    showToast(error.message, 'danger');
+  }
+}
+
+async function handleGuestStatusChange(event) {
+  const select = event.target.closest('select.guest-status');
+  if (!select) return;
+  try {
+    await api.updateGuest(select.dataset.id, { status: select.value });
+    await Promise.all([loadGuestStats(), loadGuests()]);
+  } catch (error) {
+    showToast(error.message, 'danger');
+  }
+}
+
+async function handleDeleteGuest(event) {
+  const button = event.target.closest('button[data-action="delete-guest"]');
+  if (!button) return;
+  if (!window.confirm('Hapus tamu ini?')) return;
+  try {
+    await api.deleteGuest(button.dataset.id);
+    showToast('Tamu dihapus.', 'success');
+    await Promise.all([loadGuestStats(), loadGuests()]);
+  } catch (error) {
+    showToast(error.message, 'danger');
+  }
+}
+
+async function loadGiftAccounts() {
+  giftAccountsCache = await api.listGiftAccounts(currentManageInvitation.id);
+  renderGiftAccounts();
+}
+
+function renderGiftAccounts() {
+  if (giftAccountsCache.length === 0) {
+    elements.manage.giftList.innerHTML =
+      '<p class="form-hint">Belum ada rekening. Tambahkan untuk menampilkan amplop digital.</p>';
+    return;
+  }
+  elements.manage.giftList.innerHTML = giftAccountsCache
+    .map(
+      (account) => `
+        <article class="guest-item">
+          <div class="guest-item-main">
+            <strong class="guest-name">${escapeHtml(account.bankName)} — ${escapeHtml(account.accountNumber)}</strong>
+            <span class="guest-meta">${escapeHtml(account.accountName || 'Tanpa atas nama')}${account.isActive ? '' : ' · <em>Nonaktif</em>'}</span>
+            <div class="invitation-actions">
+              <button class="btn btn-ghost btn-sm" type="button" data-action="toggle-gift" data-id="${account.id}" data-active="${account.isActive}">${account.isActive ? 'Nonaktifkan' : 'Aktifkan'}</button>
+              <button class="btn btn-danger btn-sm" type="button" data-action="delete-gift" data-id="${account.id}">Hapus</button>
+            </div>
+          </div>
+        </article>`,
+    )
+    .join('');
+}
+
+async function addGiftAccountFromForm() {
+  const bankName = elements.manage.bank.value.trim();
+  const accountNumber = elements.manage.number.value.trim();
+  if (!bankName || !accountNumber) {
+    showToast('Nama bank dan nomor rekening wajib diisi.', 'danger');
+    return;
+  }
+  try {
+    await api.createGiftAccount(currentManageInvitation.id, {
+      bankName,
+      accountNumber,
+      accountName: elements.manage.name.value.trim(),
+    });
+    elements.manage.bank.value = '';
+    elements.manage.number.value = '';
+    elements.manage.name.value = '';
+    showToast('Rekening amplop digital ditambahkan.', 'success');
+    loadGiftAccounts();
+  } catch (error) {
+    showToast(error.message, 'danger');
+  }
+}
+
+async function handleToggleGift(event) {
+  const button = event.target.closest('button[data-action="toggle-gift"]');
+  if (!button) return;
+  try {
+    await api.updateGiftAccount(button.dataset.id, {
+      isActive: button.dataset.active === 'false',
+    });
+    loadGiftAccounts();
+  } catch (error) {
+    showToast(error.message, 'danger');
+  }
+}
+
+async function handleDeleteGift(event) {
+  const button = event.target.closest('button[data-action="delete-gift"]');
+  if (!button) return;
+  if (!window.confirm('Hapus rekening ini?')) return;
+  try {
+    await api.deleteGiftAccount(button.dataset.id);
+    showToast('Rekening dihapus.', 'success');
+    loadGiftAccounts();
+  } catch (error) {
+    showToast(error.message, 'danger');
+  }
+}
+
+function wireManageEvents() {
+  elements.manage.backBtn.addEventListener('click', () => {
+    elements.manageView.classList.add('d-none');
+    elements.listView.classList.remove('d-none');
+    loadInvitations().catch(showToast);
+  });
+  elements.manage.addBtn.addEventListener('click', addGuestsFromForm);
+  elements.manage.filter.addEventListener('change', (event) => {
+    currentGuestFilter = event.target.value;
+    renderGuests();
+  });
+  elements.manage.list.addEventListener('change', handleGuestStatusChange);
+  elements.manage.list.addEventListener('click', handleDeleteGuest);
+  elements.manage.addGiftBtn.addEventListener('click', addGiftAccountFromForm);
+  elements.manage.giftList.addEventListener('click', (event) => {
+    handleToggleGift(event);
+    handleDeleteGift(event);
+  });
+}
+
+/* ==========================================================
     INISIALISASI & EVENT
   ========================================================== */
 
@@ -324,6 +564,9 @@ async function handleGridAction(event) {
     if (action === 'edit') {
       const invitation = await api.getInvitation(id);
       showEditor(invitation);
+    } else if (action === 'manage') {
+      const invitation = await api.getInvitation(id);
+      showManage(invitation);
     } else if (action === 'delete') {
       if (!window.confirm('Hapus undangan ini? Tindakan tidak dapat dibatalkan.')) return;
       await api.deleteInvitation(id);
@@ -374,6 +617,7 @@ function wireEditorEvents() {
 
 async function init() {
   wireEditorEvents();
+  wireManageEvents();
 
   if (!(await api.initSession())) {
     window.location.href = '/login';

@@ -49,7 +49,7 @@ Setiap keputusan arsitektur penting (pola, teknologi, struktur data) wajib:
 ## Status Saat Ini
 
 - **Frontend:** ✅ Landing page 9 section (v1.1.0) + halaman aplikasi: `pages/login.html`, `pages/builder.html`, `pages/invitation.html`.
-- **Backend:** ✅ Node.js + Express (ESM) — `server/` (config, db, app, error handler, lib: jwt/password/validation/http-error, services) + `api/` (health, auth, templates, invitations, guestbook publik).
+- **Backend:** ✅ Node.js + Express (ESM) — `server/` (config, db, app, error handler, lib: jwt/password/validation/http-error, middleware rate-limit, services) + `api/` (health, auth, templates, invitations, guestbook publik, guests, gift-accounts).
 - **Database:** 🟠 Migrasi `0001` (core) + `0002` (auth/templates) + `0003` (galeri/buku tamu); PostgreSQL belum diinstall lokal.
 
 ## Keputusan Arsitektur Kunci
@@ -68,6 +68,7 @@ Setiap keputusan arsitektur penting (pola, teknologi, struktur data) wajib:
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.0.4 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 4 — guest-service, gift-account-service, middleware rate-limit, migrasi 0004 |
 | 1.0.3 | 10-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Release v1.2.0 — The Core Features (Audit PASS) |
 | 1.0.2 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Backend & DB lengkap (auth, template, invitation, guestbook) — Sprint 3 |
 | 1.0.1 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Backend & database awal (Fase 1) |

@@ -116,3 +116,76 @@ export function validateStringArray(value, field, { max = 100, itemMax = 500 } =
     return item.trim();
   });
 }
+
+export const GUEST_STATUS_OPTIONS = ['diundang', 'hadir', 'tidak-hadir'];
+
+export function validateGuestStatus(value, field = 'status') {
+  const status = requiredString(value, field, { max: 20 }).toLowerCase();
+  if (!GUEST_STATUS_OPTIONS.includes(status)) {
+    badRequest(`${field} harus salah satu dari: ${GUEST_STATUS_OPTIONS.join(', ')}.`);
+  }
+  return status;
+}
+
+export function validateGuestsList(value, field = 'guests', { max = 500 } = {}) {
+  let data = value;
+  if (typeof value === 'string') {
+    try {
+      data = JSON.parse(value);
+    } catch {
+      badRequest(`${field} bukan JSON yang valid.`);
+    }
+  }
+  if (!Array.isArray(data) || data.length === 0) {
+    badRequest(`${field} harus berupa daftar tamu yang tidak kosong.`);
+  }
+  if (data.length > max) {
+    badRequest(`${field} maksimal ${max} item.`);
+  }
+  return data.map((guest) => {
+    if (typeof guest !== 'object' || guest === null || Array.isArray(guest)) {
+      badRequest(`Setiap item ${field} harus berupa objek.`);
+    }
+    return {
+      fullName: requiredString(guest.fullName, 'fullName', { max: 120 }),
+      phone: optionalString(guest.phone, 'phone', { max: 30 }),
+      guestGroup: optionalString(guest.guestGroup, 'guestGroup', { max: 60 }),
+      status: guest.status === undefined || guest.status === null || guest.status === ''
+        ? 'diundang'
+        : validateGuestStatus(guest.status),
+    };
+  });
+}
+
+const HEX_COLOR_PATTERN = /^#[0-9a-f]{3}(?:[0-9a-f]{3})?$/i;
+
+export function validateHexColor(value, field = 'color', { optional = false } = {}) {
+  if (optional && (value === undefined || value === null || value === '')) {
+    return '';
+  }
+  const color = requiredString(value, field, { max: 9 }).toLowerCase();
+  if (!HEX_COLOR_PATTERN.test(color)) {
+    badRequest(`${field} harus berupa warna hex (#fff atau #ffffff).`);
+  }
+  return color;
+}
+
+export function validateThemeColors(theme, field = 'theme') {
+  const normalized = validateJsonObject(theme, field, { optional: true });
+  if (Object.keys(normalized).length === 0) {
+    return normalized;
+  }
+  const colors = normalized.colors === undefined ? {} : normalized.colors;
+  if (typeof colors !== 'object' || colors === null || Array.isArray(colors)) {
+    badRequest(`${field}.colors harus berupa objek.`);
+  }
+  const normalizedColors = {};
+  for (const [key, value] of Object.entries(colors)) {
+    if (typeof value === 'string' && value.startsWith('#')) {
+      normalizedColors[key] = validateHexColor(value, `${field}.colors.${key}`);
+    } else {
+      normalizedColors[key] = value;
+    }
+  }
+  return { ...normalized, colors: normalizedColors };
+}

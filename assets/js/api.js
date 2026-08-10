@@ -157,4 +157,70 @@ export const api = {
     });
     return data.invitation;
   },
+
+  /* ---- Manajemen tamu ---- */
+
+  async listGuests(invitationId) {
+    const data = await request(`/invitations/${invitationId}/guests`);
+    return data.guests;
+  },
+
+  async addGuest(invitationId, payload) {
+    const data = await request(`/invitations/${invitationId}/guests`, {
+      method: 'POST',
+      body: payload,
+    });
+    return data.guests;
+  },
+
+  async addGuestsBulk(invitationId, guests) {
+    const data = await request(`/invitations/${invitationId}/guests`, {
+      method: 'POST',
+      body: { guests },
+    });
+    return data.guests;
+  },
+
+  async getGuestStats(invitationId) {
+    return request(`/invitations/${invitationId}/guests/stats`);
+  },
+
+  async updateGuest(guestId, payload) {
+    const data = await request(`/guests/${guestId}`, {
+      method: 'PATCH',
+      body: payload,
+    });
+    return data.guest;
+  },
+
+  async deleteGuest(guestId) {
+    await request(`/guests/${guestId}`, { method: 'DELETE' });
+  },
+
+  /* ---- Amplop digital ---- */
+
+  async listGiftAccounts(invitationId) {
+    const data = await request(`/invitations/${invitationId}/gift-accounts`);
+    return data.accounts;
+  },
+
+  async createGiftAccount(invitationId, payload) {
+    const data = await request(`/invitations/${invitationId}/gift-accounts`, {
+      method: 'POST',
+      body: payload,
+    });
+    return data.account;
+  },
+
+  async updateGiftAccount(giftAccountId, payload) {
+    const data = await request(`/gift-accounts/${giftAccountId}`, {
+      method: 'PATCH',
+      body: payload,
+    });
+    return data.account;
+  },
+
+  async deleteGiftAccount(giftAccountId) {
+    await request(`/gift-accounts/${giftAccountId}`, { method: 'DELETE' });
+  },
 };

@@ -1,12 +1,26 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Changelog · Category : Catatan (living document)
-  Version  : 1.1.0 · Status : ✅ Stable · Update : 10-08-2026
+  Version  : 1.2.0 · Status : ✅ Stable · Update : 10-08-2026
 -->
 
 # Changelog
 
 > Catatan perubahan penting project BERNADA.ID. Ditulis dari perubahan paling baru.
+
+---
+
+## 10-08-2026 — Sprint 4 Development: Manajemen Tamu & Amplop Digital
+
+### Release — v1.3.0 (dalam proses)
+
+- 🚀 **Sprint 4 — The Guest Experience** (Status: 🟠 Proses) — manajemen tamu (`guests`) + amplop digital (`gift_accounts`, transfer info), hardening audit LOW, verifikasi PostgreSQL & E2E. Detail: `.docs/sprint-4.md`.
+- 👥 **Manajemen tamu** — migrasi `0004_guests_gift_accounts.sql` (tabel `guests` + `gift_accounts`), service `guest-service.js`, API terproteksi auth: `GET/POST /api/invitations/:id/guests`, `GET /api/invitations/:id/guests/stats`, `GET/PATCH/DELETE /api/guests/:guestId`, validasi status tamu (`diundang`/`hadir`/`tidak-hadir`).
+- 💳 **Amplop digital** — API owner: `GET/POST /api/invitations/:id/gift-accounts`, `PATCH/DELETE /api/gift-accounts/:giftAccountId`; endpoint publik `GET /api/invitations/public/:slug/gift-accounts` (hanya aktif & terbit).
+- 🖥️ **Builder** — tampilan baru "Kelola" per undangan: statistik tamu, tambah tamu tunggal/bulk, filter status, kelola rekening amplop (tambah/toggle aktif/hapus).
+- 🎀 **Halaman publik** — section Amplop Digital dengan tombol salin nomor rekening; fallback disembunyikan saat API tidak tersedia.
+- 🔧 **Hardening audit LOW** — validasi hex warna tema (`validateThemeColors`), token `--color-overlay-*` menggantikan 4 `rgba()` hardcoded, middleware rate limiting in-memory (auth 10/menit, guestbook 20/menit, publik 120/menit), util bersama `assets/js/util.js` (`escapeHtml`, format tanggal) dipakai builder & invitation, dokumentasi JWT dev secret dipertegas.
+- 📌 **Catatan:** verifikasi E2E penuh (register → login → CRUD → publish → guests → gift-accounts) berjalan setelah instalasi PostgreSQL di mesin pengembangan.
 
 ---
 

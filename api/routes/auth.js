@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { config } from '../../server/config.js';
 import { requireAuth } from '../../server/middleware/require-auth.js';
+import { rateLimit } from '../../server/middleware/rate-limit.js';
 import {
   validateEmail,
   validatePassword,
@@ -9,6 +10,10 @@ import {
 import * as authService from '../../server/services/auth-service.js';
 
 export const authRouter = Router();
+
+const authLimiter = rateLimit({ windowMs: 60 * 1000, max: 10 });
+
+authRouter.use(authLimiter);
 
 const COOKIE_OPTIONS = {
   httpOnly: true,
