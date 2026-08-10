@@ -1,14 +1,14 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Roadmap Context · Category : Context (living document)
-  Version  : 1.0.7 · Status : 🟠 Proses · Update : 05-08-2026
+  Version  : 1.0.9 · Status : 🟠 Proses · Update : 10-08-2026
 -->
 
 # Roadmap
 
 > Arah pengembangan jangka panjang BERNADA.ID. **Sumber kebenaran tetap** ada di `.docs/roadmap.md`; file ini adalah ringkasan untuk AI agar tidak menebak fase pengembangan.
 >
-> **Sprint aktif:** belum ada — Sprint 2 telah Closed. Berikutnya: Fase 2 — Core Features (Beta).
+> **Sprint aktif:** belum ada — Sprint 3 telah Closed (Release v1.2.0, tag `v1.2.0`). Berikutnya: Sprint 4 — Manajemen Tamu & Amplop Digital.
 
 ---
 
@@ -30,10 +30,14 @@
 
 ### 🟠 Fase 2 — Core Features (Beta) · v1.0.0 Beta
 
-- Builder / editor undangan digital
-- Template undangan & personalisasi
-- Manajemen tamu & RSVP
-- Autentikasi pengguna
+> Sprint 3 (The Core Features) ✅ Closed 10-08-2026 — Release v1.2.0.
+
+- Autentikasi pengguna ✅ (register, login, logout, refresh rotasi, me, requireAuth)
+- Template undangan & personalisasi ✅ (`GET /api/templates` + 6 seed, tema warna)
+- Builder / editor undangan digital ✅ (CRUD + publish, owner-scoped)
+- Halaman publik `/u/:slug` ✅ (cover, countdown, tema, musik, lokasi, kalender, galeri)
+- RSVP & buku tamu ✅ (tabel `guestbook`, endpoint publik, fallback demo)
+- Manajemen tamu & amplop digital (`guests`/`gifts`) 🟡 — Sprint 4
 
 ### 🟢 Fase 3 — Launch · v1.0.0 GA
 
@@ -60,7 +64,9 @@
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
-| 1.0.8 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Fase 1 selesai — setup server & database awal |
+| 1.0.9 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 3 closed — Release v1.2.0 The Core Features |
+| 1.0.8 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 3 Development selesai — Fase 2 (auth, template, builder, halaman publik, RSVP & galeri) |
+| 1.0.7 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Fase 1 selesai — setup server & database awal |
 | 1.0.7 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 2 closed — Release v1.1.0 The First Experience; Fase 1 selesai |
 | 1.0.6 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Homepage 9 section selesai dibangun — menunggu audit & Release v1.1.0 |
 | 1.0.4 | 04-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Review | Sprint 1 selesai — Release v1.0.0 The Foundation Release |

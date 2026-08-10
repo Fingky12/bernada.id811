@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Database · Category : Panduan (source of truth)
-  Version  : 1.0.0 · Status : 🟠 Proses · Update : 05-08-2026
+  Version  : 1.1.0 · Status : ✅ Stable · Update : 10-08-2026
 -->
 
 # Database BERNADA.ID
@@ -17,7 +17,7 @@
 | Engine | PostgreSQL 13+ |
 | Driver Node.js | `pg` (parameter binding / prepared statement) |
 | Migrasi | SQL mentah di `database/migrations/` (dijalankan `database/migrate.js`) |
-| Status | 🟠 Skema awal (Fase 1) — tabel inti: users, templates, invitations |
+| Status | ✅ Skema inti (Fase 2) — users, templates, invitations, refresh_tokens, guestbook |
 
 ---
 
@@ -40,20 +40,22 @@
 
 ---
 
-## Skema (Migrasi `0001_init.sql`)
+## Skema
 
-### users — akun pengguna
+### Migrasi `0001_init.sql` — Skema Awal (Core)
+
+#### users — akun pengguna
 
 | Kolom | Tipe | Keterangan |
 | --- | --- | --- |
 | `id` | UUID PK | default `gen_random_uuid()` |
 | `email` | TEXT UNIQUE | dinormalisasi lowercase oleh aplikasi |
-| `password_hash` | TEXT | hashed (bcrypt/argon2) — Fase 2 |
+| `password_hash` | TEXT | hash bcrypt (salt 12) |
 | `full_name` | TEXT | nama pengguna |
 | `role` | TEXT | `user` \| `admin` (default `user`) |
 | `created_at` / `updated_at` | TIMESTAMPTZ | otomatis |
 
-### templates — template undangan
+#### templates — template undangan
 
 | Kolom | Tipe | Keterangan |
 | --- | --- | --- |
@@ -66,7 +68,7 @@
 | `is_active` | BOOLEAN | tampil di publik (default TRUE) |
 | `created_at` / `updated_at` | TIMESTAMPTZ | otomatis |
 
-### invitations — undangan yang dibuat pengguna
+#### invitations — undangan yang dibuat pengguna
 
 | Kolom | Tipe | Keterangan |
 | --- | --- | --- |
@@ -80,6 +82,7 @@
 | `couple` / `message` | TEXT | nama pasangan & sambutan |
 | `theme` | JSONB | personalisasi (warna, dsb.) |
 | `music_url` | TEXT | musik latar |
+| `gallery` | JSONB | array URL foto galeri (default `[]`) — migrasi 0003 |
 | `is_published` / `published_at` | BOOLEAN / TIMESTAMPTZ | status publikasi |
 | `created_at` / `updated_at` | TIMESTAMPTZ | otomatis |
 
@@ -87,16 +90,58 @@ Index: `owner_id`, `slug`.
 
 ---
 
-## Rencana Tabel Berikutnya (Sprint 3+ — Fase 2)
+### Migrasi `0002_auth_templates.sql` — Autentikasi & Template
 
-Tabel pendukung fitur yang dijanjikan landing page, dibuat lewat migrasi baru (bukan mengubah `0001`):
+#### refresh_tokens — token refresh (rotasi)
 
-- `guests` — manajemen tamu & RSVP
-- `guest_messages` — buku tamu
+| Kolom | Tipe | Keterangan |
+| --- | --- | --- |
+| `id` | UUID PK | |
+| `user_id` | UUID FK → users `ON DELETE CASCADE` | pemilik token |
+| `token_hash` | TEXT UNIQUE | hash SHA-256 token refresh (tidak pernah plaintext) |
+| `expires_at` | TIMESTAMPTZ | batas berlaku |
+| `revoked_at` | TIMESTAMPTZ | waktu revoke (logout / dipakai refresh) — NULL bila masih aktif |
+| `created_at` | TIMESTAMPTZ | otomatis |
+
+Index: `user_id`, `expires_at`.
+
+**Seed templates** — 6 template awal (wedding) dari portofolio landing page: Klasik Minimal, Merah Elegan, Border Bunga, Gold Mewah, Pita Emas, Diagonal Modern.
+
+---
+
+### Migrasi `0003_guestbook_gallery.sql` — Galeri & Buku Tamu
+
+#### invitations.gallery — galeri foto undangan
+
+`JSONB NOT NULL DEFAULT '[]'::jsonb` — array URL foto yang ditampilkan sebagai galeri pada halaman undangan publik.
+
+#### guestbook — buku tamu & RSVP
+
+| Kolom | Tipe | Keterangan |
+| --- | --- | --- |
+| `id` | UUID PK | |
+| `invitation_id` | UUID FK → invitations `ON DELETE CASCADE` | undangan tujuan |
+| `guest_name` | TEXT | nama tamu (wajib) |
+| `attendance` | TEXT | `hadir` \| `tidak-hadir` (default `hadir`) |
+| `guests_count` | INT | jumlah tamu 1–10 (default 1) |
+| `message` | TEXT | ucapan (opsional, default `''`) |
+| `created_at` | TIMESTAMPTZ | otomatis |
+
+Index: `idx_guestbook_invitation_id` (invitation_id), `idx_guestbook_created_at` (invitation_id, created_at DESC).
+
+---
+
+## Rencana Tabel Berikutnya (Sprint 4+ — Fase 2 lanjutan)
+
+Tabel pendukung fitur yang dijanjikan landing page, dibuat lewat migrasi baru (bukan mengubah file yang sudah ada):
+
+- `guests` — manajemen tamu & RSVP (pemilik undangan)
 - `gifts` — amplop digital
+- `template_categories` / fitur pembayaran & penagihan (Fase 3)
 
 ---
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.0.1 | 10-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Migrasi 0002 (refresh_tokens + seed templates) & 0003 (gallery + guestbook) |
 | 1.0.0 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Skema awal (users, templates, invitations) + alur migrasi |

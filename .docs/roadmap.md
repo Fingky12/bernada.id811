@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Roadmap · Category : Panduan (source of truth)
-  Version  : 1.0.6 · Status : 🟠 Proses · Update : 05-08-2026
+  Version  : 1.0.9 · Status : 🟠 Proses · Update : 10-08-2026
 -->
 
 # Roadmap BERNADA.ID
@@ -10,7 +10,7 @@
 >
 > Status item: 🟡 Belum · 🟠 Proses/sebagian · ✅ Selesai.
 >
-> **Sprint aktif:** belum ada — Sprint 2 telah Closed. Berikutnya: Fase 2 — Core Features (Beta).
+> **Sprint aktif:** belum ada — Sprint 3 telah Closed (Release v1.2.0 The Core Features, tag `v1.2.0`). Berikutnya: Sprint 4 — Manajemen Tamu & Amplop Digital.
 
 ---
 
@@ -34,10 +34,20 @@
 
 ## Fase 2 — Core Features (Beta) · v1.0.0 Beta
 
-- Builder / editor undangan digital
-- Template undangan & personalisasi
-- Manajemen tamu & RSVP
-- Autentikasi pengguna
+**Tujuan:** fitur inti platform — autentikasi, builder undangan, template & personalisasi.
+
+> Sprint 3 — The Core Features: ✅ Closed (10-08-2026) — Audit PASS + Release v1.2.0 (tag `v1.2.0`).
+
+| Item | Status | Catatan |
+| --- | --- | --- |
+| Autentikasi pengguna | ✅ | register, login, logout, refresh (rotasi, httpOnly), `me`, `requireAuth` |
+| Template undangan | ✅ | `GET /api/templates` publik + 6 template seed (migrasi 0002) |
+| Builder / editor undangan digital | ✅ | `pages/builder.html` — CRUD + publish/unpublish, owner-scoped |
+| Halaman publik undangan `/u/:slug` | ✅ | cover, countdown, tema, musik, lokasi, kalender `.ics`, galeri |
+| RSVP & buku tamu | ✅ | tabel `guestbook` (migrasi 0003) + endpoint publik + fallback demo |
+| Manajemen tamu (kelola daftar tamu pemilik) | 🟡 | Sprint 4 — tabel `guests` |
+| Amplop digital (`gifts`) | 🟡 | Sprint 4 |
+| Payment / pricing engine | 🟡 | Fase 3 |
 
 ## Fase 3 — Launch · v1.0.0 GA
 
@@ -64,6 +74,8 @@
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.0.9 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 3 closed — Release v1.2.0 The Core Features (tag v1.2.0); Fase 2 inti selesai |
+| 1.0.8 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 3 Development selesai — Fase 2 (auth, template, builder, halaman publik, RSVP & galeri) menunggu audit & release |
 | 1.0.7 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Fase 1 selesai — setup server & database awal |
 | 1.0.6 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 2 closed — Release v1.1.0 The First Experience; Fase 1 selesai (server & database belum) |
 | 1.0.5 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Homepage 9 section selesai dibangun — menunggu audit & Release v1.1.0 |

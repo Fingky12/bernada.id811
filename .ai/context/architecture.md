@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Architecture Context · Category : Context (living document)
-  Version  : 1.0.1 · Status : 🟠 Proses · Update : 05-08-2026
+  Version  : 1.0.3 · Status : ✅ Stable · Update : 10-08-2026
 -->
 
 # Arsitektur
@@ -48,9 +48,9 @@ Setiap keputusan arsitektur penting (pola, teknologi, struktur data) wajib:
 
 ## Status Saat Ini
 
-- **Frontend:** ✅ Landing page 9 section (v1.1.0).
-- **Backend:** 🟠 Node.js + Express (ESM) berjalan — `server/` (config, db, app, error handler) + `api/` (health).
-- **Database:** 🟠 Skema awal `0001_init.sql` (users, templates, invitations) + runner `database/migrate.js`; PostgreSQL belum diinstall lokal.
+- **Frontend:** ✅ Landing page 9 section (v1.1.0) + halaman aplikasi: `pages/login.html`, `pages/builder.html`, `pages/invitation.html`.
+- **Backend:** ✅ Node.js + Express (ESM) — `server/` (config, db, app, error handler, lib: jwt/password/validation/http-error, services) + `api/` (health, auth, templates, invitations, guestbook publik).
+- **Database:** 🟠 Migrasi `0001` (core) + `0002` (auth/templates) + `0003` (galeri/buku tamu); PostgreSQL belum diinstall lokal.
 
 ## Keputusan Arsitektur Kunci
 
@@ -59,10 +59,16 @@ Setiap keputusan arsitektur penting (pola, teknologi, struktur data) wajib:
 - **Migrasi append-only** di `database/migrations/` (rollback transaksi per file).
 - **Konfigurasi via env** (`.env.example` → `.env`), secret tidak masuk kode.
 - **Pool lazy + health check** — server tetap hidup saat DB mati.
+- **Layer service** — route (validasi) → service (logika bisnis/query) → pool (`server/services/*`).
+- **Autentikasi** — JWT access short-lived (memori) + refresh token rotasi (cookie httpOnly, hash SHA-256 di DB).
+- **Frontend same-origin** — Express menyajikan halaman & aset statis; `assets/js/api.js` client menangani auto-refresh.
+- **Progressive enhancement & fallback demo** — halaman publik `/u/:slug` tetap berfungsi dengan data demo saat API/DB tidak aktif.
 
 ---
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.0.3 | 10-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Release v1.2.0 — The Core Features (Audit PASS) |
+| 1.0.2 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Backend & DB lengkap (auth, template, invitation, guestbook) — Sprint 3 |
 | 1.0.1 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Backend & database awal (Fase 1) |
 | 1.0.0 | 03-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Review | Ringkasan arsitektur alpha |

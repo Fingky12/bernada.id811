@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : API · Category : Panduan (source of truth)
-  Version  : 1.0.0 · Status : 🟠 Proses · Update : 05-08-2026
+  Version  : 1.1.0 · Status : ✅ Stable · Update : 10-08-2026
 -->
 
 # API BERNADA.ID
@@ -44,6 +44,23 @@ Aturan:
 
 ---
 
+## Autentikasi
+
+### Skema Token
+
+| Token | Penyimpanan | Masa Berlaku | Rotasi |
+| --- | --- | --- | --- |
+| Access token (JWT) | Memori browser (bukan localStorage) | `JWT_ACCESS_EXPIRES` (default `15m`) | Regenerated tiap refresh |
+| Refresh token | Cookie httpOnly `bernada_refresh`, hash SHA-256 di DB | `REFRESH_TOKEN_EXPIRY_DAYS` (default `30`) | Dirotasi setiap refresh; bisa di-revoke (logout) |
+
+Aturan:
+
+- Password tersimpan sebagai hash `bcryptjs` (salt 12) — tidak pernah plaintext.
+- Seluruh permintaan yang memakai body token (refresh) via cookie httpOnly — tidak bisa dibaca JavaScript (anti XSS).
+- Endpoint publik tidak memerlukan autentikasi.
+
+---
+
 ## Endpoint
 
 ### GET `/api/health`
@@ -56,8 +73,8 @@ Cek kesehatan layanan dan koneksi database.
 {
   "status": "ok",
   "service": "bernada-api",
-  "version": "1.1.0",
-  "timestamp": "2026-08-09T03:50:39.652Z",
+  "version": "1.2.0",
+  "timestamp": "2026-08-10T03:50:39.652Z",
   "database": "connected"
 }
 ```
@@ -68,9 +85,102 @@ Cek kesehatan layanan dan koneksi database.
 {
   "status": "degraded",
   "service": "bernada-api",
-  "version": "1.1.0",
-  "timestamp": "2026-08-09T03:50:39.652Z",
+  "version": "1.2.0",
+  "timestamp": "2026-08-10T03:50:39.652Z",
   "database": "unreachable"
+}
+```
+
+---
+
+## Endpoint Autentikasi
+
+### POST `/api/auth/register`
+
+Membuat akun baru lalu langsung memberi sesi.
+
+**Request:**
+
+```json
+{
+  "email": "rara@contoh.com",
+  "password": "rahasia123",
+  "fullName": "Rara Kirana"
+}
+```
+
+**Response 200** — sesi dibuat:
+
+```json
+{
+  "user": {
+    "id": "1e3f0b8a-0000-0000-0000-000000000001",
+    "email": "rara@contoh.com",
+    "fullName": "Rara Kirana",
+    "role": "user",
+    "createdAt": "2026-08-10T03:50:39.652Z"
+  },
+  "accessToken": "<jwt>"
+}
+```
+
+Setelah response, cookie httpOnly `bernada_refresh` otomatis dipasang.
+
+**Response 409** — email sudah terdaftar (`EMAIL_TAKEN`).
+
+### POST `/api/auth/login`
+
+Masuk dengan email & password.
+
+**Request:**
+
+```json
+{
+  "email": "rara@contoh.com",
+  "password": "rahasia123"
+}
+```
+
+**Response 200** — sama dengan register (`user` + `accessToken`, cookie `bernada_refresh` dipasang).
+
+**Response 401** — `INVALID_CREDENTIALS` bila email/password salah (pesan sama untuk keduanya, anti enumerasi).
+
+### POST `/api/auth/refresh`
+
+Memperbarui access token memakai refresh token di cookie httpOnly.
+
+- Tidak menerima body; token dibaca dari cookie `bernada_refresh`.
+- Refresh token lama di-revoke, token baru dirotasi (rotasi aman, token bekas tidak bisa dipakai ulang).
+
+**Response 200:**
+
+```json
+{ "accessToken": "<jwt-baru>" }
+```
+
+**Response 401** — `UNAUTHORIZED` bila cookie tidak ada / token invalid / kedaluwarsa / sudah di-revoke.
+
+### POST `/api/auth/logout`
+
+Menghapus sesi (refresh token di-revoke) dan membersihkan cookie.
+
+**Response 204** — tanpa body.
+
+### GET `/api/auth/me`
+
+Mengambil data pengguna yang sedang masuk (memerlukan access token).
+
+**Response 200:**
+
+```json
+{
+  "user": {
+    "id": "1e3f0b8a-0000-0000-0000-000000000001",
+    "email": "rara@contoh.com",
+    "fullName": "Rara Kirana",
+    "role": "user",
+    "createdAt": "2026-08-10T03:50:39.652Z"
+  }
 }
 ```
 
@@ -78,9 +188,34 @@ Cek kesehatan layanan dan koneksi database.
 
 ## Endpoint Publik
 
+> Endpoint berikut tidak memerlukan autentikasi.
+
+### GET `/api/templates`
+
+Daftar template undangan yang aktif (untuk dipakai builder).
+
+**Response 200:**
+
+```json
+{
+  "templates": [
+    {
+      "id": "…",
+      "name": "Klasik Minimal",
+      "slug": "klasik-minimal",
+      "description": "Desain bersih dan tenang…",
+      "category": "wedding",
+      "previewUrl": "/assets/img/portfolio-1.svg"
+    }
+  ]
+}
+```
+
+Catatan: hanya template `is_active = TRUE` yang dikembalikan.
+
 ### GET `/api/invitations/public/:slug`
 
-Mengambil undangan yang sudah diterbitkan (publik, tanpa autentikasi). Endpoint ini dipakai halaman undangan di `/u/:slug`.
+Mengambil undangan yang sudah diterbitkan (publik). Endpoint ini dipakai halaman undangan di `/u/:slug`.
 
 **Response 200:**
 
@@ -98,6 +233,7 @@ Mengambil undangan yang sudah diterbitkan (publik, tanpa autentikasi). Endpoint 
     "message": "Dengan memohon rahmat dan ridho Allah SWT…",
     "theme": { "primaryColor": "#A12828", "accentColor": "#FFC400" },
     "musicUrl": "https://…/lagu.mp3",
+    "gallery": ["https://…/foto-1.jpg"],
     "publishedAt": "2026-08-09T04:00:00.000Z"
   },
   "template": {
@@ -114,6 +250,153 @@ Catatan:
 - Response **404** (`NOT_FOUND`) bila slug tidak ada atau belum diterbitkan.
 - Field `owner_id` dan detail internal lain **tidak** di-expose.
 - Slug divalidasi (huruf kecil, angka, tanda hubung).
+- `gallery` berupa array URL foto (bisa kosong).
+
+### GET `/api/invitations/public/:slug/guestbook`
+
+Daftar buku tamu / RSVP undangan terbit (publik).
+
+**Response 200:**
+
+```json
+{
+  "entries": [
+    {
+      "id": "…",
+      "guestName": "Bapak/Ibu Tamu",
+      "attendance": "hadir",
+      "guestsCount": 2,
+      "message": "Selamat menempuh hidup baru…",
+      "createdAt": "2026-08-10T03:50:39.652Z"
+    }
+  ]
+}
+```
+
+Catatan:
+
+- Diurutkan terbaru dulu (`created_at DESC`), maksimal 200 entri.
+- Hanya untuk undangan `is_published = TRUE` (404 bila tidak ditemukan/belum terbit).
+
+### POST `/api/invitations/public/:slug/guestbook`
+
+Mengirim ucapan & konfirmasi kehadiran (publik).
+
+**Request:**
+
+```json
+{
+  "guestName": "Bapak/Ibu Tamu",
+  "attendance": "hadir",
+  "guestsCount": 2,
+  "message": "Selamat menempuh hidup baru!"
+}
+```
+
+Aturan validasi:
+
+- `guestName` wajib, maksimal 120 karakter.
+- `attendance` wajib: `hadir` | `tidak-hadir`.
+- `guestsCount` angka 1–10 (default 1 bila kosong).
+- `message` opsional, maksimal 1000 karakter.
+
+**Response 201:**
+
+```json
+{
+  "entry": {
+    "id": "…",
+    "guestName": "Bapak/Ibu Tamu",
+    "attendance": "hadir",
+    "guestsCount": 2,
+    "message": "Selamat menempuh hidup baru!",
+    "createdAt": "2026-08-10T03:50:39.652Z"
+  }
+}
+```
+
+---
+
+## Endpoint Undangan (Terproteksi)
+
+> Seluruh endpoint di bawah memerlukan header `Authorization: Bearer <accessToken>` dan hanya mengakses/mengubah undangan **milik pengguna** (owner scoping). Akses ke undangan milik pengguna lain menghasilkan **404** `NOT_FOUND`.
+
+### POST `/api/invitations`
+
+Membuat undangan baru.
+
+**Request (semua field opsional kecuali `title` & `slug`):**
+
+```json
+{
+  "title": "Pernikahan Rara & Bima",
+  "slug": "rara-bima",
+  "templateId": "…",
+  "eventDate": "2026-10-08T04:00:00.000Z",
+  "eventTime": "09:00",
+  "venue": "Hotel Mulia",
+  "location": "Jl. Asia Afrika, Jakarta",
+  "couple": "Rara & Bima",
+  "message": "Merupakan suatu kehormatan…",
+  "theme": { "primaryColor": "#A12828", "accentColor": "#FFC400" },
+  "musicUrl": "https://…/lagu.mp3",
+  "gallery": ["https://…/foto-1.jpg"]
+}
+```
+
+Validasi:
+
+- `title` wajib, maksimal 150.
+- `slug` wajib, pola `[a-z0-9]+(-[a-z0-9]+)*`, maksimal 60.
+- `eventDate` ISO tanggal valid (opsional).
+- `theme` objek JSON (opsional).
+- `gallery` array teks, maksimal 100 item, 500 karakter/item.
+
+**Response 201:** objek undangan lengkap (termasuk `id`, `isPublished`, `publishedAt`, `createdAt`, `updatedAt`).
+
+**Response 409** — `SLUG_TAKEN` bila slug sudah dipakai undangan lain.
+
+### GET `/api/invitations`
+
+Daftar seluruh undangan milik pengguna (terbaru dulu).
+
+**Response 200:**
+
+```json
+{ "invitations": [ … ] }
+```
+
+### GET `/api/invitations/:id`
+
+Detail satu undangan milik pengguna.
+
+**Response 200:** objek undangan. **404** bila tidak ada/bukan miliknya.
+
+### PATCH `/api/invitations/:id`
+
+Memperbarui sebagian field undangan (partial update — hanya field yang dikirim yang diubah).
+
+Body memakai struktur yang sama dengan create; setiap field opsional. Contoh: `{ "title": "Judul Baru" }`.
+
+**Response 200:** objek undangan terbaru.
+
+### DELETE `/api/invitations/:id`
+
+Menghapus undangan milik pengguna.
+
+**Response 204** — tanpa body.
+
+### POST `/api/invitations/:id/publish`
+
+Menerbitkan undangan — langsung bisa diakses publik via `/u/:slug` dan `GET /api/invitations/public/:slug`.
+
+**Response 200:** objek undangan (`isPublished: true`, `publishedAt` terisi bila pertama kali).
+
+### POST `/api/invitations/:id/unpublish`
+
+Menonaktifkan undangan dari publik.
+
+**Response 200:** objek undangan (`isPublished: false`, `publishedAt` kosong).
 
 ---
 
@@ -123,14 +406,29 @@ Catatan:
 | --- | --- |
 | `helmet` | Header keamanan (CSP, HSTS, X-Content-Type-Options, dll.) |
 | `cors` | Batasi origin (konfigurasi `CORS_ORIGIN` di `.env`) |
+| `cookieParser` | Baca cookie (refresh token httpOnly) |
 | `express.json` | Parse body JSON (limit 1mb) |
-| `requireAuth` | Wajib autentikasi untuk endpoint terproteksi |
+| `requireAuth` | Wajib autentikasi untuk endpoint terproteksi (verify JWT `Bearer`) |
 | `notFoundHandler` | 404 JSON untuk route yang tidak dikenal |
 | `errorHandler` | Error terpusat: 5xx generik, <5xx mengikuti `err.status` |
 
 ---
 
+## Halaman (disajikan Express, same-origin)
+
+| Route | File |
+| --- | --- |
+| `/` | `index.html` |
+| `/login` | `pages/login.html` |
+| `/builder` | `pages/builder.html` |
+| `/u/:slug` | `pages/invitation.html` |
+
+Aset statis disajikan via `/assets` dan `/pages`.
+
+---
+
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.0.2 | 10-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Endpoint auth, templates, undangan CRUD/publish, guestbook publik & galeri |
 | 1.0.1 | 09-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Endpoint publik `GET /api/invitations/public/:slug` + konvensi autentikasi JWT |
 | 1.0.0 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Konvensi API + endpoint health |

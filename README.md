@@ -6,7 +6,7 @@ Digital Wedding Invitation Platform
 
 ## Version
 
-v1.1.0
+v1.2.0 (The Core Features)
 
 ---
 
@@ -31,9 +31,12 @@ Database
 
 ## Menjalankan di Lokal
 
-### Frontend (Landing Page)
+### Frontend
 
-Buka `index.html` langsung di browser, atau sajikan dengan server statis apa pun.
+- `index.html` — landing page (buka langsung di browser, atau disajikan server).
+- `/login` — halaman masuk / daftar (`pages/login.html`).
+- `/builder` — dasbor & editor undangan (`pages/builder.html`).
+- `/u/:slug` — halaman publik undangan (`pages/invitation.html`).
 
 ### Backend (API)
 
@@ -64,6 +67,15 @@ npm run migrate      # jalankan migrasi skema (database/migrations/)
 ### Health Check
 
 `GET http://localhost:3000/api/health` — status `ok` (200) bila database terhubung, `degraded` (503) bila belum.
+
+### Alur Penggunaan
+
+1. Buka `/login` → daftar akun baru.
+2. Masuk ke `/builder` → "Buat Undangan" → isi detail, pilih template, sesuaikan tema → simpan.
+3. "Terbitkan" → bagikan link `/u/<slug>` ke tamu.
+4. Tamu membuka link: melihat undangan, konfirmasi kehadiran & menulis buku tamu.
+
+> Catatan: PostgreSQL belum diinstall di mesin pengembangan — API memerlukan database untuk register/login/CRUD. Halaman publik `/u/:slug` tetap bisa dilihat lewat data demo bawaan (`assets/js/demo-invitations.js`).
 
 ---
 

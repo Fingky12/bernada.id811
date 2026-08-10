@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Sprint Context · Category : Context (living document)
-  Version  : 1.0.8 · Status : 🟠 Proses · Update : 09-08-2026
+  Version  : 1.1.0 · Status : ✅ Closed · Update : 10-08-2026
 -->
 
 # Sprint
@@ -14,9 +14,19 @@
 
 | Item | Detail |
 | --- | --- |
+| Sprint | Sprint 4 — (belum dijadwalkan) |
+| Tujuan | — |
+| Status | ⏸ Belum dimulai — menunggu Sprint 3 Closed lalu planning |
+| Release | — |
+| Referensi | — |
+
+## Sprint Sebelumnya (Closed)
+
+| Item | Detail |
+| --- | --- |
 | Sprint | Sprint 3 — The Core Features (Builder Undangan) |
 | Tujuan | Autentikasi + builder undangan + template & personalisasi (API + halaman UI) |
-| Status | 🟠 Proses (Planning) |
+| Status | ✅ Closed |
 | Release | v1.2.0 — The Core Features Release |
 | Referensi | `.docs/sprint-3.md` |
 
@@ -69,7 +79,22 @@
 - Template undangan & personalisasi (list template aktif + tema)
 - Halaman UI: `pages/login.html`, `pages/builder.html` & `pages/invitation.html` (disajikan Express)
 - Halaman publik undangan `/u/:slug` — cover, hitung mundur, tema, musik, lokasi & kalender
-- Manajemen tamu & RSVP — 🟡 ditunda ke Sprint 4
+- RSVP & buku tamu — masuk scope saat Development (tabel `guestbook` + endpoint publik + fallback demo)
+- Galeri foto — kolom `gallery` JSONB di undangan (migrasi 0003)
+- Manajemen tamu (kelola daftar tamu oleh pemilik) — 🟡 ditunda ke Sprint 4
+
+## Hasil Sprint 3 (Development)
+
+- ✅ Autentikasi lengkap — register/login/logout/refresh (rotasi + revoke, httpOnly cookie, hash SHA-256) + `me` + `requireAuth`
+- ✅ Template API — `GET /api/templates` + 6 template seed (migrasi 0002)
+- ✅ Invitation API — CRUD + publish/unpublish, owner-scoped, validasi server
+- ✅ Halaman publik `/u/:slug` — cover, countdown, tema, musik, lokasi + kalender `.ics`, galeri, RSVP & buku tamu
+- ✅ RSVP & buku tamu — tabel `guestbook` (migrasi 0003) + endpoint publik + fallback demo lokal
+- ✅ Galeri foto — kolom `gallery` (migrasi 0003), dikelola builder, dirender publik
+- ✅ Frontend — `login.html`, `builder.html`, `invitation.html` + `api.js`, `login.js`, `builder.js`, `invitation.js`, `demo-invitations.js`
+- ✅ Audit PASS — 24 PASS · 6 WARNING (0 ERROR) — `.docs/audit/LAPORAN-AUDIT-SPRINT-3.html`
+- ✅ Release v1.2.0 — The Core Features Release (tag `v1.2.0`) — Sprint 3 closed
+- 📌 Catatan: verifikasi E2E penuh (register→login→CRUD→publish→guestbook) menunggu PostgreSQL terpasang
 
 ## Aturan Sprint
 
@@ -81,6 +106,8 @@
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.1.0 | 10-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Closed | Sprint 3 closed — Audit PASS + Release v1.2.0 The Core Features (tag v1.2.0) |
+| 1.0.9 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 3 Development selesai (auth, template, invitation API, halaman publik, RSVP & buku tamu, galeri) — Review/Documentation |
 | 1.0.8 | 09-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 3 dimulai — Planning (Auth + Builder + Template) |
 | 1.0.7 | 05-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Closed | Sprint 2 closed — Audit PASS + Release v1.1.0 The First Experience (tag v1.1.0) |
 | 1.0.6 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 2 — Development selesai (9 section + interaksi + aset); Review & Documentation |

@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Architecture · Category : Panduan (source of truth)
-  Version  : 1.0.1 · Status : 🟠 Proses · Update : 05-08-2026
+  Version  : 1.0.2 · Status : 🟠 Proses · Update : 10-08-2026
 -->
 
 # Arsitektur BERNADA.ID
@@ -47,9 +47,9 @@ Arsitektur tiga lapis (three-tier) yang terpisah jelas:
 
 | Lapisan | Status | Catatan |
 | --- | --- | --- |
-| Frontend | ✅ Selesai (v1.1.0) | Landing page 9 section di atas design system & komponen |
-| Backend | 🟠 Sebagian | Node.js + Express berjalan: config, app, error handler, health check |
-| Database | 🟠 Sebagian | Skema awal (users, templates, invitations) + alur migrasi; PostgreSQL belum diinstall lokal |
+| Frontend | ✅ Selesai (v1.1.0 → v1.2.0) | Landing page 9 section + halaman `/login`, `/builder`, `/u/:slug` |
+| Backend | ✅ Selesai (Sprint 3) | Node.js + Express: config, app, error handler, middleware auth, lib (jwt/password/validation), service layer, router health/auth/templates/invitations + guestbook publik |
+| Database | 🟠 Sebagian | Migrasi 0001 (core) + 0002 (refresh_tokens + seed template) + 0003 (galeri & buku tamu); PostgreSQL belum diinstall lokal |
 
 ## Keputusan Arsitektur
 
@@ -68,10 +68,16 @@ Setiap keputusan arsitektur penting (pola, teknologi, struktur data) wajib:
 | Migrasi append-only + runner `database/migrate.js` | Riwayat skema terjamin, rollback transaksi per file | Tool eksternal (node-pg-migrate) | Tanpa dependency ekstra | Runner minimal, fitur downgrade tidak disediakan |
 | Konfigurasi via environment (`.env` + `--env-file-if-exists`) | Secret tidak masuk kode (rules/07) | dotenv | Tanpa dependency, didukung native Node 22 | File `.env` harus dibuat manual dari contoh |
 | Pool `pg` di `server/db.js` + lazy health check | Server tetap hidup saat DB mati; health endpoint lapor status | Koneksi wajib saat boot | Toleran kegagalan, mudah di-debug | Health check perlu pemantauan |
+| Service layer (`server/services/*`) | Route hanya validasi & HTTP; logika bisnis di service — single responsibility | Logika menumpuk di route | Mudah diuji & dipakai ulang | File service bertambah seiring fitur |
+| JWT access + refresh token rotasi | Access short-lived (memori), refresh di cookie httpOnly + hash SHA-256 di DB, dirotasi & di-revoke | Session murni / OAuth | Aman XSS (httpOnly), revoke-able, stateless access | Rotasi perlu transaksi & index `token_hash` |
+| `bcryptjs` (tanpa native build) | Aman di Windows & CI, tanpa dependency native | `bcrypt` / argon2 native | Mudah diinstall di semua OS | Sedikit lebih lambat dari native |
+| Frontend same-origin via Express | `express.static` + route halaman — cookie same-site bekerja tanpa CORS | SPA terpisah + CORS | Sederhana, cookie aman, tanpa origin checker | Frontend terikat satu server |
+| Fallback demo publik (`demo-invitations.js`) | Halaman `/u/:slug` tetap terlihat saat API/DB mati (progressive enhancement) | Skeleton + error page | UX tidak mati total; berguna saat demo | Data contoh tidak dari DB (beri label "Pratinjau") |
 
 ---
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.0.2 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 3 — auth, service layer, template & invitation API, halaman publik, guestbook |
 | 1.0.1 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Backend & database awal (Fase 1) — keputusan arsitektur baru |
 | 1.0.0 | 03-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Review | Ringkasan arsitektur alpha |

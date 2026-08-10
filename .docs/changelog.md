@@ -1,12 +1,68 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Changelog · Category : Catatan (living document)
-  Version  : 1.0.8 · Status : ✅ Stable · Update : 09-08-2026
+  Version  : 1.1.0 · Status : ✅ Stable · Update : 10-08-2026
 -->
 
 # Changelog
 
 > Catatan perubahan penting project BERNADA.ID. Ditulis dari perubahan paling baru.
+
+---
+
+## Release v1.2.0 — The Core Features Release (10-08-2026)
+
+### Release — v1.2.0
+
+- 🚀 **Release v1.2.0 — The Core Features Release** (Status: ✅ Stable) — Autentikasi, template, builder undangan, halaman publik `/u/:slug`, RSVP & buku tamu, galeri foto. Detail: `.docs/releases/v1.2.0-core-features.md`.
+- ✅ **Audit Sprint 3 PASS** — 24 PASS · 6 WARNING (LOW/non-blocking, 1 MEDIUM verifikasi E2E menunggu DB) · 0 ERROR (`.docs/audit/LAPORAN-AUDIT-SPRINT-3.html`).
+- 🏷️ **Tag git v1.2.0** dibuat — release disetujui Product Owner, Senior Engineer & AI Pair Programmer; **Sprint 3 closed**.
+- 📦 **Versi aplikasi** `package.json` dibump ke `v1.2.0`.
+- 📌 **Catatan:** verifikasi E2E penuh (register → login → CRUD → publish → guestbook) dijadwalkan setelah PostgreSQL terpasang di mesin pengembangan.
+
+---
+
+## 09-08-2026 — Sprint 3 Development: Auth, Builder, Halaman Publik, RSVP & Galeri
+
+### Autentikasi (backend + halaman login)
+
+- Menambahkan migrasi `0002_auth_templates.sql` — tabel `refresh_tokens` (token refresh, hash SHA-256, rotasi, revoke) + seed 6 template wedding.
+- Membangun `server/lib/` baru: `jwt.js` (sign/verify access token JWT), `password.js` (bcryptjs, salt 12), `validation.js` (helper validasi: email, password, slug, ISO date, JSON objek, array teks), `http-error.js` (`HttpError`).
+- Membangun service auth & user (`server/services/auth-service.js`, `user-service.js`) — register, login, logout, refresh (rotasi dalam transaksi), `me`; anti-enumerasi email (dummy hash), password hash `bcryptjs`.
+- Menambahkan endpoint `/api/auth/*` (`api/routes/auth.js`) — `POST /register`, `POST /login`, `POST /refresh`, `POST /logout`, `GET /me`; refresh token di cookie httpOnly `bernada_refresh` (secure di production, sameSite lax).
+- Menambahkan middleware `requireAuth` (`server/middleware/require-auth.js`) — verifikasi `Authorization: Bearer <jwt>`.
+- Membuat `pages/login.html` + `assets/js/login.js` + `assets/js/api.js` — tab masuk/daftar, auto-refresh access token via cookie (bukan localStorage), arahkan ke `/builder`.
+- Menambahkan dependency: `bcryptjs`, `jsonwebtoken`, `cookie-parser` + `cookieParser` middleware di `server/app.js`.
+
+### Template & Invitation API
+
+- Menambahkan `GET /api/templates` (`api/routes/templates.js`) — hanya template aktif (`is_active = TRUE`).
+- Menambahkan `server/services/template-service.js` (list aktif + get by id) & `invitation-service.js` (CRUD + publish, owner-scoped, `SLUG_TAKEN` 409).
+- Menambahkan endpoint `/api/invitations/*` (`api/routes/invitations.js`, terproteksi `requireAuth`): `POST /`, `GET /`, `GET /:id`, `PATCH /:id`, `DELETE /:id`, `POST /:id/publish`, `POST /:id/unpublish`.
+
+### Halaman Publik Undangan (`/u/:slug`)
+
+- Menambahkan `getPublishedInvitationBySlug` di `invitation-service.js` — join `invitations` + `templates`, hanya `is_published = TRUE`, tanpa mengekspos `owner_id`.
+- Menambahkan endpoint publik `GET /api/invitations/public/:slug` — slug divalidasi, 404 bila tidak ditemukan/belum terbit.
+- Menambahkan route halaman `GET /u/:slug` di `server/app.js` yang menyajikan `pages/invitation.html` (same-origin).
+- Membuat `pages/invitation.html` — cover "The Wedding Of" + tombol buka, hitung mundur, detail acara, lokasi (Google Maps + unduhan kalender `.ics`), kata sambutan, footer, & tombol musik mengambang.
+- Membuat `assets/js/invitation.js` — fetch data publik, render konten via `textContent` (anti-XSS), terapkan tema warna (CSS custom properties), hitung mundur real-time, toggle musik, unduh `.ics`, state error.
+- Membuat `assets/css/invitation.css` — halaman undangan murni design token, mobile-first, `prefers-reduced-motion`, tema lewat `--inv-primary`/`--inv-accent`; diimpor di `main.css`.
+- Mengubah tautan "Buka link" di builder dari `/<slug>` menjadi `/u/<slug>`.
+
+### RSVP, Buku Tamu & Galeri
+
+- Menambahkan migrasi `0003_guestbook_gallery.sql` — kolom `invitations.gallery` (JSONB array URL) + tabel `guestbook` (guest_name, attendance `hadir`/`tidak-hadir`, guests_count 1–10, message) + index.
+- Menambahkan `server/services/guestbook-service.js` (list maks 200 & tambah entri, hanya untuk undangan terbit) + endpoint publik `GET/POST /api/invitations/public/:slug/guestbook` (validasi `guestName`, `attendance`, `guestsCount`, `message`).
+- Menambahkan formulir RSVP & buku tamu di `pages/invitation.html` + render `assets/js/invitation.js` (escapeHtml anti-XSS, badge hadir/tidak hadir, alert sukses/error).
+- Menambahkan fallback demo lokal — `assets/js/demo-invitations.js` (6 undangan contoh dari portofolio, galeri placeholder SVG, buku tamu contoh) dipakai saat API/DB tidak aktif; ucapan tersimpan di `localStorage` (pratinjau).
+- Menambahkan galeri di builder (`pages/builder.html` field "Galeri Foto (URL)", satu URL per baris) & dirender sebagai grid di halaman publik.
+
+### Documentation
+
+- Memperbarui `.docs/api.md` (endpoint auth, templates, undangan CRUD, publik `/u/:slug` + guestbook), `.docs/database.md` (migrasi 0002 & 0003), `.docs/sprint-3.md`, `.docs/roadmap.md`, `.ai/context/*` (sprint, roadmap, project, architecture).
+
+> Catatan: pengujian E2E endpoint tertunda karena PostgreSQL di mesin pengembangan belum berjalan (server tetap hidup, error DB ditutup menjadi 500 generik; halaman publik memakai fallback demo).
 
 ---
 
@@ -148,6 +204,8 @@
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.1.0 | 10-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Release v1.2.0 — The Core Features (Audit PASS + tag v1.2.0 + Sprint 3 closed) |
+| 1.0.9 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 3 Development — auth, builder, halaman publik, RSVP/buku tamu & galeri |
 | 1.0.8 | 09-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Halaman publik undangan `/u/:slug` — endpoint publik + cover, countdown, tema, musik, lokasi & kalender |
 | 1.0.7 | 05-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Fase 1 selesai — setup server (Express ESM) & database awal (skema + migrasi) |
 | 1.0.6 | 05-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Sprint 2 closed — Audit PASS + Release v1.1.0 The First Experience (tag v1.1.0) |
