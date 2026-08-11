@@ -12,8 +12,6 @@ import * as guestService from '../../server/services/guest-service.js';
 
 export const guestsRouter = Router();
 
-guestsRouter.use(requireAuth);
-
 function validateGuestFields(body) {
   return {
     fullName: requiredString(body.fullName, 'fullName', { max: 120 }),
@@ -42,13 +40,13 @@ function validateUpdateFields(body) {
   return changes;
 }
 
-guestsRouter.get('/invitations/:id/guests', async (req, res) => {
+guestsRouter.get('/invitations/:id/guests', requireAuth, async (req, res) => {
   const id = parseId(req.params.id);
   const guests = await guestService.listGuests(id, req.user.id);
   res.status(200).json({ guests });
 });
 
-guestsRouter.post('/invitations/:id/guests', async (req, res) => {
+guestsRouter.post('/invitations/:id/guests', requireAuth, async (req, res) => {
   const id = parseId(req.params.id);
   const body = req.body ?? {};
   const guests = Array.isArray(body.guests)
@@ -58,26 +56,26 @@ guestsRouter.post('/invitations/:id/guests', async (req, res) => {
   res.status(201).json({ guests: created });
 });
 
-guestsRouter.get('/invitations/:id/guests/stats', async (req, res) => {
+guestsRouter.get('/invitations/:id/guests/stats', requireAuth, async (req, res) => {
   const id = parseId(req.params.id);
   const stats = await guestService.getGuestStats(id, req.user.id);
   res.status(200).json(stats);
 });
 
-guestsRouter.get('/guests/:guestId', async (req, res) => {
+guestsRouter.get('/guests/:guestId', requireAuth, async (req, res) => {
   const guestId = parseId(req.params.guestId);
   const guest = await guestService.getGuest(guestId, req.user.id);
   res.status(200).json({ guest });
 });
 
-guestsRouter.patch('/guests/:guestId', async (req, res) => {
+guestsRouter.patch('/guests/:guestId', requireAuth, async (req, res) => {
   const guestId = parseId(req.params.guestId);
   const changes = validateUpdateFields(req.body ?? {});
   const guest = await guestService.updateGuest(guestId, req.user.id, changes);
   res.status(200).json({ guest });
 });
 
-guestsRouter.delete('/guests/:guestId', async (req, res) => {
+guestsRouter.delete('/guests/:guestId', requireAuth, async (req, res) => {
   const guestId = parseId(req.params.guestId);
   await guestService.deleteGuest(guestId, req.user.id);
   res.status(204).end();

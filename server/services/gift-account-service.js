@@ -49,7 +49,14 @@ export async function createGiftAccount(invitationId, ownerId, data) {
        (invitation_id, bank_name, account_number, account_name, is_active, sort_order)
      VALUES ($1, $2, $3, $4, $5, $6)
      RETURNING ${COLUMNS}`,
-    [invitationId, data.bankName, data.accountNumber, data.accountName, data.isActive, data.sortOrder],
+    [
+      invitationId,
+      data.bankName,
+      data.accountNumber,
+      data.accountName,
+      data.isActive ?? true,
+      data.sortOrder ?? 0,
+    ],
   );
   return toGiftAccountDto(rows[0]);
 }

@@ -13,6 +13,7 @@ import {
 } from '../../server/lib/validation.js';
 import * as invitationService from '../../server/services/invitation-service.js';
 import * as guestbookService from '../../server/services/guestbook-service.js';
+import * as giftAccountService from '../../server/services/gift-account-service.js';
 
 export const invitationsRouter = Router();
 
@@ -66,6 +67,12 @@ invitationsRouter.post('/public/:slug/guestbook', guestbookLimiter, async (req, 
   const data = validateGuestbookFields(req.body ?? {});
   const entry = await guestbookService.addGuestbookEntry(slug, data);
   res.status(201).json({ entry });
+});
+
+invitationsRouter.get('/public/:slug/gift-accounts', publicLimiter, async (req, res) => {
+  const slug = validateSlug(req.params.slug, 'slug');
+  const accounts = await giftAccountService.listPublicGiftAccounts(slug);
+  res.status(200).json({ accounts });
 });
 
 invitationsRouter.use(requireAuth);

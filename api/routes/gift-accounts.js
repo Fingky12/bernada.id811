@@ -1,26 +1,14 @@
 import { Router } from 'express';
 import { requireAuth } from '../../server/middleware/require-auth.js';
-import { rateLimit } from '../../server/middleware/rate-limit.js';
 import { HttpError } from '../../server/lib/http-error.js';
 import {
   parseId,
   requiredString,
   optionalString,
-  validateSlug,
 } from '../../server/lib/validation.js';
 import * as giftAccountService from '../../server/services/gift-account-service.js';
 
 export const giftAccountsRouter = Router();
-
-const publicLimiter = rateLimit({ windowMs: 60 * 1000, max: 120 });
-
-giftAccountsRouter.get('/public/:slug/gift-accounts', publicLimiter, async (req, res) => {
-  const slug = validateSlug(req.params.slug, 'slug');
-  const accounts = await giftAccountService.listPublicGiftAccounts(slug);
-  res.status(200).json({ accounts });
-});
-
-giftAccountsRouter.use(requireAuth);
 
 function validateSortOrder(value) {
   if (value === undefined || value === null || value === '') {
@@ -54,27 +42,27 @@ function validateFields(body, { partial = false } = {}) {
   return data;
 }
 
-giftAccountsRouter.get('/invitations/:id/gift-accounts', async (req, res) => {
+giftAccountsRouter.get('/invitations/:id/gift-accounts', requireAuth, async (req, res) => {
   const id = parseId(req.params.id);
   const accounts = await giftAccountService.listGiftAccounts(id, req.user.id);
   res.status(200).json({ accounts });
 });
 
-giftAccountsRouter.post('/invitations/:id/gift-accounts', async (req, res) => {
+giftAccountsRouter.post('/invitations/:id/gift-accounts', requireAuth, async (req, res) => {
   const id = parseId(req.params.id);
   const data = validateFields(req.body ?? {});
   const account = await giftAccountService.createGiftAccount(id, req.user.id, data);
   res.status(201).json({ account });
 });
 
-giftAccountsRouter.patch('/gift-accounts/:giftAccountId', async (req, res) => {
+giftAccountsRouter.patch('/gift-accounts/:giftAccountId', requireAuth, async (req, res) => {
   const giftAccountId = parseId(req.params.giftAccountId);
   const changes = validateFields(req.body ?? {}, { partial: true });
   const account = await giftAccountService.updateGiftAccount(giftAccountId, req.user.id, changes);
   res.status(200).json({ account });
 });
 
-giftAccountsRouter.delete('/gift-accounts/:giftAccountId', async (req, res) => {
+giftAccountsRouter.delete('/gift-accounts/:giftAccountId', requireAuth, async (req, res) => {
   const giftAccountId = parseId(req.params.giftAccountId);
   await giftAccountService.deleteGiftAccount(giftAccountId, req.user.id);
   res.status(204).end();
