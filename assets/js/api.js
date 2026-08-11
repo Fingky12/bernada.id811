@@ -223,4 +223,20 @@ export const api = {
   async deleteGiftAccount(giftAccountId) {
     await request(`/gift-accounts/${giftAccountId}`, { method: 'DELETE' });
   },
+
+  /* ---- Admin (Sprint 5) ---- */
+
+  async getAdminStats() {
+    const data = await request('/admin/stats');
+    return data.stats;
+  },
+
+  async listAdminUsers({ search = '', role = '', page = 1, pageSize = 20 } = {}) {
+    const params = new URLSearchParams();
+    if (search) params.set('search', search);
+    if (role) params.set('role', role);
+    params.set('page', String(page));
+    params.set('pageSize', String(pageSize));
+    return request(`/admin/users?${params.toString()}`);
+  },
 };

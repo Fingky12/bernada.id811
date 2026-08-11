@@ -15,6 +15,7 @@ import { escapeHtml, formatDate as formatEventDate } from './util.js';
 const elements = {
   userName: document.getElementById('app-user-name'),
   logoutBtn: document.getElementById('logout-btn'),
+  adminLink: document.getElementById('admin-link'),
   listView: document.getElementById('list-view'),
   editorView: document.getElementById('editor-view'),
   manageView: document.getElementById('manage-view'),
@@ -627,6 +628,9 @@ async function init() {
   try {
     const user = await api.me();
     elements.userName.textContent = user.fullName || user.email;
+    if (user.role === 'admin' && elements.adminLink) {
+      elements.adminLink.classList.remove('d-none');
+    }
   } catch {
     window.location.href = '/login';
     return;

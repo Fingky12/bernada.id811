@@ -1,0 +1,191 @@
+/* ==========================================================
+  BERNADA.ID PAGES
+  ----------------------------------------------------------
+  Document : Admin Page · Category : Pages
+  Version  : 1.0.0 · Status : ✅ Stable · Update : 11-08-2026
+
+  Single Responsibility : Layout & komponen khusus halaman
+  /admin (Panel Admin — Sprint 5, read-only).
+  Design Token Source   : assets/css/variables.css
+  ========================================================== */
+
+
+/* ==========================================================
+  1. STATISTICS CARDS
+  ----------------------------------------------------------
+  Grid kartu statistik ringkasan platform.
+  ========================================================== */
+
+.admin-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+.stat-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2xs);
+    padding: var(--spacing-lg);
+    background: var(--color-surface);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.stat-card .stat-value {
+    font-family: var(--font-family-display);
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-gray-900);
+    line-height: var(--line-height-tight);
+}
+
+.stat-card .stat-label {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-gray-500);
+    letter-spacing: var(--letter-spacing-wide);
+    text-transform: uppercase;
+}
+
+.stat-card .stat-sub {
+    font-size: var(--font-size-xs);
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+
+/* ==========================================================
+  2. SECTION & TOOLBAR
+  ----------------------------------------------------------
+  Kontainer tabel pengguna + bar pencarian/filter.
+  ========================================================== */
+
+.admin-section {
+    margin-top: var(--spacing-xl);
+}
+
+.admin-toolbar {
+    display: grid;
+    grid-template-columns: 1fr minmax(180px, 240px);
+    gap: var(--spacing-md);
+    align-items: end;
+    margin-bottom: var(--spacing-md);
+}
+
+.admin-toolbar .form-group {
+    margin-bottom: 0;
+}
+
+
+/* ==========================================================
+  3. USER TABLE
+  ----------------------------------------------------------
+  Tabel read-only daftar pengguna.
+  ========================================================== */
+
+.admin-table-wrap {
+    overflow-x: auto;
+    background: var(--color-surface);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-sm);
+}
+
+.admin-table thead th {
+    padding: var(--spacing-sm) var(--spacing-md);
+    text-align: left;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    color: var(--color-gray-500);
+    background: var(--color-gray-50);
+    border-bottom: 1px solid var(--color-gray-200);
+    white-space: nowrap;
+}
+
+.admin-table tbody td {
+    padding: var(--spacing-sm) var(--spacing-md);
+    color: var(--color-gray-700);
+    border-bottom: 1px solid var(--color-gray-100);
+    vertical-align: middle;
+}
+
+.admin-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.admin-table tbody tr:hover {
+    background: var(--color-gray-50);
+}
+
+.admin-table tbody td:first-child {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-900);
+}
+
+.admin-empty {
+    padding: var(--spacing-xl);
+    text-align: center;
+}
+
+.admin-empty .empty-state-text {
+    color: var(--color-gray-500);
+}
+
+
+/* ==========================================================
+  4. PAGINATION
+  ----------------------------------------------------------
+  Navigasi halaman daftar pengguna.
+  ========================================================== */
+
+.admin-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-md);
+}
+
+.admin-pagination .pagination-info {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+}
+
+
+/* ==========================================================
+  5. NEUTRAL BADGE (PERAN PENGGUNA)
+  ----------------------------------------------------------
+  Variasi badge netral khusus tabel admin.
+  ========================================================== */
+
+.badge-neutral {
+    background: var(--color-gray-100);
+    color: var(--color-gray-700);
+}
+
+
+/* ==========================================================
+  6. RESPONSIVE
+  ========================================================== */
+
+@media (max-width: 640px) {
+    .admin-toolbar {
+        grid-template-columns: 1fr;
+        align-items: stretch;
+    }
+
+    .admin-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

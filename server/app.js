@@ -43,6 +43,7 @@ export function createApp() {
   });
   app.get('/login', page('login.html'));
   app.get('/builder', page('builder.html'));
+  app.get('/admin', page('admin.html'));
   app.get('/u/:slug', page('invitation.html'));
 
   app.use(notFoundHandler);

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin — BERNADA.ID</title>
+    <meta name="description" content="Panel administrator BERNADA.ID — statistik platform dan daftar pengguna.">
+    <meta name="robots" content="noindex">
+    <link rel="icon" type="image/svg+xml" href="../assets/img/favicon.svg">
+    <link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+
+    <header class="app-header">
+        <div class="container app-header-inner">
+            <a class="app-brand" href="/" aria-label="BERNADA.ID — beranda">
+                <span class="app-brand-mark" aria-hidden="true">B</span>
+                <span class="brand-text">BERNADA<em>.ID</em></span>
+            </a>
+            <div class="app-user">
+                <a class="btn btn-ghost btn-sm" href="/builder">← Dasbor Saya</a>
+                <span id="app-user-name" class="app-user-name"></span>
+                <button id="logout-btn" class="btn btn-outline btn-sm" type="button">Keluar</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="app-main">
+        <div class="container">
+
+            <section aria-label="Statistik platform">
+                <div class="page-head">
+                    <div>
+                        <h1 class="page-title">Panel Admin</h1>
+                        <p class="page-subtitle">Ringkasan statistik platform dan daftar pengguna BERNADA.ID.</p>
+                    </div>
+                </div>
+
+                <div id="stats-grid" class="admin-stats" aria-live="polite">
+                    <div class="stat-card"><span class="stat-value" id="stat-users">–</span><span class="stat-label">Pengguna</span></div>
+                    <div class="stat-card"><span class="stat-value" id="stat-admins">–</span><span class="stat-label">Admin</span></div>
+                    <div class="stat-card"><span class="stat-value" id="stat-invitations">–</span><span class="stat-label">Undangan</span></div>
+                    <div class="stat-card"><span class="stat-value" id="stat-published">–</span><span class="stat-label">Terbit</span></div>
+                    <div class="stat-card"><span class="stat-value" id="stat-guestbook">–</span><span class="stat-label">Buku Tamu</span></div>
+                    <div class="stat-card"><span class="stat-value" id="stat-guests">–</span><span class="stat-label">Tamu</span></div>
+                    <div class="stat-card">
+                        <span class="stat-value" id="stat-gift-accounts">–</span>
+                        <span class="stat-label">Rekening <span id="stat-gift-active" class="stat-sub"></span></span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="admin-section" aria-label="Daftar pengguna">
+                <div class="admin-toolbar">
+                    <div class="form-group">
+                        <label class="form-label" for="user-search">Cari Pengguna</label>
+                        <input class="input" id="user-search" type="search" placeholder="Cari nama atau email..." maxlength="100" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="user-role">Peran</label>
+                        <select class="input" id="user-role">
+                            <option value="">Semua</option>
+                            <option value="admin">Admin</option>
+                            <option value="user">Pengguna</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="admin-table-wrap">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nama</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Peran</th>
+                                <th scope="col">Terdaftar</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-tbody" aria-live="polite"></tbody>
+                    </table>
+                    <div id="users-empty" class="admin-empty d-none">
+                        <p class="empty-state-text">Tidak ada pengguna yang cocok.</p>
+                    </div>
+                </div>
+
+                <nav class="admin-pagination" aria-label="Navigasi halaman pengguna">
+                    <button id="prev-page" class="btn btn-outline btn-sm" type="button">← Sebelumnya</button>
+                    <span id="page-info" class="pagination-info">Halaman 1</span>
+                    <button id="next-page" class="btn btn-outline btn-sm" type="button">Berikutnya →</button>
+                </nav>
+            </section>
+
+        </div>
+    </main>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script type="module" src="../assets/js/admin.js"></script>
+</body>
+</html>

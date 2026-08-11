@@ -10,7 +10,8 @@
     "dev": "node --watch --env-file-if-exists=.env server/index.js",
     "migrate": "node --env-file-if-exists=.env database/migrate.js",
     "db:create": "node --env-file-if-exists=.env database/create-db.js",
-    "test:health": "node --env-file-if-exists=.env scripts/health-check.mjs"
+    "test:health": "node --env-file-if-exists=.env scripts/health-check.mjs",
+    "admin:promote": "node --env-file-if-exists=.env scripts/make-admin.mjs"
   },
   "engines": {
     "node": ">=22"
