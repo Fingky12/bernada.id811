@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAPORAN AUDIT SPRINT 4 — BERNADA.ID</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 11pt;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: #fff;
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #A12828;
+        }
+
+        .header h1 {
+            font-size: 24pt;
+            color: #A12828;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .header .subtitle {
+            font-size: 14pt;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .header .meta {
+            font-size: 10pt;
+            color: #888;
+        }
+
+        .meta-table {
+            width: 100%;
+            margin-bottom: 30px;
+            border-collapse: collapse;
+        }
+
+        .meta-table td {
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .meta-table td:first-child {
+            background: #f5f2ee;
+            font-weight: 600;
+            width: 150px;
+        }
+
+        h2 {
+            font-size: 16pt;
+            color: #A12828;
+            margin: 30px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #A12828;
+        }
+
+        h3 {
+            font-size: 13pt;
+            color: #2C2926;
+            margin: 20px 0 10px 0;
+        }
+
+        h4 {
+            font-size: 11pt;
+            color: #4A4641;
+            margin: 15px 0 8px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0 20px 0;
+            font-size: 10pt;
+        }
+
+        th, td {
+            padding: 8px 10px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+
+        th {
+            background: #A12828;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f7f5;
+        }
+
+        .status-pass {
+            color: #047857;
+            font-weight: 700;
+        }
+
+        .status-warning {
+            color: #D97706;
+            font-weight: 700;
+        }
+
+        .status-error {
+            color: #DC2626;
+            font-weight: 700;
+        }
+
+        .status-low {
+            background: #E0F2FE;
+            color: #0369A1;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 9pt;
+            font-weight: 600;
+        }
+
+        .status-medium {
+            background: #FEF3C7;
+            color: #D97706;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 9pt;
+            font-weight: 600;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: "JetBrains Mono", "SF Mono", monospace;
+            font-size: 9pt;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 10px 0;
+            font-size: 9pt;
+            font-family: "JetBrains Mono", "SF Mono", monospace;
+            line-height: 1.5;
+        }
+
+        ul, ol {
+            margin: 8px 0;
+            padding-left: 24px;
+        }
+
+        li {
+            margin: 4px 0;
+        }
+
+        .section-intro {
+            font-style: italic;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .highlight-box {
+            background: #FBF1F0;
+            border-left: 4px solid #A12828;
+            padding: 12px 16px;
+            margin: 15px 0;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #A12828;
+            text-align: center;
+            font-size: 9pt;
+            color: #888;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+            }
+
+            h2 {
+                page-break-after: avoid;
+            }
+
+            table {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>LAPORAN AUDIT SPRINT 4</h1>
+    <div class="subtitle">BERNADA.ID — Digital Wedding Invitation Platform</div>
+    <div class="meta">Internal Code Review · Engineering Handbook Compliance</div>
+</div>
+
+<table class="meta-table">
+    <tr>
+        <td>Project</td>
+        <td>BERNADA.ID</td>
+    </tr>
+    <tr>
+        <td>Version</td>
+        <td>v1.3.0 (The Guest Experience)</td>
+    </tr>
+    <tr>
+        <td>Tanggal Audit</td>
+        <td>11 Agustus 2026</td>
+    </tr>
+    <tr>
+        <td>Auditor</td>
+        <td>AI Pair Programmer</td>
+    </tr>
+    <tr>
+        <td>Scope</td>
+        <td>Setup PostgreSQL &amp; verifikasi E2E · Migrasi DB 0004 (guests &amp; gift_accounts) · Guest API · Gift Account API · Builder UI (section Tamu &amp; Amplop Digital) · Halaman publik `/u/:slug` (Amplop Digital + aksi salin) · Perbaikan temuan LOW audit (validasi hex tema, token overlay, rate limiting, util bersama, JWT dev secret) · Dokumentasi</td>
+    </tr>
+    <tr>
+        <td>Referensi</td>
+        <td>Engineering Handbook BERNADA.ID (rules/02–08, 09, 10, 11) · `.docs/sprint-4.md` · `.docs/e2e/sprint-4-verification.md`</td>
+    </tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- TAHAP 1: INTERNAL CODE REVIEW -->
+<!-- ============================================================ -->
+
+<h2>TAHAP 1: INTERNAL CODE REVIEW</h2>
+
+<!-- 1.1 Struktur File -->
+<h3>1.1 Struktur File</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Lokasi</th>
+        <th>Isi</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td><code>server/services/</code> (Sprint 4)</td>
+        <td><code>guest-service.js</code> (list/add/update/delete/stats), <code>gift-account-service.js</code> (CRUD owner + list publik)</td>
+        <td class="status-pass">✅ Sesuai arsitektur</td>
+    </tr>
+    <tr>
+        <td><code>server/middleware/</code> (Sprint 4)</td>
+        <td><code>rate-limit.js</code> — in-memory, header <code>X-RateLimit-*</code>, cleanup interval</td>
+        <td class="status-pass">✅ Baru &amp; terisolasi</td>
+    </tr>
+    <tr>
+        <td><code>api/routes/</code> (Sprint 4)</td>
+        <td><code>guests.js</code> (6 route), <code>gift-accounts.js</code> (4 route owner); terdaftar di <code>api/index.js</code></td>
+        <td class="status-pass">✅ Terisi</td>
+    </tr>
+    <tr>
+        <td><code>database/migrations/</code></td>
+        <td><code>0004_guests_gift_accounts.sql</code> — tabel <code>guests</code> &amp; <code>gift_accounts</code></td>
+        <td class="status-pass">✅ Append-only (0001–0004)</td>
+    </tr>
+    <tr>
+        <td><code>assets/js/</code> (Sprint 4)</td>
+        <td><code>util.js</code> (escapeHtml + format tanggal bersama), <code>api.js</code>, <code>builder.js</code>, <code>invitation.js</code></td>
+        <td class="status-pass">✅ Satu tanggung jawab per file</td>
+    </tr>
+    <tr>
+        <td><code>assets/css/</code> (Sprint 4)</td>
+        <td><code>variables.css</code> (+token overlay), <code>pages.css</code>, <code>invitation.css</code></td>
+        <td class="status-pass">✅ Token-based</td>
+    </tr>
+    <tr>
+        <td><code>scripts/</code> &amp; <code>.docs/e2e/</code> (Sprint 4)</td>
+        <td><code>health-check.mjs</code> + npm <code>test:health</code>; <code>sprint-4-verification.md</code> (rekam 21/21 PASS)</td>
+        <td class="status-pass">✅ Baru &amp; terdokumentasi</td>
+    </tr>
+    <tr>
+        <td>Dokumentasi</td>
+        <td><code>api.md</code>, <code>database.md</code>, <code>sprint-4.md</code>, <code>roadmap.md</code>, <code>changelog.md</code>, context</td>
+        <td class="status-pass">✅ Tersinkron</td>
+    </tr>
+</table>
+
+<!-- 1.2 Penamaan File & Class -->
+<h3>1.2 Penamaan File &amp; Class</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Pola</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>File JS &amp; CSS</td>
+        <td>kebab-case, nama sesuai fungsi (<code>guest-service.js</code>, <code>gift-account-service.js</code>, <code>rate-limit.js</code>, <code>util.js</code>)</td>
+        <td class="status-pass">✅ Konsisten</td>
+    </tr>
+    <tr>
+        <td>Endpoint</td>
+        <td>kebab-case (<code>/public/:slug/gift-accounts</code>, <code>/guests/:guestId</code>, <code>/guests/stats</code>)</td>
+        <td class="status-pass">✅ Sesuai rules/05</td>
+    </tr>
+    <tr>
+        <td>Body/response API</td>
+        <td>camelCase (<code>fullName</code>, <code>guestGroup</code>, <code>isActive</code>, <code>sortOrder</code>, <code>bankName</code>)</td>
+        <td class="status-pass">✅ Konsisten</td>
+    </tr>
+    <tr>
+        <td>Kolom database</td>
+        <td>snake_case (<code>full_name</code>, <code>guest_group</code>, <code>is_active</code>, <code>sort_order</code>)</td>
+        <td class="status-pass">✅ Konsisten</td>
+    </tr>
+    <tr>
+        <td>Fungsi service</td>
+        <td>verb + objek (<code>listGuests</code>, <code>addGuests</code>, <code>getGuestStats</code>, <code>createGiftAccount</code>, <code>listPublicGiftAccounts</code>)</td>
+        <td class="status-pass">✅ Deskriptif</td>
+    </tr>
+</table>
+
+<!-- 1.3 Validitas JavaScript & ESM -->
+<h3>1.3 Validitas JavaScript &amp; ESM</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Hasil</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>Sintaks &amp; ESM</td>
+        <td><code>import/export</code> konsisten (<code>.js</code> ESM via <code>"type": "module"</code>); tidak ada <code>require</code>/<code>__dirname</code></td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Boot server</td>
+        <td>Server hidup di <code>http://localhost:3000</code> tanpa error saat proses audit</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Health check</td>
+        <td><code>npm run test:health</code> — PASS (200, <code>status=ok</code>, <code>database=connected</code>) &amp; jalur gagal (server mati → FAIL, exit 1)</td>
+        <td class="status-pass">✅</td>
+    </tr>
+</table>
+
+<!-- 1.4 Validasi Input & Parameter Binding -->
+<h3>1.4 Validasi Input &amp; Parameter Binding</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Hasil</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>Status tamu</td>
+        <td><code>validateGuestStatus</code> — whitelist <code>diundang | hadir | tidak-hadir</code>; default <code>diundang</code></td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Batch tamu</td>
+        <td><code>validateGuestsList</code> — array, maks 500, validasi per item</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Warna tema</td>
+        <td><code>validateThemeColors</code> — whitelist hex 3/6 digit; menutup temuan LOW Sprint 3</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Batas panjang</td>
+        <td>fullName 120, phone 30, guestGroup 60, bankName 80, accountNumber 40, accountName 120</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Tipe data</td>
+        <td><code>sortOrder</code> wajib integer; <code>isActive</code> koersif boolean; <code>parseId</code> untuk seluruh <code>:id</code></td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Parameter binding</td>
+        <td>Semua query pakai <code>$1..$n</code> (anti SQL injection) — konsisten Sprint 3</td>
+        <td class="status-pass">✅</td>
+    </tr>
+</table>
+
+<!-- 1.5 Keamanan Dasar -->
+<h3>1.5 Keamanan Dasar</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Hasil</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>Secret di kode</td>
+        <td>Tidak ada; env via `.env` (gitignore). Default dev secret didokumentasikan eksplisit di <code>server/config.js</code> — menutup temuan LOW Sprint 3</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Otorisasi owner-scoped</td>
+        <td><code>guests.js</code> &amp; <code>gift-accounts.js</code> memakai <code>requireAuth</code> per-route; service memastikan <code>owner_id</code> via JOIN/assert (milik orang lain = 404)</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Konten publik terbatas</td>
+        <td>Gift account publik hanya <code>is_active = true</code>; tidak membocorkan field internal</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Anti-XSS output</td>
+        <td><code>escapeHtml()</code> terpusat di <code>assets/js/util.js</code> — dipakai builder &amp; halaman publik (nama, pesan, rekening)</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Error tidak membocorkan detail</td>
+        <td>5xx generik di response; detail di log server (error-handler)</td>
+        <td class="status-pass">✅</td>
+    </tr>
+</table>
+
+<!-- 1.6 Single Responsibility -->
+<h3>1.6 Single Responsibility</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>File</th>
+        <th>Tanggung Jawab</th>
+        <th>Status</th>
+    </tr>
+    <tr><td><code>guest-service.js</code></td><td>Query tamu (list, add, update, delete, stats) + guard owner</td><td class="status-pass">✅</td></tr>
+    <tr><td><code>gift-account-service.js</code></td><td>Query rekening owner + list publik (aktif saja)</td><td class="status-pass">✅</td></tr>
+    <tr><td><code>rate-limit.js</code></td><td>Middleware pembatas akses in-memory</td><td class="status-pass">✅</td></tr>
+    <tr><td><code>util.js</code></td><td><code>escapeHtml</code>, <code>formatDate</code>, <code>formatGuestbookDate</code> — dibagi builder &amp; invitation</td><td class="status-pass">✅</td></tr>
+    <tr><td><code>api.js</code></td><td>Client API + auto-refresh + token memori</td><td class="status-pass">✅</td></tr>
+    <tr><td><code>builder.js</code></td><td>Daftar + editor undangan + section Tamu &amp; Amplop Digital + pratinjau live</td><td class="status-pass">✅</td></tr>
+    <tr><td><code>invitation.js</code></td><td>Render halaman publik + RSVP + buku tamu + amplop digital (aksi salin)</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 1.7 Dokumentasi -->
+<h3>1.7 Dokumentasi</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Dokumen</th>
+        <th>Status</th>
+        <th>Catatan</th>
+    </tr>
+    <tr>
+        <td><code>.docs/api.md</code></td>
+        <td class="status-pass">✅ Sinkron</td>
+        <td>Guest API (6 route) &amp; Gift Account API (5 route) terdokumentasi</td>
+    </tr>
+    <tr>
+        <td><code>.docs/database.md</code></td>
+        <td class="status-pass">✅ Sinkron</td>
+        <td>Tabel <code>guests</code> &amp; <code>gift_accounts</code> + relasi &amp; constraint (0004)</td>
+    </tr>
+    <tr>
+        <td><code>.docs/sprint-4.md</code></td>
+        <td class="status-pass">✅ Akurat</td>
+        <td>Goal, scope, AC, keputusan planning sesuai implementasi</td>
+    </tr>
+    <tr>
+        <td><code>.docs/e2e/sprint-4-verification.md</code></td>
+        <td class="status-pass">✅ Baru</td>
+        <td>Rekam 21/21 PASS + daftar bug yang diperbaiki — menutup AC7</td>
+    </tr>
+    <tr>
+        <td>Header file &amp; komentar</td>
+        <td class="status-pass">✅ Konsisten</td>
+        <td>Deskripsi modul + catatan di file baru</td>
+    </tr>
+</table>
+
+<!-- 1.8 Dead / Duplicate Code -->
+<h3>1.8 Dead / Duplicate Code</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Hasil</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>Duplikasi util</td>
+        <td><code>escapeHtml</code>/format tanggal dipindah ke <code>util.js</code> — menutup temuan LOW Sprint 3; builder &amp; invitation meng-import</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Route duplikat</td>
+        <td>Route publik gift-accounts hanya satu (di <code>invitations.js</code>); <code>gift-accounts.js</code> murni route owner</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Kode mati</td>
+        <td>Tidak ada blok/route tanpa pemakaian pada file Sprint 4</td>
+        <td class="status-pass">✅</td>
+    </tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- TAHAP 2: ARCHITECTURE REVIEW -->
+<!-- ============================================================ -->
+
+<h2>TAHAP 2: ARCHITECTURE REVIEW</h2>
+
+<!-- 2.1 Layer & Separation of Concerns -->
+<h3>2.1 Layer &amp; Separation of Concerns</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Lapisan</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>Route → service → pool (query) — konsisten, tanpa SQL di route</td><td class="status-pass">✅</td></tr>
+    <tr><td>Middleware rate-limit terpisah dan bisa dipasang per-route/per-router</td><td class="status-pass">✅</td></tr>
+    <tr><td>Frontend: api.js (transport) → builder.js/invitation.js (render &amp; interaksi) → util.js (shared)</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 2.2 Service Layer & DTO -->
+<h3>2.2 Service Layer &amp; DTO</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td><code>toGuestDto</code> / <code>toGiftAccountDto</code> — mapping snake_case → camelCase di satu tempat</td><td class="status-pass">✅</td></tr>
+    <tr><td>Guard kepemilikan dibungkus fungsi (<code>assertOwnInvitation</code>) — dipakai ulang antar query</td><td class="status-pass">✅</td></tr>
+    <tr><td>Response publik (gift account) dibentuk service khusus, bukan ulang DTO owner</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 2.3 Autentikasi Architecture -->
+<h3>2.3 Autentikasi Architecture</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td><code>requireAuth</code> dipasang per-route di <code>guests.js</code> &amp; <code>gift-accounts.js</code>; route publik di <code>invitations.js</code> diletakkan sebelum <code>use(requireAuth)</code></td><td class="status-pass">✅</td></tr>
+    <tr><td>Route publik tidak memakai token (slug-based); seluruh route owner-scoped terhadap <code>req.user.id</code></td><td class="status-pass">✅</td></tr>
+    <tr><td>Temuan E2E "publik 401" (router di-mount <code>/</code> terblokir <code>use(requireAuth)</code>) diperbaiki &amp; terverifikasi</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 2.4 Frontend Architecture -->
+<h3>2.4 Frontend Architecture</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td><code>util.js</code> dipakai bersama builder &amp; invitation (hilangkan duplikasi)</td><td class="status-pass">✅</td></tr>
+    <tr><td><code>api.js</code> menambah helper tamu/rekening — satu pintu akses HTTP</td><td class="status-pass">✅</td></tr>
+    <tr><td>Render dinamis selalu lewat <code>escapeHtml</code>; atribut/event di-escape konsisten</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 2.5 Design Token (CSS Baru) -->
+<h3>2.5 Design Token (CSS Baru)</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>Token <code>--color-overlay-*</code> ditambahkan di <code>variables.css</code>; <code>rgba()</code> hardcoded di <code>invitation.css</code> diganti — menutup temuan LOW Sprint 3</td><td class="status-pass">✅</td></tr>
+    <tr><td>UI Tamu &amp; Amplop Digital memakai token <code>--color-*</code>, <code>--spacing-*</code>, <code>--radius-*</code> yang sudah ada</td><td class="status-pass">✅</td></tr>
+    <tr><td>Hanya token yang benar-benar dibutuhkan ditambah (11 token baru, tanpa duplikasi semantik)</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- TAHAP 3: QA REVIEW -->
+<!-- ============================================================ -->
+
+<h2>TAHAP 3: QA REVIEW</h2>
+
+<!-- 3.1 Aset & Referensi -->
+<h3>3.1 Aset &amp; Referensi</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>Referensi aset (css/js/template) valid; tidak ada path patah pada halaman baru</td><td class="status-pass">✅</td></tr>
+    <tr><td>Template fallback &amp; data demo tetap berfungsi (tidak terpengaruh perubahan 0004)</td><td class="status-pass">✅</td></tr>
+    <tr><td>Mode publik tanpa owner (halaman <code>/u/:slug</code>) tetap berjalan penuh + section amplop digital</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 3.2 Server & Health Check -->
+<h3>3.2 Server &amp; Health Check</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td><code>GET /api/health</code> → 200 <code>{status:"ok", service:"bernada-api", version, timestamp, database:"connected"}</code></td><td class="status-pass">✅</td></tr>
+    <tr><td><code>scripts/health-check.mjs</code> + <code>npm run test:health</code> — verifikasi otomatis tersedia di repo (PASS &amp; FAIL teruji)</td><td class="status-pass">✅</td></tr>
+    <tr><td>Tidak ada route <code>/health</code> duplikat; endpoint resmi tunggal <code>/api/health</code></td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 3.3 Keamanan Endpoint -->
+<h3>3.3 Keamanan Endpoint</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>Rate limiting aktif — auth 10/mnt, buku tamu 20/mnt, publik 120/mnt; header <code>X-RateLimit-*</code> &amp; <code>Retry-After</code>; 429 <code>RATE_LIMITED</code> — menutup temuan LOW Sprint 3</td><td class="status-pass">✅</td></tr>
+    <tr><td>Otorisasi per-route (owner) &amp; public hanya <code>is_active</code> terverifikasi via E2E (langkah 16–19)</td><td class="status-pass">✅</td></tr>
+    <tr><td>Query ter-binding; input ter-validasi; tidak ada endpoint baru tanpa limit/validasi</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 3.4 Aksesibilitas -->
+<h3>3.4 Aksesibilitas</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>Form &amp; aksi baru memakai elemen semantik (<code>select</code>, <code>input</code>, tombol <code>type</code> jelas); aksi salin pakai <code>navigator.clipboard</code> dengan fallback</td><td class="status-pass">✅</td></tr>
+    <tr><td>Status tamu dirender sebagai badge teks (tidak hanya warna)</td><td class="status-pass">✅</td></tr>
+    <tr><td>Uji visual &amp; keyboard manual di browser dicatat sebagai rekomendasi (lihat REKOMENDASI)</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 3.5 Performa & Progressive Enhancement -->
+<h3>3.5 Performa &amp; Progressive Enhancement</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>Statistik tamu dihitung satu query agregat (<code>COUNT(*) FILTER</code>) — bukan loop per status</td><td class="status-pass">✅</td></tr>
+    <tr><td>Batch tamu dibatasi 500; frontend tetap berfungsi tanpa JS (konten statis tampil, aksi interaktif graceful)</td><td class="status-pass">✅</td></tr>
+    <tr><td>Daftar tamu belum berpaginasi (catatan skala, lihat REKOMENDASI)</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 3.6 Verifikasi E2E -->
+<h3>3.6 Verifikasi E2E</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Hasil</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>Verifikasi terhadap PostgreSQL asli</td>
+        <td>PostgreSQL 18.4 (scoop) terpasang; <code>db:create</code> + <code>migrate</code> 0001–0004 sukses (8 tabel)</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Skrip E2E</td>
+        <td>Register → login → CRUD invitation → publish → guestbook → guests → gift-accounts → refresh → logout — <strong>21/21 PASS</strong> (rekam di <code>.docs/e2e/sprint-4-verification.md</code>)</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Penutupan temuan MEDIUM AC7</td>
+        <td>Verifikasi E2E tertunda (Sprint 3) kini terekam penuh → <strong>AC7 tertutup</strong></td>
+        <td class="status-pass">✅</td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+        <th colspan="4" style="background: #D97706;">WARNING</th>
+    </tr>
+    <tr>
+        <th>Temuan</th>
+        <th>Lokasi</th>
+        <th>Alasan</th>
+        <th>Severity</th>
+    </tr>
+    <tr>
+        <td>Create gift account gagal bila body tanpa <code>isActive</code>/<code>sortOrder</code> (<code>23502 not_null_violation</code>) — <strong>sudah diperbaiki</strong></td>
+        <td><code>server/services/gift-account-service.js</code></td>
+        <td>Service mengirim <code>undefined</code> ke kolom NOT NULL. Fix: default <code>data.isActive ?? true</code>, <code>data.sortOrder ?? 0</code>; diverifikasi ulang via E2E (langkah 16)</td>
+        <td><span class="status-medium">MEDIUM</span></td>
+    </tr>
+    <tr>
+        <td>Public gift-accounts selalu 401 — <strong>sudah diperbaiki</strong></td>
+        <td><code>api/routes/invitations.js</code>, <code>guests.js</code>, <code>gift-accounts.js</code></td>
+        <td>Route publik terblokir <code>use(requireAuth)</code> global. Fix: route publik dipindah sebelum <code>use(requireAuth)</code> + <code>requireAuth</code> per-route; diverifikasi ulang via E2E (langkah 17)</td>
+        <td><span class="status-medium">MEDIUM</span></td>
+    </tr>
+</table>
+
+<p class="section-intro">Kedua temuan di atas ditemukan <em>selama</em> verifikasi E2E, diperbaiki, dan diverifikasi ulang (21/21 PASS) sebelum laporan ini ditulis — ditampilkan untuk transparansi, status terkini <strong>resolved</strong>.</p>
+
+<!-- ============================================================ -->
+<!-- TAHAP 4: ENGINEERING REVIEW -->
+<!-- ============================================================ -->
+
+<h2>TAHAP 4: ENGINEERING REVIEW</h2>
+
+<!-- 4.1 Scalability -->
+<h3>4.1 Scalability</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>Fitur baru = route + service + DTO terpisah; mudah diperluas</td><td class="status-pass">✅</td></tr>
+    <tr><td>Migrasi append-only 0004 — skema bisa diperluas tanpa rewrite</td><td class="status-pass">✅</td></tr>
+    <tr><td>Statistik via agregat SQL; batch insert terbatas; rate limit per-proses (catatan skala, lihat REKOMENDASI)</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 4.2 Maintainability -->
+<h3>4.2 Maintainability</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>Validasi terpusat di <code>validation.js</code> (status, batch, hex tema) — satu tempat mengubah aturan</td><td class="status-pass">✅</td></tr>
+    <tr><td><code>util.js</code> menghilangkan duplikasi render antar halaman</td><td class="status-pass">✅</td></tr>
+    <tr><td>Header modul + komentar per bagian konsisten di semua file Sprint 4</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 4.3 Security -->
+<h3>4.3 Security</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>Dependency aman &amp; stabil</td><td class="status-pass">✅ bcryptjs · jsonwebtoken · cookie-parser · express · pg · helmet · cors</td></tr>
+    <tr><td>Header keamanan via <code>helmet</code>; <code>x-powered-by</code> dimatikan</td><td class="status-pass">✅</td></tr>
+    <tr><td>Rate limiting kini aktif pada auth &amp; endpoint publik (temuan LOW Sprint 3 ditutup)</td><td class="status-pass">✅</td></tr>
+    <tr><td>Input ter-validasi, query ter-binding, owner-scoped, output di-escape</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 4.4 Reusability -->
+<h3>4.4 Reusability</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>Memakai komponen &amp; token Sprint 1–3 (<code>.btn-*</code>, <code>.badge-*</code>, form, grid, <code>--color-*</code>)</td><td class="status-pass">✅</td></tr>
+    <tr><td><code>util.js</code>, <code>rate-limit.js</code>, helper validasi dipakai ulang lintas fitur</td><td class="status-pass">✅</td></tr>
+    <tr><td>Pattern route publik/owner konsisten — siap dipakai fitur berikutnya (gift_items)</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 4.5 Engineering Handbook Compliance -->
+<h3>4.5 Engineering Handbook Compliance</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Rule</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>02-coding-standard.md</td><td class="status-pass">✅ Dipatuhi</td></tr>
+    <tr><td>03-design-system.md</td><td class="status-pass">✅ Token-based (overlay token baru)</td></tr>
+    <tr><td>04-project-structure.md</td><td class="status-pass">✅ Route/service/middleware terpisah</td></tr>
+    <tr><td>05-naming-convention.md</td><td class="status-pass">✅ Konsisten</td></tr>
+    <tr><td>07-security.md</td><td class="status-pass">✅ Secret via env, XSS-aware, rate limit aktif, error aman</td></tr>
+    <tr><td>08-testing.md</td><td class="status-pass">✅ Verifikasi sintaks + boot + <code>test:health</code> + E2E 21/21 (AC7 tertutup)</td></tr>
+    <tr><td>09-review-checklist.md</td><td class="status-pass">✅ Self-review dijalankan</td></tr>
+    <tr><td>10-engineering-workflow.md</td><td class="status-pass">✅ 8 tahap dijalankan</td></tr>
+    <tr><td>11-release-naming.md</td><td class="status-pass">✅ v1.3.0 The Guest Experience</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- REKOMENDASI -->
+<!-- ============================================================ -->
+
+<h2>REKOMENDASI</h2>
+
+<p>Tidak ada temuan Priority 1 (HIGH) dan tidak ada temuan Priority 2 (MEDIUM) yang terbuka. Dua temuan MEDIUM yang muncul selama E2E (23502 &amp; publik 401) telah <strong>diperbaiki dan diverifikasi ulang</strong>. Temuan audit Sprint 3 (AC7 + 5 LOW) seluruhnya tertutup.</p>
+
+<h3>Priority 3 (LOW) — Nice to Have</h3>
+
+<table>
+    <tr>
+        <th>#</th>
+        <th>Temuan</th>
+        <th>Alasan</th>
+        <th>Lokasi</th>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>Uji manual visual, keyboard &amp; aksesibilitas di browser</td>
+        <td>Validasi tahap akhir builder (Tamu, Amplop Digital) &amp; halaman publik (section amplop, aksi salin)</td>
+        <td>Halaman aplikasi</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>Pagination/search daftar tamu</td>
+        <td>Undangan besar (ratusan–ribuan tamu) akan terbaca seluruhnya saat ini; pagination mengamankan payload</td>
+        <td><code>guest-service.js</code> / route</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>Batch insert efisien untuk daftar tamu</td>
+        <td><code>addGuests</code> memakai loop INSERT per item (maks 500); satu query multi-row lebih cepat untuk batch besar</td>
+        <td><code>guest-service.js</code></td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>Rate limiting in-memory → store bersama saat scale-out</td>
+        <td>State <code>Map</code> per-proses hilang saat restart &amp; tidak terbagi antar instance; cukup untuk tahap ini, perlu Redis/shared store di produksi (Fase 3)</td>
+        <td><code>server/middleware/rate-limit.js</code></td>
+    </tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- RINGKASAN -->
+<!-- ============================================================ -->
+
+<h2>RINGKASAN</h2>
+
+<table>
+    <tr>
+        <th>Kategori</th>
+        <th>PASS</th>
+        <th>WARNING</th>
+        <th>ERROR</th>
+    </tr>
+    <tr>
+        <td>1. Internal Code Review</td>
+        <td class="status-pass">8</td>
+        <td class="status-warning">0</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td>2. Architecture Review</td>
+        <td class="status-pass">5</td>
+        <td class="status-warning">0</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td>3. QA Review</td>
+        <td class="status-pass">6</td>
+        <td class="status-warning">1</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td>4. Engineering Review</td>
+        <td class="status-pass">5</td>
+        <td class="status-warning">0</td>
+        <td>0</td>
+    </tr>
+    <tr style="font-weight: 700; background: #f5f2ee;">
+        <td>TOTAL</td>
+        <td class="status-pass">24</td>
+        <td class="status-warning">1</td>
+        <td class="status-error">0</td>
+    </tr>
+</table>
+
+<div class="highlight-box">
+    <strong>Kesimpulan: ✅ AUDIT PASS</strong> — Sprint 4 (The Guest Experience) memenuhi seluruh Acceptance Criteria dan menutup temuan audit Sprint 3: verifikasi E2E 21/21 PASS terhadap PostgreSQL asli (AC7 tertutup) + 5 temuan LOW (validasi hex tema, token overlay, rate limiting, util bersama, dokumentasi JWT dev secret). Dua bug yang ditemukan selama E2E (23502 &amp; publik 401) telah diperbaiki &amp; diverifikasi ulang. 1 tabel WARNING tercatat untuk transparansi, seluruhnya <strong>resolved</strong>. Kode siap dilanjutkan ke tahap Release v1.3.0.
+</div>
+
+<div class="footer">
+    <p><strong>BERNADA.ID Engineering Handbook</strong> · Sprint 4 Audit Report · v1.3.0</p>
+    <p>Dokumen ini bersifat rahasia dan hanya untuk penggunaan internal tim BERNADA.ID.</p>
+    <p>11 Agustus 2026 · AI Pair Programmer</p>
+</div>
+
+</body>
+</html>

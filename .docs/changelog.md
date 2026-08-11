@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Changelog · Category : Catatan (living document)
-  Version  : 1.2.0 · Status : ✅ Stable · Update : 10-08-2026
+  Version  : 1.3.0 · Status : ✅ Stable · Update : 11-08-2026
 -->
 
 # Changelog
@@ -10,11 +10,35 @@
 
 ---
 
+## Release v1.3.0 — The Guest Experience Release (11-08-2026)
+
+### Release — v1.3.0
+
+- 🚀 **Release v1.3.0 — The Guest Experience Release** (Status: ✅ Stable) — Manajemen tamu & amplop digital (transfer info), hardening audit LOW, verifikasi PostgreSQL & E2E. Detail: `.docs/releases/v1.3.0-guest-experience.md`.
+- ✅ **PostgreSQL terpasang & migrasi sukses** — PostgreSQL 18.4 (scoop) lokal; `npm run db:create` + `npm run migrate` 0001–0004 (8 tabel).
+- ✅ **Verifikasi E2E 21/21 PASS** — register → login → CRUD invitation → publish → guestbook → guests → gift-accounts → refresh → logout; rekam di `.docs/e2e/sprint-4-verification.md`. Menutup temuan audit **MEDIUM AC7** (verifikasi E2E menunggu DB dari Sprint 3).
+- 🐛 **2 bug diperbaiki** — (1) `23502 not_null_violation` pada create gift account tanpa `isActive`/`sortOrder` → default di `gift-account-service.js` (`?? true` / `?? 0`); (2) publik gift-accounts selalu 401 → route publik dipindah sebelum `use(requireAuth)` di `invitations.js` + `requireAuth` per-route di `guests.js` & `gift-accounts.js`. Diverifikasi ulang via E2E.
+- 🩺 **Health check di repo** — `scripts/health-check.mjs` + npm script `test:health` (PASS & jalur gagal exit 1); endpoint resmi tunggal `GET /api/health`.
+- ✅ **Audit Sprint 4 PASS** — 24 PASS · 1 WARNING (temuan E2E, resolved) · 0 ERROR (`.docs/audit/LAPORAN-AUDIT-SPRINT-4.html`).
+- 🏷️ **Tag git v1.3.0** dibuat — release disetujui Product Owner, Senior Engineer & AI Pair Programmer; **Sprint 4 closed**.
+- 📦 **Versi aplikasi** `package.json` dibump ke `v1.3.0`.
+
+### Guest Experience — Manajemen Tamu & Amplop Digital
+
+- 👥 **Manajemen tamu** — migrasi `0004_guests_gift_accounts.sql` (tabel `guests` + `gift_accounts`), service `guest-service.js` (CRUD owner-scoped + stats via agregat SQL), API: `GET/POST /api/invitations/:id/guests`, `GET /api/invitations/:id/guests/stats`, `GET/PATCH/DELETE /api/guests/:guestId`; validasi status (`diundang`/`hadir`/`tidak-hadir`), batch maks 500.
+- 💳 **Amplop digital** — API owner `GET/POST /api/invitations/:id/gift-accounts`, `PATCH/DELETE /api/gift-accounts/:giftAccountId`; endpoint publik `GET /api/invitations/public/:slug/gift-accounts` (hanya aktif & terbit).
+- 🖥️ **Builder** — tampilan "Kelola" per undangan: statistik tamu, tambah tamu tunggal/bulk, filter status, kelola rekening amplop (tambah/toggle aktif/hapus).
+- 🎀 **Halaman publik** — section Amplop Digital dengan tombol salin nomor rekening; fallback disembunyikan saat API tidak tersedia.
+- 🔧 **Hardening audit LOW** — validasi hex warna tema (`validateThemeColors`), token `--color-overlay-*` menggantikan 4 `rgba()` hardcoded, middleware rate limiting in-memory (auth 10/menit, guestbook 20/menit, publik 120/menit) dengan header `X-RateLimit-*`, util bersama `assets/js/util.js` (`escapeHtml`, format tanggal) dipakai builder & invitation, dokumentasi JWT dev secret dipertegas di `server/config.js`.
+- 📌 **Catatan:** temuan audit Sprint 3 (AC7 + 5 LOW) seluruhnya tertutup.
+
+---
+
 ## 10-08-2026 — Sprint 4 Development: Manajemen Tamu & Amplop Digital
 
-### Release — v1.3.0 (dalam proses)
+### Release — v1.3.0 (sebelumnya)
 
-- 🚀 **Sprint 4 — The Guest Experience** (Status: 🟠 Proses) — manajemen tamu (`guests`) + amplop digital (`gift_accounts`, transfer info), hardening audit LOW, verifikasi PostgreSQL & E2E. Detail: `.docs/sprint-4.md`.
+- 🚀 **Sprint 4 — The Guest Experience** (Status: 🟠 Proses → ✅ Closed) — manajemen tamu (`guests`) + amplop digital (`gift_accounts`, transfer info), hardening audit LOW, verifikasi PostgreSQL & E2E. Detail: `.docs/sprint-4.md`.
 - 👥 **Manajemen tamu** — migrasi `0004_guests_gift_accounts.sql` (tabel `guests` + `gift_accounts`), service `guest-service.js`, API terproteksi auth: `GET/POST /api/invitations/:id/guests`, `GET /api/invitations/:id/guests/stats`, `GET/PATCH/DELETE /api/guests/:guestId`, validasi status tamu (`diundang`/`hadir`/`tidak-hadir`).
 - 💳 **Amplop digital** — API owner: `GET/POST /api/invitations/:id/gift-accounts`, `PATCH/DELETE /api/gift-accounts/:giftAccountId`; endpoint publik `GET /api/invitations/public/:slug/gift-accounts` (hanya aktif & terbit).
 - 🖥️ **Builder** — tampilan baru "Kelola" per undangan: statistik tamu, tambah tamu tunggal/bulk, filter status, kelola rekening amplop (tambah/toggle aktif/hapus).
@@ -218,8 +242,8 @@
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
-| 1.1.0 | 10-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Release v1.2.0 — The Core Features (Audit PASS + tag v1.2.0 + Sprint 3 closed) |
-| 1.0.9 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 3 Development — auth, builder, halaman publik, RSVP/buku tamu & galeri |
+| 1.1.0 | 11-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Release v1.3.0 — The Guest Experience (Audit PASS + tag v1.3.0 + Sprint 4 closed) |
+| 1.0.9 | 10-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Sprint 4 Development — manajemen tamu & amplop digital, hardening LOW (v1.3.0) |
 | 1.0.8 | 09-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Halaman publik undangan `/u/:slug` — endpoint publik + cover, countdown, tema, musik, lokasi & kalender |
 | 1.0.7 | 05-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Fase 1 selesai — setup server (Express ESM) & database awal (skema + migrasi) |
 | 1.0.6 | 05-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Sprint 2 closed — Audit PASS + Release v1.1.0 The First Experience (tag v1.1.0) |

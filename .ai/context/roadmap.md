@@ -1,14 +1,14 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Roadmap Context · Category : Context (living document)
-  Version  : 1.1.0 · Status : 🟠 Proses · Update : 10-08-2026
+  Version  : 1.2.0 · Status : 🟠 Proses · Update : 11-08-2026
 -->
 
 # Roadmap
 
 > Arah pengembangan jangka panjang BERNADA.ID. **Sumber kebenaran tetap** ada di `.docs/roadmap.md`; file ini adalah ringkasan untuk AI agar tidak menebak fase pengembangan.
 >
-> **Sprint aktif:** Sprint 4 — The Guest Experience (🟠 Proses, release v1.3.0). Development: manajemen tamu + amplop digital selesai; menunggu verifikasi PostgreSQL & E2E.
+> **Sprint aktif:** (menunggu planning Sprint 5). Fase 2 selesai; arah berikutnya Fase 3 — Launch (payment & pricing, optimasi performa & SEO, hardening produksi).
 
 ---
 
@@ -31,13 +31,15 @@
 ### 🟠 Fase 2 — Core Features (Beta) · v1.0.0 Beta
 
 > Sprint 3 (The Core Features) ✅ Closed 10-08-2026 — Release v1.2.0.
+> Sprint 4 (The Guest Experience) ✅ Closed 11-08-2026 — Release v1.3.0 (tag `v1.3.0`); Fase 2 selesai.
 
 - Autentikasi pengguna ✅ (register, login, logout, refresh rotasi, me, requireAuth)
 - Template undangan & personalisasi ✅ (`GET /api/templates` + 6 seed, tema warna)
 - Builder / editor undangan digital ✅ (CRUD + publish, owner-scoped)
 - Halaman publik `/u/:slug` ✅ (cover, countdown, tema, musik, lokasi, kalender, galeri)
 - RSVP & buku tamu ✅ (tabel `guestbook`, endpoint publik, fallback demo)
-- Manajemen tamu & amplop digital (`guests`/`gifts`) 🟠 — Sprint 4 (Development; transfer info; wishlist 🟡 ditunda)
+- Manajemen tamu ✅ (tabel `guests`, CRUD + stats, UI Kelola — Sprint 4)
+- Amplop digital ✅ (tabel `gift_accounts`, API owner & publik — transfer info; wishlist 🟡 ditunda — Sprint 4)
 
 ### 🟢 Fase 3 — Launch · v1.0.0 GA
 
@@ -64,6 +66,7 @@
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.2.0 | 11-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 4 closed — Release v1.3.0 The Guest Experience (tag v1.3.0); Fase 2 selesai; menunggu planning Sprint 5 (Fase 3) |
 | 1.1.0 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 4 dimulai — Manajemen tamu + amplop digital + hardening LOW (Development) |
 | 1.0.9 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 3 closed — Release v1.2.0 The Core Features |
 | 1.0.8 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 3 Development selesai — Fase 2 (auth, template, builder, halaman publik, RSVP & galeri) |

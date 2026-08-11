@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Architecture Context · Category : Context (living document)
-  Version  : 1.0.3 · Status : ✅ Stable · Update : 10-08-2026
+  Version  : 1.0.5 · Status : ✅ Stable · Update : 11-08-2026
 -->
 
 # Arsitektur
@@ -50,7 +50,7 @@ Setiap keputusan arsitektur penting (pola, teknologi, struktur data) wajib:
 
 - **Frontend:** ✅ Landing page 9 section (v1.1.0) + halaman aplikasi: `pages/login.html`, `pages/builder.html`, `pages/invitation.html`.
 - **Backend:** ✅ Node.js + Express (ESM) — `server/` (config, db, app, error handler, lib: jwt/password/validation/http-error, middleware rate-limit, services) + `api/` (health, auth, templates, invitations, guestbook publik, guests, gift-accounts).
-- **Database:** 🟠 Migrasi `0001` (core) + `0002` (auth/templates) + `0003` (galeri/buku tamu); PostgreSQL belum diinstall lokal.
+- **Database:** ✅ Migrasi `0001` (core) + `0002` (auth/templates) + `0003` (galeri/buku tamu) + `0004` (guests/gift_accounts) — PostgreSQL 18.4 terpasang lokal, 8 tabel.
 
 ## Keputusan Arsitektur Kunci
 
@@ -68,6 +68,7 @@ Setiap keputusan arsitektur penting (pola, teknologi, struktur data) wajib:
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.0.5 | 11-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Sprint 4 closed — guest-service, gift-account-service, rate-limit, migrasi 0004, verifikasi E2E 21/21 |
 | 1.0.4 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 4 — guest-service, gift-account-service, middleware rate-limit, migrasi 0004 |
 | 1.0.3 | 10-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Release v1.2.0 — The Core Features (Audit PASS) |
 | 1.0.2 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Backend & DB lengkap (auth, template, invitation, guestbook) — Sprint 3 |

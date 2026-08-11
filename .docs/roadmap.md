@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Roadmap · Category : Panduan (source of truth)
-  Version  : 1.1.0 · Status : 🟠 Proses · Update : 10-08-2026
+  Version  : 1.2.0 · Status : 🟠 Proses · Update : 11-08-2026
 -->
 
 # Roadmap BERNADA.ID
@@ -10,7 +10,7 @@
 >
 > Status item: 🟡 Belum · 🟠 Proses/sebagian · ✅ Selesai.
 >
-> **Sprint aktif:** Sprint 4 — The Guest Experience (🟠 Proses, release v1.3.0). Development manajemen tamu & amplop digital selesai; verifikasi PostgreSQL & E2E menyusul.
+> **Sprint aktif:** Sprint 5 — (menunggu planning). Fase 2 selesai; arah berikutnya Fase 3 — Launch (payment & pricing, optimasi performa & SEO, hardening produksi).
 
 ---
 
@@ -37,7 +37,7 @@
 **Tujuan:** fitur inti platform — autentikasi, builder undangan, template & personalisasi.
 
 > Sprint 3 — The Core Features: ✅ Closed (10-08-2026) — Audit PASS + Release v1.2.0 (tag `v1.2.0`).
-> Sprint 4 — The Guest Experience: 🟠 Proses (10-08-2026) — manajemen tamu + amplop digital + hardening LOW; menunggu verifikasi PostgreSQL & E2E (release v1.3.0).
+> Sprint 4 — The Guest Experience: ✅ Closed (11-08-2026) — manajemen tamu + amplop digital + hardening LOW + verifikasi PostgreSQL & E2E 21/21 PASS (release v1.3.0, tag `v1.3.0`). Fase 2 selesai.
 
 | Item | Status | Catatan |
 | --- | --- | --- |
@@ -46,8 +46,8 @@
 | Builder / editor undangan digital | ✅ | `pages/builder.html` — CRUD + publish/unpublish, owner-scoped |
 | Halaman publik undangan `/u/:slug` | ✅ | cover, countdown, tema, musik, lokasi, kalender `.ics`, galeri |
 | RSVP & buku tamu | ✅ | tabel `guestbook` (migrasi 0003) + endpoint publik + fallback demo |
-| Manajemen tamu (kelola daftar tamu pemilik) | 🟠 | Sprint 4 — tabel `guests` (migrasi 0004), CRUD + stats, UI Kelola di builder |
-| Amplop digital (`gifts`) | 🟠 | Sprint 4 — tabel `gift_accounts` (migrasi 0004), API owner & publik, transfer info saja; wishlist 🟡 ditunda |
+| Manajemen tamu (kelola daftar tamu pemilik) | ✅ | tabel `guests` (migrasi 0004), CRUD + stats + UI Kelola di builder (Sprint 4) |
+| Amplop digital (`gifts`) | ✅ | tabel `gift_accounts` (migrasi 0004), API owner & publik, transfer info saja; wishlist 🟡 ditunda (Sprint 4) |
 | Payment / pricing engine | 🟡 | Fase 3 |
 
 ## Fase 3 — Launch · v1.0.0 GA
@@ -75,6 +75,7 @@
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.2.0 | 11-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 4 closed — Release v1.3.0 The Guest Experience (tag v1.3.0); Fase 2 selesai; menunggu planning Sprint 5 (Fase 3 — Launch) |
 | 1.1.0 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 4 dimulai — Manajemen tamu + amplop digital + hardening LOW (Development) |
 | 1.0.9 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 3 closed — Release v1.2.0 The Core Features (tag v1.2.0); Fase 2 inti selesai |
 | 1.0.8 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 3 Development selesai — Fase 2 (auth, template, builder, halaman publik, RSVP & galeri) menunggu audit & release |

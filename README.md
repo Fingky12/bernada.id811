@@ -6,7 +6,7 @@ Digital Wedding Invitation Platform
 
 ## Version
 
-v1.2.0 (The Core Features)
+v1.3.0 (The Guest Experience)
 
 ---
 
@@ -48,8 +48,6 @@ npm run dev          # jalankan server (http://localhost:3000)
 
 ### Database (PostgreSQL)
 
-Database Postgres belum diinstall di mesin pengembangan — install dulu lalu:
-
 ```bash
 npm run db:create    # buat database (dibaca dari DATABASE_URL)
 npm run migrate      # jalankan migrasi skema (database/migrations/)
@@ -63,6 +61,7 @@ npm run migrate      # jalankan migrasi skema (database/migrations/)
 | `npm start` | Jalankan server produksi |
 | `npm run db:create` | Buat database PostgreSQL |
 | `npm run migrate` | Jalankan migrasi skema |
+| `npm run test:health` | Health check otomatis (PASS/FAIL) |
 
 ### Health Check
 
@@ -72,10 +71,11 @@ npm run migrate      # jalankan migrasi skema (database/migrations/)
 
 1. Buka `/login` → daftar akun baru.
 2. Masuk ke `/builder` → "Buat Undangan" → isi detail, pilih template, sesuaikan tema → simpan.
-3. "Terbitkan" → bagikan link `/u/<slug>` ke tamu.
-4. Tamu membuka link: melihat undangan, konfirmasi kehadiran & menulis buku tamu.
+3. Di "Kelola": tambah daftar tamu (tunggal/bulk) & kelola amplop digital (rekening transfer).
+4. "Terbitkan" → bagikan link `/u/<slug>` ke tamu.
+5. Tamu membuka link: melihat undangan, konfirmasi kehadiran & menulis buku tamu, dan melihat amplop digital untuk kirim kado.
 
-> Catatan: PostgreSQL belum diinstall di mesin pengembangan — API memerlukan database untuk register/login/CRUD. Halaman publik `/u/:slug` tetap bisa dilihat lewat data demo bawaan (`assets/js/demo-invitations.js`).
+> Catatan: halaman publik `/u/:slug` tetap bisa dilihat lewat data demo bawaan (`assets/js/demo-invitations.js`) saat API tidak aktif.
 
 ---
 

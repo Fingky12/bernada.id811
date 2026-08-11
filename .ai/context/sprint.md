@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Sprint Context · Category : Context (living document)
-  Version  : 1.2.0 · Status : 🟠 Proses · Update : 10-08-2026
+  Version  : 1.3.0 · Status : ✅ Stable · Update : 11-08-2026
 -->
 
 # Sprint
@@ -14,9 +14,19 @@
 
 | Item | Detail |
 | --- | --- |
+| Sprint | (menunggu planning Sprint 5) |
+| Arah | Fase 3 — Launch (payment & pricing, optimasi performa & SEO, hardening produksi) |
+| Status | 🟡 Belum dimulai |
+| Release | v1.4.0 (menunggu keputusan) |
+| Referensi | `.docs/roadmap.md` |
+
+## Sprint Sebelumnya (Closed)
+
+| Item | Detail |
+| --- | --- |
 | Sprint | Sprint 4 — The Guest Experience |
 | Tujuan | Manajemen tamu + amplop digital (transfer info), hardening audit LOW, verifikasi PostgreSQL & E2E |
-| Status | 🟠 Proses — Development |
+| Status | ✅ Closed |
 | Release | v1.3.0 — The Guest Experience Release |
 | Referensi | `.docs/sprint-4.md` |
 
@@ -105,7 +115,7 @@
 - Hardening audit LOW — validasi hex tema, token `--color-overlay-*`, rate limiting, util bersama, dokumentasi JWT
 - Install PostgreSQL di mesin pengembangan + verifikasi E2E penuh (AC7)
 
-## Hasil Sprint 4 (Development)
+## Hasil Sprint 4
 
 - ✅ Migrasi `0004_guests_gift_accounts.sql` — tabel `guests` (status diundang/hadir/tidak-hadir) + `gift_accounts` (bank/account, is_active, sort_order)
 - ✅ Guest API — `GET/POST /api/invitations/:id/guests`, `GET .../guests/stats`, `GET/PATCH/DELETE /api/guests/:guestId`
@@ -113,7 +123,11 @@
 - ✅ Builder UI "Kelola" — statistik tamu, tambah tunggal/bulk, filter status, kelola rekening (tambah/toggle/hapus)
 - ✅ Halaman publik — section Amplop Digital + tombol salin (fallback demo saat API tidak tersedia)
 - ✅ Hardening LOW — `validateThemeColors`, `--color-overlay-*`, `server/middleware/rate-limit.js`, `assets/js/util.js`, dokumentasi JWT dev secret
-- 🟡 Belum — verifikasi PostgreSQL & E2E penuh (menunggu instalasi PostgreSQL di mesin pengembangan)
+- ✅ PostgreSQL terpasang (18.4) + migrasi 0001–0004 sukses (8 tabel) — verifikasi E2E penuh **21/21 PASS** terekam (`.docs/e2e/sprint-4-verification.md`); temuan MEDIUM AC7 tertutup
+- ✅ 2 bug E2E diperbaiki — 23502 default `isActive`/`sortOrder` & publik 401 (route publik sebelum `use(requireAuth)` + `requireAuth` per-route); diverifikasi ulang
+- ✅ Health check di repo — `scripts/health-check.mjs` + `npm run test:health`
+- ✅ Audit PASS — 24 PASS · 1 WARNING (resolved) · 0 ERROR (`.docs/audit/LAPORAN-AUDIT-SPRINT-4.html`)
+- ✅ Release v1.3.0 — The Guest Experience Release (tag `v1.3.0`) — **Sprint 4 closed**
 
 ## Aturan Sprint
 
@@ -125,6 +139,7 @@
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.3.0 | 11-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Closed | Sprint 4 closed — Audit PASS + Release v1.3.0 The Guest Experience (tag v1.3.0) |
 | 1.2.0 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 4 dimulai — Manajemen tamu + amplop digital + hardening LOW (Development) |
 | 1.1.0 | 10-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Closed | Sprint 3 closed — Audit PASS + Release v1.2.0 The Core Features (tag v1.2.0) |
 | 1.0.9 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 3 Development selesai (auth, template, invitation API, halaman publik, RSVP & buku tamu, galeri) — Review/Documentation |
