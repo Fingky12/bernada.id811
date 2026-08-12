@@ -178,8 +178,8 @@ async function submit(form, handler) {
   setLoading(button, true);
   try {
     const formData = new FormData(form);
-    await handler(Object.fromEntries(formData.entries()));
-    window.location.href = '/builder';
+    const user = await handler(Object.fromEntries(formData.entries()));
+    window.location.href = user?.role === 'admin' ? '/admin' : '/builder';
   } catch (error) {
     handleApiError(form, error);
     setLoading(button, false);

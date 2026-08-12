@@ -239,4 +239,44 @@ export const api = {
     params.set('pageSize', String(pageSize));
     return request(`/admin/users?${params.toString()}`);
   },
+
+  async getAdminUser(userId) {
+    return request(`/admin/users/${userId}`);
+  },
+
+  async setUserRole(userId, role) {
+    const data = await request(`/admin/users/${userId}/role`, {
+      method: 'PATCH',
+      body: { role },
+    });
+    return data.user;
+  },
+
+  async listAdminInvitations({ search = '', status = '', page = 1, pageSize = 20 } = {}) {
+    const params = new URLSearchParams();
+    if (search) params.set('search', search);
+    if (status) params.set('status', status);
+    params.set('page', String(page));
+    params.set('pageSize', String(pageSize));
+    return request(`/admin/invitations?${params.toString()}`);
+  },
+
+  async adminUnpublishInvitation(id) {
+    const data = await request(`/admin/invitations/${id}/unpublish`, {
+      method: 'POST',
+    });
+    return data.invitation;
+  },
+
+  async listAdminGuestbook({ search = '', page = 1, pageSize = 20 } = {}) {
+    const params = new URLSearchParams();
+    if (search) params.set('search', search);
+    params.set('page', String(page));
+    params.set('pageSize', String(pageSize));
+    return request(`/admin/guestbook?${params.toString()}`);
+  },
+
+  async deleteAdminGuestbookEntry(entryId) {
+    await request(`/admin/guestbook/${entryId}`, { method: 'DELETE' });
+  },
 };

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Admin — BERNADA.ID</title>
-    <meta name="description" content="Panel administrator BERNADA.ID — statistik platform dan daftar pengguna.">
+    <meta name="description" content="Panel administrator BERNADA.ID — statistik platform, pengguna, undangan, dan buku tamu.">
     <meta name="robots" content="noindex">
     <link rel="icon" type="image/svg+xml" href="../assets/img/favicon.svg">
     <link rel="stylesheet" href="../assets/css/main.css">
@@ -28,66 +28,161 @@
     <main class="app-main">
         <div class="container">
 
-            <section aria-label="Statistik platform">
+            <section aria-label="Panel admin">
                 <div class="page-head">
                     <div>
                         <h1 class="page-title">Panel Admin</h1>
-                        <p class="page-subtitle">Ringkasan statistik platform dan daftar pengguna BERNADA.ID.</p>
+                        <p class="page-subtitle">Ringkasan statistik, daftar pengguna, undangan, dan buku tamu BERNADA.ID.</p>
                     </div>
                 </div>
 
-                <div id="stats-grid" class="admin-stats" aria-live="polite">
-                    <div class="stat-card"><span class="stat-value" id="stat-users">–</span><span class="stat-label">Pengguna</span></div>
-                    <div class="stat-card"><span class="stat-value" id="stat-admins">–</span><span class="stat-label">Admin</span></div>
-                    <div class="stat-card"><span class="stat-value" id="stat-invitations">–</span><span class="stat-label">Undangan</span></div>
-                    <div class="stat-card"><span class="stat-value" id="stat-published">–</span><span class="stat-label">Terbit</span></div>
-                    <div class="stat-card"><span class="stat-value" id="stat-guestbook">–</span><span class="stat-label">Buku Tamu</span></div>
-                    <div class="stat-card"><span class="stat-value" id="stat-guests">–</span><span class="stat-label">Tamu</span></div>
-                    <div class="stat-card">
-                        <span class="stat-value" id="stat-gift-accounts">–</span>
-                        <span class="stat-label">Rekening <span id="stat-gift-active" class="stat-sub"></span></span>
-                    </div>
-                </div>
-            </section>
-
-            <section class="admin-section" aria-label="Daftar pengguna">
-                <div class="admin-toolbar">
-                    <div class="form-group">
-                        <label class="form-label" for="user-search">Cari Pengguna</label>
-                        <input class="input" id="user-search" type="search" placeholder="Cari nama atau email..." maxlength="100" autocomplete="off">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="user-role">Peran</label>
-                        <select class="input" id="user-role">
-                            <option value="">Semua</option>
-                            <option value="admin">Admin</option>
-                            <option value="user">Pengguna</option>
-                        </select>
-                    </div>
+                <div class="admin-tabs" role="tablist" aria-label="Navigasi panel admin">
+                    <button id="tab-summary" class="admin-tab is-active" role="tab" aria-selected="true" type="button">Ringkasan</button>
+                    <button id="tab-invitations" class="admin-tab" role="tab" aria-selected="false" type="button">Undangan</button>
+                    <button id="tab-guestbook" class="admin-tab" role="tab" aria-selected="false" type="button">Buku Tamu</button>
                 </div>
 
-                <div class="admin-table-wrap">
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Nama</th>
-                                <th scope="col">Email</th>
-                                <th scope="col">Peran</th>
-                                <th scope="col">Terdaftar</th>
-                            </tr>
-                        </thead>
-                        <tbody id="users-tbody" aria-live="polite"></tbody>
-                    </table>
-                    <div id="users-empty" class="admin-empty d-none">
-                        <p class="empty-state-text">Tidak ada pengguna yang cocok.</p>
+                <!-- ===== Tab: Ringkasan ===== -->
+                <div id="panel-summary" class="admin-panel" role="tabpanel">
+
+                    <div id="stats-grid" class="admin-stats" aria-live="polite">
+                        <div class="stat-card"><span class="stat-value" id="stat-users">–</span><span class="stat-label">Pengguna</span></div>
+                        <div class="stat-card"><span class="stat-value" id="stat-admins">–</span><span class="stat-label">Admin</span></div>
+                        <div class="stat-card"><span class="stat-value" id="stat-invitations">–</span><span class="stat-label">Undangan</span></div>
+                        <div class="stat-card"><span class="stat-value" id="stat-published">–</span><span class="stat-label">Terbit</span></div>
+                        <div class="stat-card"><span class="stat-value" id="stat-guestbook">–</span><span class="stat-label">Buku Tamu</span></div>
+                        <div class="stat-card"><span class="stat-value" id="stat-guests">–</span><span class="stat-label">Tamu</span></div>
+                        <div class="stat-card">
+                            <span class="stat-value" id="stat-gift-accounts">–</span>
+                            <span class="stat-label">Rekening <span id="stat-gift-active" class="stat-sub"></span></span>
+                        </div>
+                    </div>
+
+                    <div class="admin-section" aria-label="Daftar pengguna">
+                        <div class="admin-toolbar">
+                            <div class="form-group">
+                                <label class="form-label" for="user-search">Cari Pengguna</label>
+                                <input class="input" id="user-search" type="search" placeholder="Cari nama atau email..." maxlength="100" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="user-role">Peran</label>
+                                <select class="input" id="user-role">
+                                    <option value="">Semua</option>
+                                    <option value="admin">Admin</option>
+                                    <option value="user">Pengguna</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="admin-table-wrap">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Nama</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Peran</th>
+                                        <th scope="col">Terdaftar</th>
+                                        <th scope="col"><span class="sr-only">Aksi</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="users-tbody" aria-live="polite"></tbody>
+                            </table>
+                            <div id="users-empty" class="admin-empty d-none">
+                                <p class="empty-state-text">Tidak ada pengguna yang cocok.</p>
+                            </div>
+                        </div>
+
+                        <div id="user-detail" class="admin-detail d-none" aria-live="polite"></div>
+
+                        <nav class="admin-pagination" aria-label="Navigasi halaman pengguna">
+                            <button id="prev-page" class="btn btn-outline btn-sm" type="button">← Sebelumnya</button>
+                            <span id="page-info" class="pagination-info">Halaman 1</span>
+                            <button id="next-page" class="btn btn-outline btn-sm" type="button">Berikutnya →</button>
+                        </nav>
                     </div>
                 </div>
 
-                <nav class="admin-pagination" aria-label="Navigasi halaman pengguna">
-                    <button id="prev-page" class="btn btn-outline btn-sm" type="button">← Sebelumnya</button>
-                    <span id="page-info" class="pagination-info">Halaman 1</span>
-                    <button id="next-page" class="btn btn-outline btn-sm" type="button">Berikutnya →</button>
-                </nav>
+                <!-- ===== Tab: Undangan ===== -->
+                <div id="panel-invitations" class="admin-panel d-none" role="tabpanel">
+                    <div class="admin-section" aria-label="Moderasi undangan">
+                        <div class="admin-toolbar admin-toolbar-3col">
+                            <div class="form-group">
+                                <label class="form-label" for="inv-search">Cari Undangan</label>
+                                <input class="input" id="inv-search" type="search" placeholder="Cari judul, slug, atau email pemilik..." maxlength="100" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="inv-status">Status</label>
+                                <select class="input" id="inv-status">
+                                    <option value="">Semua</option>
+                                    <option value="published">Terbit</option>
+                                    <option value="draft">Draft</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="admin-table-wrap">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Judul</th>
+                                        <th scope="col">Pemilik</th>
+                                        <th scope="col">Template</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Dibuat</th>
+                                        <th scope="col"><span class="sr-only">Aksi</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="invitations-tbody" aria-live="polite"></tbody>
+                            </table>
+                            <div id="invitations-empty" class="admin-empty d-none">
+                                <p class="empty-state-text">Tidak ada undangan yang cocok.</p>
+                            </div>
+                        </div>
+
+                        <nav class="admin-pagination" aria-label="Navigasi halaman undangan">
+                            <button id="inv-prev-page" class="btn btn-outline btn-sm" type="button">← Sebelumnya</button>
+                            <span id="inv-page-info" class="pagination-info">Halaman 1</span>
+                            <button id="inv-next-page" class="btn btn-outline btn-sm" type="button">Berikutnya →</button>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- ===== Tab: Buku Tamu ===== -->
+                <div id="panel-guestbook" class="admin-panel d-none" role="tabpanel">
+                    <div class="admin-section" aria-label="Moderasi buku tamu">
+                        <div class="admin-toolbar">
+                            <div class="form-group">
+                                <label class="form-label" for="gb-search">Cari Buku Tamu</label>
+                                <input class="input" id="gb-search" type="search" placeholder="Cari nama tamu atau ucapan..." maxlength="100" autocomplete="off">
+                            </div>
+                        </div>
+
+                        <div class="admin-table-wrap">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Nama Tamu</th>
+                                        <th scope="col">Ucapan</th>
+                                        <th scope="col">Kehadiran</th>
+                                        <th scope="col">Undangan</th>
+                                        <th scope="col">Tanggal</th>
+                                        <th scope="col"><span class="sr-only">Aksi</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="guestbook-tbody" aria-live="polite"></tbody>
+                            </table>
+                            <div id="guestbook-empty" class="admin-empty d-none">
+                                <p class="empty-state-text">Tidak ada entri buku tamu yang cocok.</p>
+                            </div>
+                        </div>
+
+                        <nav class="admin-pagination" aria-label="Navigasi halaman buku tamu">
+                            <button id="gb-prev-page" class="btn btn-outline btn-sm" type="button">← Sebelumnya</button>
+                            <span id="gb-page-info" class="pagination-info">Halaman 1</span>
+                            <button id="gb-next-page" class="btn btn-outline btn-sm" type="button">Berikutnya →</button>
+                        </nav>
+                    </div>
+                </div>
             </section>
 
         </div>

@@ -2,10 +2,11 @@
   BERNADA.ID PAGES
   ----------------------------------------------------------
   Document : Admin Page · Category : Pages
-  Version  : 1.0.0 · Status : ✅ Stable · Update : 11-08-2026
+  Version  : 1.1.0 · Status : ✅ Stable · Update : 12-08-2026
 
   Single Responsibility : Layout & komponen khusus halaman
-  /admin (Panel Admin — Sprint 5, read-only).
+  /admin (Panel Admin — Sprint 5: statistik, pengguna & peran,
+  moderasi undangan & buku tamu).
   Design Token Source   : assets/css/variables.css
   ========================================================== */
 
@@ -176,7 +177,192 @@
 
 
 /* ==========================================================
-  6. RESPONSIVE
+  6. TABS NAVIGATION
+  ----------------------------------------------------------
+  Tab navigasi panel admin (Ringkasan / Undangan / Buku Tamu).
+  ========================================================== */
+
+.admin-tabs {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs);
+    margin-bottom: var(--spacing-xl);
+    background: var(--color-surface-alt);
+    border-radius: var(--border-radius-lg);
+}
+
+.admin-tab {
+    padding: var(--spacing-xs) var(--spacing-lg);
+    border: none;
+    border-radius: var(--border-radius-md);
+    background: transparent;
+    color: var(--color-text-muted);
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: var(--transition-normal);
+}
+
+.admin-tab:hover {
+    color: var(--color-text-primary);
+}
+
+.admin-tab.is-active {
+    background: var(--color-surface);
+    color: var(--color-primary-600);
+    box-shadow: var(--shadow-sm);
+}
+
+
+/* ==========================================================
+  7. TABLE CELL EXTRAS
+  ----------------------------------------------------------
+  Elemen bantu di dalam sel tabel admin.
+  ========================================================== */
+
+.admin-title {
+    display: block;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-900);
+}
+
+.admin-subtext {
+    display: block;
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-500);
+}
+
+.admin-message {
+    max-width: 320px;
+    white-space: normal;
+    word-break: break-word;
+}
+
+.admin-actions {
+    white-space: nowrap;
+}
+
+.admin-actions .btn + .btn,
+.admin-actions .badge + .btn {
+    margin-left: var(--spacing-xs);
+}
+
+.admin-row-note {
+    font-size: var(--font-size-xs);
+    color: var(--color-gray-400);
+    white-space: nowrap;
+}
+
+.admin-link {
+    border: none;
+    background: none;
+    padding: 0;
+    font: inherit;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-primary-600);
+    cursor: pointer;
+    text-align: left;
+}
+
+.admin-link:hover,
+.admin-link:focus-visible {
+    text-decoration: underline;
+    outline: none;
+}
+
+
+/* ==========================================================
+  8. USER DETAIL PANEL
+  ----------------------------------------------------------
+  Panel detail pengguna (profil + ringkasan hitungan) yang
+  muncul saat baris pengguna diklik.
+  ========================================================== */
+
+.admin-detail {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-lg);
+    background: var(--color-surface);
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.admin-detail-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.admin-detail-name {
+    font-family: var(--font-family-display);
+    font-size: var(--font-size-xl);
+    color: var(--color-gray-900);
+}
+
+.admin-detail-sub {
+    margin-top: var(--spacing-2xs);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+}
+
+.admin-detail-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    flex-shrink: 0;
+}
+
+.admin-detail-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: var(--spacing-sm);
+}
+
+.admin-detail-stat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2xs);
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--color-gray-50);
+    border: 1px solid var(--color-gray-100);
+    border-radius: var(--border-radius-md);
+}
+
+.admin-detail-stat strong {
+    font-family: var(--font-family-display);
+    font-size: var(--font-size-lg);
+    color: var(--color-gray-900);
+}
+
+.admin-detail-stat span {
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    color: var(--color-gray-500);
+}
+
+
+/* ==========================================================
+  9. TOOLBAR 3 KOLOM
+  ----------------------------------------------------------
+  Variasi toolbar dengan 3 kontrol (mis. search + filter).
+  ========================================================== */
+
+.admin-toolbar-3col {
+    grid-template-columns: 1fr 1fr minmax(180px, 240px);
+}
+
+.admin-toolbar-3col .form-group:only-child {
+    grid-column: 1 / -1;
+}
+
+
+/* ==========================================================
+  10. RESPONSIVE
   ========================================================== */
 
 @media (max-width: 640px) {
@@ -185,7 +371,23 @@
         align-items: stretch;
     }
 
+    .admin-toolbar-3col {
+        grid-template-columns: 1fr;
+    }
+
     .admin-stats {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .admin-detail-head {
+        flex-direction: column;
+    }
+
+    .admin-tabs {
+        display: flex;
+    }
+
+    .admin-tab {
+        flex: 1 1 auto;
     }
 }

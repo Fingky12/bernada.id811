@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : API · Category : Panduan (source of truth)
-  Version  : 1.1.0 · Status : ✅ Stable · Update : 10-08-2026
+  Version  : 1.2.0 · Status : 🟠 Proses · Update : 12-08-2026
 -->
 
 # API BERNADA.ID
@@ -478,6 +478,163 @@ Hapus amplop.
 
 ---
 
+## Endpoint Admin (Terproteksi)
+
+> Seluruh endpoint admin memerlukan `Authorization: Bearer <accessToken>` **dan** peran `admin` (middleware `requireAdmin`; role dicek ulang ke database per-request). Non-admin menerima **403** `FORBIDDEN`. Dibatasi rate limiting 60 req/menit per IP.
+
+### GET `/api/admin/stats`
+
+Ringkasan statistik platform.
+
+**Response 200:**
+
+```json
+{
+  "stats": {
+    "users": 12,
+    "admins": 1,
+    "invitations": 30,
+    "invitationsPublished": 10,
+    "guestbookEntries": 55,
+    "guests": 120,
+    "giftAccounts": 25,
+    "giftAccountsActive": 18
+  }
+}
+```
+
+### GET `/api/admin/users`
+
+Daftar pengguna dengan pencarian, filter peran, dan pagination.
+
+Query (semua opsional): `search` (nama/email, ILIKE), `role` (`admin` | `user`), `page` (default 1), `pageSize` (default 20, maks 100).
+
+**Response 200:**
+
+```json
+{
+  "users": [{ "id": "…", "email": "…", "fullName": "…", "role": "user", "createdAt": "…" }],
+  "total": 12,
+  "limit": 20,
+  "offset": 0,
+  "page": 1
+}
+```
+
+### GET `/api/admin/users/:id`
+
+Detail pengguna + ringkasan hitungan miliknya.
+
+**Response 200:**
+
+```json
+{
+  "user": { "id": "…", "email": "…", "fullName": "…", "role": "user", "createdAt": "…" },
+  "counts": {
+    "invitations": 3,
+    "invitationsPublished": 1,
+    "guests": 10,
+    "giftAccounts": 2,
+    "guestbookEntries": 5
+  }
+}
+```
+
+**404** `NOT_FOUND` bila pengguna tidak ada.
+
+### PATCH `/api/admin/users/:id/role`
+
+Ubah peran pengguna.
+
+**Request:**
+
+```json
+{ "role": "admin" }
+```
+
+`role` wajib: `admin` | `user`.
+
+Aturan keamanan:
+
+- **Tidak bisa** mengubah peran akun sendiri → **400** `VALIDATION_ERROR`.
+- **Tidak bisa** menurunkan admin terakhir → **409** `LAST_ADMIN`.
+- **404** bila pengguna tidak ada.
+
+**Response 200:** `{ "user": { … } }` — objek pengguna dengan `role` baru.
+
+### GET `/api/admin/invitations`
+
+Moderasi undangan — daftar seluruh undangan (semua pemilik).
+
+Query (semua opsional): `search` (judul/slug/email pemilik, ILIKE), `status` (`published` | `draft`), `page`, `pageSize`.
+
+**Response 200:**
+
+```json
+{
+  "invitations": [
+    {
+      "id": "…",
+      "slug": "rara-bima",
+      "title": "Pernikahan Rara & Bima",
+      "isPublished": true,
+      "publishedAt": "…",
+      "createdAt": "…",
+      "owner": { "id": "…", "email": "…", "fullName": "…" },
+      "templateName": "Klasik Minimal"
+    }
+  ],
+  "total": 30,
+  "limit": 20,
+  "offset": 0,
+  "page": 1
+}
+```
+
+### POST `/api/admin/invitations/:id/unpublish`
+
+Menarik undangan dari publik (moderasi). Berlaku untuk undangan milik pengguna mana pun.
+
+**Response 200:** `{ "invitation": { "id", "slug", "title", "isPublished": false, "publishedAt": null } }`.
+
+**404** bila undangan tidak ada.
+
+### GET `/api/admin/guestbook`
+
+Moderasi buku tamu — daftar seluruh entri (semua undangan).
+
+Query (semua opsional): `search` (nama tamu/ucapan, ILIKE), `page`, `pageSize`.
+
+**Response 200:**
+
+```json
+{
+  "entries": [
+    {
+      "id": "…",
+      "guestName": "Budi",
+      "attendance": "hadir",
+      "guestsCount": 2,
+      "message": "Selamat ya!",
+      "createdAt": "…",
+      "invitation": { "title": "Pernikahan Rara & Bima", "slug": "rara-bima" }
+    }
+  ],
+  "total": 55,
+  "limit": 20,
+  "offset": 0,
+  "page": 1
+}
+```
+
+### DELETE `/api/admin/guestbook/:entryId`
+
+Hapus entri buku tamu (moderasi spam/ucapan tidak pantas).
+
+**Response 204** — tanpa body. **404** bila entri tidak ada.
+
+---
+
 ## Middleware
 
 | Middleware | Fungsi |
@@ -487,6 +644,7 @@ Hapus amplop.
 | `cookieParser` | Baca cookie (refresh token httpOnly) |
 | `express.json` | Parse body JSON (limit 1mb) |
 | `requireAuth` | Wajib autentikasi untuk endpoint terproteksi (verify JWT `Bearer`) |
+| `requireAdmin` | Wajib peran `admin` (menggunakan `requireAuth` + cek `role` ke database) — melindungi seluruh `/api/admin/*` |
 | `rateLimit` | Rate limiting in-memory per IP+route (auth 10/mnt, guestbook 20/mnt, publik 120/mnt) — header `X-RateLimit-*` & `Retry-After` |
 | `notFoundHandler` | 404 JSON untuk route yang tidak dikenal |
 | `errorHandler` | Error terpusat: 5xx generik, <5xx mengikuti `err.status` |
@@ -500,6 +658,7 @@ Hapus amplop.
 | `/` | `index.html` |
 | `/login` | `pages/login.html` |
 | `/builder` | `pages/builder.html` |
+| `/admin` | `pages/admin.html` |
 | `/u/:slug` | `pages/invitation.html` |
 
 Aset statis disajikan via `/assets` dan `/pages`.
@@ -508,6 +667,7 @@ Aset statis disajikan via `/assets` dan `/pages`.
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.2.0 | 12-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Endpoint admin — stats, users (+ role, detail), invitations (unpublish), guestbook (hapus) |
 | 1.0.3 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Endpoint tamu (CRUD + stats) & amplop digital (owner + publik), middleware rate limit |
 | 1.0.2 | 10-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Endpoint auth, templates, undangan CRUD/publish, guestbook publik & galeri |
 | 1.0.1 | 09-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Endpoint publik `GET /api/invitations/public/:slug` + konvensi autentikasi JWT |
