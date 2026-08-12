@@ -49,4 +49,15 @@ export const config = {
   jwtAccessExpires: getEnv('JWT_ACCESS_EXPIRES', '15m'),
   refreshTokenExpiryDays: Number.parseInt(getEnv('REFRESH_TOKEN_EXPIRY_DAYS', '30'), 10),
   cookieName: 'bernada_refresh',
+
+  // Email (SMTP) — untuk reset password
+  smtpHost: getEnv('SMTP_HOST', ''),
+  smtpPort: Number.parseInt(getEnv('SMTP_PORT', '587'), 10),
+  smtpUser: getEnv('SMTP_USER', ''),
+  smtpPass: getEnv('SMTP_PASS', ''),
+  emailFrom: getEnv('EMAIL_FROM', 'BERNADA.ID <no-reply@bernada.id>'),
+  appBaseUrl: getEnv('APP_BASE_URL', 'http://localhost:3000'),
+
+  // Password reset token expiry (hours)
+  resetTokenExpiryHours: Number.parseInt(getEnv('RESET_TOKEN_EXPIRY_HOURS', '24'), 10),
 };
