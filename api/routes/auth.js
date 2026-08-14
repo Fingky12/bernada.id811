@@ -8,10 +8,12 @@ import {
   requiredString,
 } from '../../server/lib/validation.js';
 import * as authService from '../../server/services/auth-service.js';
+import * as passwordResetService from '../../server/services/password-reset-service.js';
 
 export const authRouter = Router();
 
 const authLimiter = rateLimit({ windowMs: 60 * 1000, max: 10 });
+const forgotPasswordLimiter = rateLimit({ windowMs: 60 * 1000, max: 5 });
 
 authRouter.use(authLimiter);
 
@@ -69,6 +71,21 @@ authRouter.post('/logout', async (req, res) => {
   await authService.logout(req.cookies?.[config.cookieName]);
   clearRefreshCookie(res);
   res.status(204).end();
+});
+
+authRouter.post('/forgot-password', forgotPasswordLimiter, async (req, res) => {
+  const email = validateEmail(req.body?.email);
+  await passwordResetService.requestPasswordReset(email);
+  res.status(200).json({
+    message: 'Jika email terdaftar, tautan reset password telah dikirim.',
+  });
+});
+
+authRouter.post('/reset-password', authLimiter, async (req, res) => {
+  const token = requiredString(req.body?.token, 'token', { max: 200 });
+  const password = validatePassword(req.body?.password);
+  const user = await passwordResetService.resetPassword({ token, password });
+  res.status(200).json({ user: authService.toPublicUser(user) });
 });
 
 authRouter.get('/me', requireAuth, async (req, res) => {

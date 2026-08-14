@@ -128,6 +128,29 @@
     border: 1px solid var(--color-success-500);
 }
 
+.auth-helper {
+    text-align: center;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+}
+
+.link-btn {
+    border: none;
+    background: transparent;
+    padding: 0;
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-link);
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.link-btn:hover {
+    color: var(--color-primary-700);
+    text-decoration: underline;
+}
+
 .auth-footer {
     margin-top: var(--spacing-lg);
     text-align: center;

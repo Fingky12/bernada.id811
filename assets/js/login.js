@@ -14,10 +14,15 @@ import { api } from './api.js';
 
 const tabLogin = document.getElementById('tab-login');
 const tabRegister = document.getElementById('tab-register');
+const authTabs = document.getElementById('auth-tabs');
 const loginForm = document.getElementById('login-form');
 const registerForm = document.getElementById('register-form');
+const forgotForm = document.getElementById('forgot-form');
+const resetForm = document.getElementById('reset-form');
 const alertBox = document.getElementById('auth-alert');
 const subtitle = document.getElementById('auth-subtitle');
+
+const resetToken = new URLSearchParams(window.location.search).get('reset');
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const FIELD_NAMES = ['email', 'password', 'fullName'];
@@ -52,10 +57,21 @@ function validatePassword(value) {
   return null;
 }
 
+function validatePasswordConfirm(confirmInput) {
+  const passwordInput = document.getElementById('reset-password');
+  const confirm = trim(confirmInput.value);
+  if (!confirm) return 'Ulangi password wajib diisi.';
+  if (passwordInput && passwordInput.value !== confirm) {
+    return 'Password tidak sama.';
+  }
+  return null;
+}
+
 function validateInput(input) {
   if (input.name === 'fullName') return validateFullName(input.value);
   if (input.name === 'email') return validateEmail(input.value);
   if (input.name === 'password') return validatePassword(input.value);
+  if (input.name === 'passwordConfirm') return validatePasswordConfirm(input);
   return null;
 }
 
@@ -107,11 +123,19 @@ function clearFormErrors(form) {
 
 function showAlert(message) {
   alertBox.textContent = message;
-  alertBox.classList.remove('d-none');
+  alertBox.classList.remove('d-none', 'auth-alert-success');
+  alertBox.classList.add('auth-alert-danger');
+}
+
+function showSuccess(message) {
+  alertBox.textContent = message;
+  alertBox.classList.remove('d-none', 'auth-alert-danger');
+  alertBox.classList.add('auth-alert-success');
 }
 
 function hideAlert() {
   alertBox.classList.add('d-none');
+  alertBox.classList.remove('auth-alert-danger', 'auth-alert-success');
   alertBox.textContent = '';
 }
 
@@ -163,10 +187,14 @@ function handleApiError(form, error) {
       return;
     }
   }
+  if (error.code === 'INVALID_TOKEN' || error.code === 'EXPIRED_TOKEN') {
+    showAlert(error.message);
+    return;
+  }
   showErrorOnField(form, error.message);
 }
 
-async function submit(form, handler) {
+async function submit(form, handler, onSuccess) {
   hideAlert();
   const firstInvalid = validateForm(form);
   if (firstInvalid) {
@@ -178,8 +206,13 @@ async function submit(form, handler) {
   setLoading(button, true);
   try {
     const formData = new FormData(form);
-    const user = await handler(Object.fromEntries(formData.entries()));
-    window.location.href = user?.role === 'admin' ? '/admin' : '/builder';
+    const result = await handler(Object.fromEntries(formData.entries()));
+    if (onSuccess) {
+      setLoading(button, false);
+      onSuccess(result);
+    } else {
+      window.location.href = result?.role === 'admin' ? '/admin' : '/builder';
+    }
   } catch (error) {
     handleApiError(form, error);
     setLoading(button, false);
@@ -205,22 +238,38 @@ function attachLiveValidation(form) {
 }
 
 /* ------------------------------------------
-    Tab & event binding
+    Tampilan & event binding
   ------------------------------------------ */
 
-function showTab(which) {
-  const isLogin = which === 'login';
+function showView(view) {
+  const isLogin = view === 'login';
+  const isRegister = view === 'register';
+  const isForgot = view === 'forgot';
+  const isReset = view === 'reset';
+
+  authTabs.classList.toggle('d-none', isForgot || isReset);
   tabLogin.classList.toggle('is-active', isLogin);
-  tabRegister.classList.toggle('is-active', !isLogin);
+  tabRegister.classList.toggle('is-active', isRegister);
   tabLogin.setAttribute('aria-selected', String(isLogin));
-  tabRegister.setAttribute('aria-selected', String(!isLogin));
+  tabRegister.setAttribute('aria-selected', String(isRegister));
+
   loginForm.classList.toggle('d-none', !isLogin);
-  registerForm.classList.toggle('d-none', isLogin);
-  subtitle.textContent = isLogin
-    ? 'Masuk untuk melanjutkan ke dasbor undangan Anda.'
-    : 'Buat akun gratis untuk mulai membuat undangan digital.';
+  registerForm.classList.toggle('d-none', !isRegister);
+  forgotForm.classList.toggle('d-none', !isForgot);
+  resetForm.classList.toggle('d-none', !isReset);
+
+  subtitle.textContent = isRegister
+    ? 'Buat akun gratis untuk mulai membuat undangan digital.'
+    : isForgot
+      ? 'Masukkan email untuk menerima tautan reset password.'
+      : isReset
+        ? 'Buat password baru untuk akun Anda.'
+        : 'Masuk untuk melanjutkan ke dasbor undangan Anda.';
+
   clearFormErrors(loginForm);
   clearFormErrors(registerForm);
+  clearFormErrors(forgotForm);
+  clearFormErrors(resetForm);
   hideAlert();
 }
 
@@ -234,8 +283,43 @@ registerForm.addEventListener('submit', (event) => {
   submit(registerForm, (data) => api.register(data));
 });
 
-tabLogin.addEventListener('click', () => showTab('login'));
-tabRegister.addEventListener('click', () => showTab('register'));
+forgotForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  submit(
+    forgotForm,
+    (data) => api.forgotPassword(data.email),
+    () => {
+      showSuccess('Tautan reset password telah dikirim ke email Anda.');
+      forgotForm.reset();
+    },
+  );
+});
+
+resetForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  submit(
+    resetForm,
+    (data) => api.resetPassword(resetToken, data.password),
+    () => {
+      resetForm.reset();
+      showView('login');
+      showSuccess('Password berhasil diubah. Silakan masuk dengan password baru.');
+    },
+  );
+});
+
+tabLogin.addEventListener('click', () => showView('login'));
+tabRegister.addEventListener('click', () => showView('register'));
+
+document.getElementById('show-forgot').addEventListener('click', () => showView('forgot'));
+document.getElementById('back-login-from-forgot').addEventListener('click', () => showView('login'));
+document.getElementById('back-login-from-reset').addEventListener('click', () => showView('login'));
 
 attachLiveValidation(loginForm);
 attachLiveValidation(registerForm);
+attachLiveValidation(forgotForm);
+attachLiveValidation(resetForm);
+
+if (resetToken) {
+  showView('reset');
+}

@@ -19,7 +19,7 @@
         <h1 id="auth-title" class="auth-title">Selamat Datang</h1>
         <p id="auth-subtitle" class="auth-subtitle">Masuk untuk melanjutkan ke dasbor undangan Anda.</p>
 
-        <div class="auth-tabs" role="tablist" aria-label="Pilihan masuk atau daftar">
+        <div class="auth-tabs" id="auth-tabs" role="tablist" aria-label="Pilihan masuk atau daftar">
             <button id="tab-login" class="auth-tab is-active" type="button" role="tab"
                     aria-selected="true" aria-controls="login-form">Masuk</button>
             <button id="tab-register" class="auth-tab" type="button" role="tab"
@@ -41,6 +41,9 @@
                        autocomplete="current-password" placeholder="Minimal 8 karakter" required minlength="8">
             </div>
             <button class="btn btn-primary w-100" type="submit">Masuk</button>
+            <p class="auth-helper">
+                <button id="show-forgot" class="link-btn" type="button">Lupa password?</button>
+            </p>
         </form>
 
         <!-- Form daftar -->
@@ -61,6 +64,37 @@
                        autocomplete="new-password" placeholder="Minimal 8 karakter" required minlength="8">
             </div>
             <button class="btn btn-primary w-100" type="submit">Buat Akun</button>
+        </form>
+
+        <!-- Form lupa password -->
+        <form id="forgot-form" class="auth-form d-none" novalidate>
+            <div class="form-group">
+                <label class="form-label" for="forgot-email">Email</label>
+                <input class="input" id="forgot-email" name="email" type="email"
+                       autocomplete="email" placeholder="nama@contoh.com" required>
+            </div>
+            <button class="btn btn-primary w-100" type="submit">Kirim Tautan Reset</button>
+            <p class="auth-helper">
+                <button id="back-login-from-forgot" class="link-btn" type="button">← Kembali ke masuk</button>
+            </p>
+        </form>
+
+        <!-- Form reset password -->
+        <form id="reset-form" class="auth-form d-none" novalidate>
+            <div class="form-group">
+                <label class="form-label" for="reset-password">Password Baru</label>
+                <input class="input" id="reset-password" name="password" type="password"
+                       autocomplete="new-password" placeholder="Minimal 8 karakter" required minlength="8">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="reset-password-confirm">Ulangi Password Baru</label>
+                <input class="input" id="reset-password-confirm" name="passwordConfirm" type="password"
+                       autocomplete="new-password" placeholder="Ulangi password baru" required>
+            </div>
+            <button class="btn btn-primary w-100" type="submit">Simpan Password Baru</button>
+            <p class="auth-helper">
+                <button id="back-login-from-reset" class="link-btn" type="button">← Kembali ke masuk</button>
+            </p>
         </form>
 
         <p class="auth-footer">

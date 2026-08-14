@@ -110,6 +110,21 @@ export const api = {
     }
   },
 
+  async forgotPassword(email) {
+    return request('/auth/forgot-password', {
+      method: 'POST',
+      body: { email },
+    });
+  },
+
+  async resetPassword(token, password) {
+    const data = await request('/auth/reset-password', {
+      method: 'POST',
+      body: { token, password },
+    });
+    return data.user;
+  },
+
   async me() {
     const data = await request('/auth/me');
     return data.user;
