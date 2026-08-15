@@ -81,7 +81,7 @@ authRouter.post('/forgot-password', forgotPasswordLimiter, async (req, res) => {
   });
 });
 
-authRouter.post('/reset-password', authLimiter, async (req, res) => {
+authRouter.post('/reset-password', async (req, res) => {
   const token = requiredString(req.body?.token, 'token', { max: 200 });
   const password = validatePassword(req.body?.password);
   const user = await passwordResetService.resetPassword({ token, password });

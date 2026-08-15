@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAPORAN AUDIT SPRINT 5 — BERNADA.ID</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 20mm;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 11pt;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: #fff;
+            padding: 40px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #A12828;
+        }
+
+        .header h1 {
+            font-size: 24pt;
+            color: #A12828;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .header .subtitle {
+            font-size: 14pt;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .header .meta {
+            font-size: 10pt;
+            color: #888;
+        }
+
+        .meta-table {
+            width: 100%;
+            margin-bottom: 30px;
+            border-collapse: collapse;
+        }
+
+        .meta-table td {
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .meta-table td:first-child {
+            background: #f5f2ee;
+            font-weight: 600;
+            width: 150px;
+        }
+
+        h2 {
+            font-size: 16pt;
+            color: #A12828;
+            margin: 30px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #A12828;
+        }
+
+        h3 {
+            font-size: 13pt;
+            color: #2C2926;
+            margin: 20px 0 10px 0;
+        }
+
+        h4 {
+            font-size: 11pt;
+            color: #4A4641;
+            margin: 15px 0 8px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0 20px 0;
+            font-size: 10pt;
+        }
+
+        th, td {
+            padding: 8px 10px;
+            border: 1px solid #e0e0e0;
+            text-align: left;
+        }
+
+        th {
+            background: #A12828;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background: #f9f7f5;
+        }
+
+        .status-pass {
+            color: #047857;
+            font-weight: 700;
+        }
+
+        .status-warning {
+            color: #D97706;
+            font-weight: 700;
+        }
+
+        .status-error {
+            color: #DC2626;
+            font-weight: 700;
+        }
+
+        .status-low {
+            background: #E0F2FE;
+            color: #0369A1;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 9pt;
+            font-weight: 600;
+        }
+
+        .status-medium {
+            background: #FEF3C7;
+            color: #D97706;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 9pt;
+            font-weight: 600;
+        }
+
+        code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: "JetBrains Mono", "SF Mono", monospace;
+            font-size: 9pt;
+        }
+
+        pre {
+            background: #f4f4f4;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 10px 0;
+            font-size: 9pt;
+            font-family: "JetBrains Mono", "SF Mono", monospace;
+            line-height: 1.5;
+        }
+
+        ul, ol {
+            margin: 8px 0;
+            padding-left: 24px;
+        }
+
+        li {
+            margin: 4px 0;
+        }
+
+        .section-intro {
+            font-style: italic;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .highlight-box {
+            background: #FBF1F0;
+            border-left: 4px solid #A12828;
+            padding: 12px 16px;
+            margin: 15px 0;
+            border-radius: 0 6px 6px 0;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #A12828;
+            text-align: center;
+            font-size: 9pt;
+            color: #888;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+            }
+
+            h2 {
+                page-break-after: avoid;
+            }
+
+            table {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>LAPORAN AUDIT SPRINT 5</h1>
+    <div class="subtitle">BERNADA.ID — Digital Wedding Invitation Platform</div>
+    <div class="meta">Internal Code Review · Engineering Handbook Compliance</div>
+</div>
+
+<table class="meta-table">
+    <tr>
+        <td>Project</td>
+        <td>BERNADA.ID</td>
+    </tr>
+    <tr>
+        <td>Version</td>
+        <td>v1.4.0 (The Admin &amp; Account Security)</td>
+    </tr>
+    <tr>
+        <td>Tanggal Audit</td>
+        <td>16 Agustus 2026</td>
+    </tr>
+    <tr>
+        <td>Auditor</td>
+        <td>AI Pair Programmer</td>
+    </tr>
+    <tr>
+        <td>Scope</td>
+        <td>Migrasi DB 0005 &amp; 0006 (password_reset_tokens) · Reset password (service, email SMTP/dev-log, endpoint forgot &amp; reset, UI login) · Admin dashboard (requireAdmin, service admin, API, UI admin, script promote) · Rate limiting admin &amp; forgot-password · Verifikasi E2E 25/25 · Dokumentasi</td>
+    </tr>
+    <tr>
+        <td>Referensi</td>
+        <td>Engineering Handbook BERNADA.ID (rules/02–08, 09, 10, 11) · `.docs/sprint-5.md` · `.docs/e2e/sprint-5-verification.md`</td>
+    </tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- TAHAP 1: INTERNAL CODE REVIEW -->
+<!-- ============================================================ -->
+
+<h2>TAHAP 1: INTERNAL CODE REVIEW</h2>
+
+<!-- 1.1 Struktur File -->
+<h3>1.1 Struktur File</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Lokasi</th>
+        <th>Isi</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td><code>server/services/</code> (Sprint 5)</td>
+        <td><code>password-reset-service.js</code> (token SHA-256 sekali pakai, cleanup basi, transaksi reset + revoke refresh), <code>email-service.js</code> (nodemailer / dev-log), <code>admin-service.js</code> (stats/users/role/invitations/guestbook)</td>
+        <td class="status-pass">✅ Sesuai arsitektur</td>
+    </tr>
+    <tr>
+        <td><code>server/middleware/</code> (Sprint 5)</td>
+        <td><code>require-admin.js</code> — auth + cek role ke DB per-request</td>
+        <td class="status-pass">✅ Baru &amp; terisolasi</td>
+    </tr>
+    <tr>
+        <td><code>api/routes/</code> (Sprint 5)</td>
+        <td><code>admin.js</code> (8 route, mount <code>/api/admin</code>), <code>auth.js</code> +2 route (forgot/reset); terdaftar di <code>api/index.js</code> &amp; <code>server/app.js</code></td>
+        <td class="status-pass">✅ Terisi</td>
+    </tr>
+    <tr>
+        <td><code>database/migrations/</code></td>
+        <td><code>0005_password_reset_tokens.sql</code> + <code>0006_password_reset_tokens_updated_at.sql</code> (fix trigger 42703)</td>
+        <td class="status-pass">✅ Append-only (0001–0006)</td>
+    </tr>
+    <tr>
+        <td><code>pages/</code>, <code>assets/js/</code>, <code>assets/css/</code> (Sprint 5)</td>
+        <td><code>pages/admin.html</code> + <code>assets/js/admin.js</code> + <code>assets/css/admin.css</code>; <code>pages/login.html</code> + <code>assets/js/login.js</code> (+ form lupa/reset password)</td>
+        <td class="status-pass">✅ Satu tanggung jawab per file</td>
+    </tr>
+    <tr>
+        <td><code>scripts/</code> &amp; <code>.docs/e2e/</code> (Sprint 5)</td>
+        <td><code>make-admin.mjs</code> (npm <code>admin:promote</code>); <code>e2e-sprint5.mjs</code> + <code>sprint-5-verification.md</code> (rekam 25/25 PASS)</td>
+        <td class="status-pass">✅ Baru &amp; terdokumentasi</td>
+    </tr>
+    <tr>
+        <td>Dokumentasi</td>
+        <td><code>api.md</code>, <code>database.md</code>, <code>changelog.md</code>, <code>roadmap.md</code>, <code>architecture.md</code>, <code>sprint-5.md</code>, context, README</td>
+        <td class="status-pass">✅ Tersinkron</td>
+    </tr>
+</table>
+
+<!-- 1.2 Penamaan File & Class -->
+<h3>1.2 Penamaan File &amp; Class</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Pola</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>File JS</td>
+        <td>kebab-case, nama sesuai fungsi (<code>password-reset-service.js</code>, <code>email-service.js</code>, <code>admin-service.js</code>, <code>require-admin.js</code>, <code>make-admin.mjs</code>, <code>e2e-sprint5.mjs</code>)</td>
+        <td class="status-pass">✅ Konsisten</td>
+    </tr>
+    <tr>
+        <td>Endpoint</td>
+        <td>kebab-case (<code>/forgot-password</code>, <code>/reset-password</code>, <code>/api/admin/users/:id/role</code>, <code>/unpublish</code>)</td>
+        <td class="status-pass">✅ Sesuai rules/05</td>
+    </tr>
+    <tr>
+        <td>Body/response API</td>
+        <td>camelCase (<code>token</code>, <code>password</code>, <code>fullName</code>, <code>isPublished</code>, <code>guestbookEntries</code>)</td>
+        <td class="status-pass">✅ Konsisten</td>
+    </tr>
+    <tr>
+        <td>Kolom database</td>
+        <td>snake_case (<code>token_hash</code>, <code>expires_at</code>, <code>used_at</code>, <code>last_admin</code>)</td>
+        <td class="status-pass">✅ Konsisten</td>
+    </tr>
+    <tr>
+        <td>Fungsi service</td>
+        <td>verb + objek (<code>requestPasswordReset</code>, <code>resetPassword</code>, <code>sendPasswordResetEmail</code>, <code>getAdminStats</code>, <code>changeUserRole</code>)</td>
+        <td class="status-pass">✅ Deskriptif</td>
+    </tr>
+</table>
+
+<!-- 1.3 Validitas JavaScript & ESM -->
+<h3>1.3 Validitas JavaScript &amp; ESM</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Hasil</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>Sintaks &amp; ESM</td>
+        <td><code>import/export</code> konsisten (<code>.js</code> ESM via <code>"type": "module"</code>); <code>node --check</code> seluruh file Sprint 5 — 0 error</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Boot server</td>
+        <td>Server hidup di <code>http://localhost:3000</code> tanpa error saat proses audit (hot-reload memuat perubahan fix audit)</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Health check</td>
+        <td><code>GET /api/health</code> terverifikasi di langkah 1 skrip E2E (200, <code>status=ok</code>, <code>database=connected</code>)</td>
+        <td class="status-pass">✅</td>
+    </tr>
+</table>
+
+<!-- 1.4 Validasi Input & Parameter Binding -->
+<h3>1.4 Validasi Input &amp; Parameter Binding</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Hasil</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>Token reset</td>
+        <td><code>requiredString</code> + <code>validatePassword</code> pada reset-password; email via <code>validateEmail</code> pada forgot-password</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Guard role</td>
+        <td>Admin tidak bisa ubah role sendiri (400 <code>VALIDATION_ERROR</code>); admin terakhir ditolak (409 <code>LAST_ADMIN</code>)</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Batas panjang</td>
+        <td>search ≤100, token ≤200; sort/search/filter di-whitelist di service</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Parameter binding</td>
+        <td>Semua query pakai <code>$1..$n</code> (anti SQL injection) — konsisten Sprint 3–4; pagination via LIMIT/OFFSET ter-bound</td>
+        <td class="status-pass">✅</td>
+    </tr>
+</table>
+
+<!-- 1.5 Keamanan Dasar -->
+<h3>1.5 Keamanan Dasar</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Hasil</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>Token disimpan hash</td>
+        <td>Token acak base64url di-hash SHA-256 sebelum disimpan (<code>token_hash</code>) — DB bocor pun tak memakai token</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Anti-enumerasi email</td>
+        <td>Respons forgot-password selalu 200 generik (email terdaftar/tidak) — tidak bocor status akun</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Rate limiting</td>
+        <td>forgot-password 5/mnt, auth 10/mnt, admin 60/mnt; in-memory per <code>IP:method:basePath</code>; header <code>X-RateLimit-*</code>; 429 <code>RATE_LIMITED</code></td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Otorisasi admin</td>
+        <td><code>requireAdmin</code> cek role ke DB per-request (bukan trust token); 403 <code>FORBIDDEN</code> untuk non-admin (terverifikasi E2E)</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Anti-XSS output</td>
+        <td>UI admin render via <code>escapeHtml()</code> dari <code>assets/js/util.js</code> (nama, email, pesan tamu, judul undangan)</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Error tidak membocorkan detail</td>
+        <td>5xx generik di response; detail di log server (error-handler)</td>
+        <td class="status-pass">✅</td>
+    </tr>
+</table>
+
+<!-- 1.6 Single Responsibility -->
+<h3>1.6 Single Responsibility</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>File</th>
+        <th>Tanggung Jawab</th>
+        <th>Status</th>
+    </tr>
+    <tr><td><code>password-reset-service.js</code></td><td>Generate token, hash, cleanup, validasi kedaluwarsa/pakai-ulang, transaksi reset</td><td class="status-pass">✅</td></tr>
+    <tr><td><code>email-service.js</code></td><td>Kirim email via nodemailer / dev-log bila SMTP kosong</td><td class="status-pass">✅</td></tr>
+    <tr><td><code>admin-service.js</code></td><td>Query statistik, users, role, invitations, guestbook (admin)</td><td class="status-pass">✅</td></tr>
+    <tr><td><code>require-admin.js</code></td><td>Guard akses admin (auth + cek role DB)</td><td class="status-pass">✅</td></tr>
+    <tr><td><code>admin.js</code> (frontend)</td><td>Guard halaman, tab, search/filter/pagination, aksi moderasi — semua render di-escape</td><td class="status-pass">✅</td></tr>
+    <tr><td><code>login.js</code></td><td>Form login + alur lupa/reset password (query param <code>?reset=</code>)</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 1.7 Dokumentasi -->
+<h3>1.7 Dokumentasi</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Dokumen</th>
+        <th>Status</th>
+        <th>Catatan</th>
+    </tr>
+    <tr>
+        <td><code>.docs/api.md</code></td>
+        <td class="status-pass">✅ Sinkron</td>
+        <td>Endpoint forgot/reset &amp; seluruh route admin terdokumentasi</td>
+    </tr>
+    <tr>
+        <td><code>.docs/database.md</code></td>
+        <td class="status-pass">✅ Sinkron</td>
+        <td>Tabel <code>password_reset_tokens</code> (0005) + fix trigger (0006)</td>
+    </tr>
+    <tr>
+        <td><code>.docs/sprint-5.md</code></td>
+        <td class="status-pass">✅ Akurat</td>
+        <td>Goal, scope, AC, keputusan planning sesuai implementasi</td>
+    </tr>
+    <tr>
+        <td><code>.docs/e2e/sprint-5-verification.md</code></td>
+        <td class="status-pass">✅ Baru</td>
+        <td>Rekam 25/25 PASS — menutup AC3</td>
+    </tr>
+    <tr>
+        <td>Header file &amp; komentar</td>
+        <td class="status-pass">✅ Konsisten</td>
+        <td>Deskripsi modul + catatan di file baru</td>
+    </tr>
+</table>
+
+<!-- 1.8 Dead / Duplicate Code -->
+<h3>1.8 Dead / Duplicate Code</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Hasil</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>Limiter ganda</td>
+        <td>Temuan audit: <code>authLimiter</code> terpasang dua kali pada <code>POST /api/auth/reset-password</code> (via <code>authRouter.use</code> + per-route) — setiap request mengonsumsi 2 dari bucket 10/mnt yang sama. <strong>Diperbaiki</strong> (per-route dihapus, tetap 1x via <code>use</code>), diverifikasi ulang 25/25 PASS</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Route duplikat</td>
+        <td>Route admin hanya satu di <code>admin.js</code>; tidak ada endpoint ganda</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Kode mati</td>
+        <td>Tidak ada blok/route tanpa pemakaian pada file Sprint 5</td>
+        <td class="status-pass">✅</td>
+    </tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- TAHAP 2: ARCHITECTURE REVIEW -->
+<!-- ============================================================ -->
+
+<h2>TAHAP 2: ARCHITECTURE REVIEW</h2>
+
+<!-- 2.1 Layer & Separation of Concerns -->
+<h3>2.1 Layer &amp; Separation of Concerns</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Lapisan</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>Route (validasi) → service (logika/query) → pool — konsisten, tanpa SQL di route</td><td class="status-pass">✅</td></tr>
+    <tr><td>Middleware <code>requireAdmin</code> &amp; rate-limit terpisah dan bisa dipasang per-route/per-router</td><td class="status-pass">✅</td></tr>
+    <tr><td>Frontend: <code>api.js</code> (transport) → <code>admin.js</code>/<code>login.js</code> (guard &amp; interaksi) → <code>util.js</code> (shared escapeHtml/format)</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 2.2 Service Layer & DTO -->
+<h3>2.2 Service Layer &amp; DTO</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td><code>toPublicUser</code> / DTO admin (user, invitation, guestbook) — mapping snake_case → camelCase di service</td><td class="status-pass">✅</td></tr>
+    <tr><td>Response admin dibentuk service khusus; guard kepemilikan/role dibungkus fungsi terpisah (<code>requireAdmin</code>, guard last-admin)</td><td class="status-pass">✅</td></tr>
+    <tr><td>Reset password memakai <code>pg.Pool</code> transaksi (<code>BEGIN/COMMIT/ROLLBACK</code>) untuk update password + revoke refresh token secara atomik</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 2.3 Autentikasi & Otorisasi Architecture -->
+<h3>2.3 Autentikasi &amp; Otorisasi Architecture</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>Alur reset: token acak sekali pakai, disimpan sebagai hash SHA-256, kedaluwarsa 24 jam, revoked saat dipakai; refresh token lama ikut di-revoke saat password diganti</td><td class="status-pass">✅</td></tr>
+    <tr><td>Cookie refresh <code>secure</code> hanya di production, <code>httpOnly</code>, <code>sameSite:lax</code> — konsisten Sprint 3</td><td class="status-pass">✅</td></tr>
+    <tr><td>Otorisasi admin tidak hanya guard frontend — middleware server mengecek role ke DB per-request; frontend hanya UX</td><td class="status-pass">✅</td></tr>
+    <tr><td>Guard <code>requireAuth</code> di mount / route tetap terpelihara (tidak ada publik 401 terulang dari Sprint 4)</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 2.4 Frontend Architecture -->
+<h3>2.4 Frontend Architecture</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td><code>admin.js</code> memakai state terpusat + render terpisah per tab; pagination/search/filter konsisten antar tab</td><td class="status-pass">✅</td></tr>
+    <tr><td>Render dinamis selalu lewat <code>escapeHtml</code>; atribut <code>data-*</code> untuk id (bukan concatenation event)</td><td class="status-pass">✅</td></tr>
+    <tr><td><code>api.js</code> menambah helper admin/auth — satu pintu akses HTTP + auto-refresh</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 2.5 Konfigurasi & Env -->
+<h3>2.5 Konfigurasi &amp; Env</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>Env SMTP/APP_BASE_URL/RESET_TOKEN_EXPIRY_HOURS dibaca via <code>getEnv</code> dengan default aman; default dev JWT secret tetap eksplisit (tidak dipakai production)</td><td class="status-pass">✅</td></tr>
+    <tr><td>SMTP kosong → dev-log <code>[mail:dev]</code> + Reset URL (tanpa dependency SMTP untuk pengembangan); kini diberi <code>console.warn</code> di production bila <code>SMTP_HOST</code> belum diisi — <strong>perbaikan hasil audit</strong></td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- TAHAP 3: QA REVIEW -->
+<!-- ============================================================ -->
+
+<h2>TAHAP 3: QA REVIEW</h2>
+
+<!-- 3.1 Aset & Referensi -->
+<h3>3.1 Aset &amp; Referensi</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>Referensi aset (css/js) valid; tidak ada path patah pada <code>/admin</code> &amp; <code>/login</code></td><td class="status-pass">✅</td></tr>
+    <tr><td>Halaman admin <code>noindex</code>; login/render tetap berfungsi penuh</td><td class="status-pass">✅</td></tr>
+    <tr><td>Halaman publik (<code>/u/:slug</code>) tidak terpengaruh perubahan 0005/0006</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 3.2 Server & Health Check -->
+<h3>3.2 Server &amp; Health Check</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td><code>GET /api/health</code> → 200 <code>{status:"ok", database:"connected"}</code> (langkah 1 E2E)</td><td class="status-pass">✅</td></tr>
+    <tr><td>Server berjalan stabil (watch mode) sepanjang verifikasi E2E</td><td class="status-pass">✅</td></tr>
+    <tr><td>Migrasi 0001–0006 sukses; <code>password_reset_tokens</code> terbentuk tanpa error trigger</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 3.3 Keamanan Endpoint -->
+<h3>3.3 Keamanan Endpoint</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>Rate limiting aktif — admin 60/mnt, forgot 5/mnt, auth 10/mnt; 429 <code>RATE_LIMITED</code> + header <code>X-RateLimit-*</code> terverifikasi (skrip E2E self-healing menunggu window)</td><td class="status-pass">✅</td></tr>
+    <tr><td>Anti-enumerasi: forgot-password selalu 200 (email terdaftar / tidak terdaftar) — terverifikasi E2E langkah 4</td><td class="status-pass">✅</td></tr>
+    <tr><td>Otorisasi: non-admin 403 pada seluruh route admin; guard role sendiri &amp; admin terakhir — terverifikasi E2E langkah 13, 24–25</td><td class="status-pass">✅</td></tr>
+    <tr><td>Token: valid (200), kedaluwarsa (400 <code>EXPIRED_TOKEN</code>), reuse (400 <code>INVALID_TOKEN</code>), tidak dikenal (400 <code>INVALID_TOKEN</code>) — terverifikasi E2E langkah 5–9</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 3.4 Aksesibilitas -->
+<h3>3.4 Aksesibilitas</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>Halaman admin memakai <code>role="tablist/tab/tabpanel"</code>, <code>aria-selected</code>, <code>aria-live</code>, <code>aria-label</code>, <code>scope="col"</code></td><td class="status-pass">✅</td></tr>
+    <tr><td>Badge peran/status/kehadiran dirender sebagai teks (tidak hanya warna); tombol aksi <code>type</code> jelas</td><td class="status-pass">✅</td></tr>
+    <tr><td>Form login &amp; reset password: <code>label</code> terkait <code>input</code>, autocomplete sesuai konteks</td><td class="status-pass">✅</td></tr>
+    <tr><td>Uji visual &amp; keyboard manual di browser dicatat sebagai rekomendasi (lihat REKOMENDASI)</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 3.5 Performa & Progressive Enhancement -->
+<h3>3.5 Performa &amp; Progressive Enhancement</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>Statistik admin dihitung query agregat (<code>COUNT</code>) — bukan loop per hitung</td><td class="status-pass">✅</td></tr>
+    <tr><td>List admin (users/invitations/guestbook) berpaginasi + search + filter (LIMIT/OFFSET ter-bound)</td><td class="status-pass">✅</td></tr>
+    <tr><td>Frontend memakai debounce 300ms pada search; konten tetap tampil tanpa JS (graceful)</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 3.6 Verifikasi E2E -->
+<h3>3.6 Verifikasi E2E</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Hasil</th>
+        <th>Status</th>
+    </tr>
+    <tr>
+        <td>Verifikasi terhadap PostgreSQL asli</td>
+        <td>Migrasi 0001–0006 sukses; seluruh skenario dijalankan terhadap DB lokal</td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Skrip E2E</td>
+        <td><code>scripts/e2e-sprint5.mjs</code> — <strong>25/25 PASS</strong> (rekam di <code>.docs/e2e/sprint-5-verification.md</code>); re-run pasca-fix audit: <strong>25/25 PASS</strong></td>
+        <td class="status-pass">✅</td>
+    </tr>
+    <tr>
+        <td>Self-healing rate limit</td>
+        <td>Skrip menangani 429 dengan menunggu window 61s lalu retry — verifikasi 429 tetap berjalan tanpa flaky</td>
+        <td class="status-pass">✅</td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+        <th colspan="4" style="background: #D97706;">WARNING</th>
+    </tr>
+    <tr>
+        <th>Temuan</th>
+        <th>Lokasi</th>
+        <th>Alasan</th>
+        <th>Severity</th>
+    </tr>
+    <tr>
+        <td><code>authLimiter</code> terpasang ganda pada reset-password — <strong>sudah diperbaiki</strong></td>
+        <td><code>api/routes/auth.js</code></td>
+        <td>Limiter yang sama dipasang via <code>authRouter.use(authLimiter)</code> + per-route <code>POST /reset-password</code>. Karena state rate-limit dibagi per <code>IP:method:path</code>, tiap request reset mengonsumsi 2 dari bucket 10/mnt yang sama — tidak salah secara keamanan, tapi penghitungan tidak akurat &amp; redundant. Fix: per-route dihapus (tetap 1x via <code>use</code>); diverifikasi ulang E2E 25/25 PASS</td>
+        <td><span class="status-low">LOW</span></td>
+    </tr>
+    <tr>
+        <td>Production tanpa SMTP tidak berfungsi — <strong>ditambah warning</strong></td>
+        <td><code>server/services/email-service.js</code></td>
+        <td>Bila <code>SMTP_HOST</code> kosong di production, reset password "sukses" tapi email tak terkirim (URL hanya di log server). Fix: <code>console.warn</code> eksplisit di production; tetap log <code>[mail:dev]</code> di development</td>
+        <td><span class="status-low">LOW</span></td>
+    </tr>
+</table>
+
+<p class="section-intro">Kedua temuan di atas ditemukan <em>selama</em> audit, diperbaiki, dan diverifikasi ulang (25/25 PASS) sebelum laporan ini ditulis — ditampilkan untuk transparansi, status terkini <strong>resolved</strong>.</p>
+
+<!-- ============================================================ -->
+<!-- TAHAP 4: ENGINEERING REVIEW -->
+<!-- ============================================================ -->
+
+<h2>TAHAP 4: ENGINEERING REVIEW</h2>
+
+<!-- 4.1 Scalability -->
+<h3>4.1 Scalability</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>Fitur baru = route + service + middleware terpisah; mudah diperluas</td><td class="status-pass">✅</td></tr>
+    <tr><td>Migrasi append-only 0005 &amp; 0006 — skema bisa diperluas tanpa rewrite</td><td class="status-pass">✅</td></tr>
+    <tr><td>Pagination pada list admin; statistik via agregat; rate limit per-proses (catatan skala, lihat REKOMENDASI)</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 4.2 Maintainability -->
+<h3>4.2 Maintainability</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>Validasi terpusat di <code>validation.js</code>; <code>util.js</code> menghilangkan duplikasi render</td><td class="status-pass">✅</td></tr>
+    <tr><td>Header modul + komentar per bagian konsisten di semua file Sprint 5</td><td class="status-pass">✅</td></tr>
+    <tr><td>Script <code>make-admin.mjs</code> &amp; <code>e2e-sprint5.mjs</code> reusable (input email / jalur penuh E2E)</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 4.3 Security -->
+<h3>4.3 Security</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>Dependency aman &amp; stabil (nodemailer ditambah, tanpa pindah dari pola lama)</td><td class="status-pass">✅ bcryptjs · jsonwebtoken · cookie-parser · express · pg · helmet · cors · nodemailer</td></tr>
+    <tr><td>Header keamanan via <code>helmet</code>; <code>x-powered-by</code> dimatikan</td><td class="status-pass">✅</td></tr>
+    <tr><td>Rate limiting aktif pada auth, forgot-password, &amp; admin; token di-hash; anti-enumerasi; requireAdmin cek DB</td><td class="status-pass">✅</td></tr>
+    <tr><td>Input ter-validasi, query ter-binding, role-scoped, output di-escape</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 4.4 Reusability -->
+<h3>4.4 Reusability</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Aspek</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>Memakai komponen &amp; token Sprint 1–4 (<code>.btn-*</code>, <code>.badge-*</code>, form, <code>--color-*</code>, <code>util.js</code>)</td><td class="status-pass">✅</td></tr>
+    <tr><td><code>requireAdmin</code> &amp; <code>rate-limit</code> dipakai ulang lintas fitur</td><td class="status-pass">✅</td></tr>
+    <tr><td>Pattern middleware role-scoped siap dipakai fitur berikutnya</td><td class="status-pass">✅</td></tr>
+</table>
+
+<!-- 4.5 Engineering Handbook Compliance -->
+<h3>4.5 Engineering Handbook Compliance</h3>
+
+<table>
+    <tr>
+        <th colspan="3" style="background: #047857;">PASS</th>
+    </tr>
+    <tr>
+        <th>Rule</th>
+        <th>Status</th>
+    </tr>
+    <tr><td>02-coding-standard.md</td><td class="status-pass">✅ Dipatuhi</td></tr>
+    <tr><td>03-design-system.md</td><td class="status-pass">✅ Token-based</td></tr>
+    <tr><td>04-project-structure.md</td><td class="status-pass">✅ Route/service/middleware terpisah</td></tr>
+    <tr><td>05-naming-convention.md</td><td class="status-pass">✅ Konsisten</td></tr>
+    <tr><td>07-security.md</td><td class="status-pass">✅ Secret via env, token di-hash, anti-enumerasi, XSS-aware, rate limit aktif, error aman</td></tr>
+    <tr><td>08-testing.md</td><td class="status-pass">✅ Verifikasi sintaks + boot + health + E2E 25/25 + re-run pasca-fix</td></tr>
+    <tr><td>09-review-checklist.md</td><td class="status-pass">✅ Self-review dijalankan</td></tr>
+    <tr><td>10-engineering-workflow.md</td><td class="status-pass">✅ 8 tahap dijalankan</td></tr>
+    <tr><td>11-release-naming.md</td><td class="status-pass">✅ v1.4.0 The Admin &amp; Account Security</td></tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- REKOMENDASI -->
+<!-- ============================================================ -->
+
+<h2>REKOMENDASI</h2>
+
+<p>Tidak ada temuan Priority 1 (HIGH) dan tidak ada temuan Priority 2 (MEDIUM) yang terbuka. Dua temuan LOW yang muncul selama audit (limiter ganda &amp; warning SMTP production) telah <strong>diperbaiki dan diverifikasi ulang</strong>. Temuan audit Sprint 4 seluruhnya tertutup (tidak ada yang terulang).</p>
+
+<h3>Priority 3 (LOW) — Nice to Have</h3>
+
+<table>
+    <tr>
+        <th>#</th>
+        <th>Temuan</th>
+        <th>Alasan</th>
+        <th>Lokasi</th>
+    </tr>
+    <tr>
+        <td>1</td>
+        <td>Uji manual visual, keyboard &amp; aksesibilitas di browser (halaman admin &amp; alur lupa/reset)</td>
+        <td>Verifikasi E2E mencakup API; UI perlu validasi visual akhir di browser</td>
+        <td>Halaman aplikasi</td>
+    </tr>
+    <tr>
+        <td>2</td>
+        <td>Konfigurasi SMTP sungguhan sebelum production</td>
+        <td>Reset password mengandalkan email; pastikan <code>SMTP_HOST/PORT/USER/PASS</code>, <code>EMAIL_FROM</code>, <code>APP_BASE_URL</code> valid &amp; teruji (kirim email sungguhan)</td>
+        <td><code>.env</code> production</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>Rate limiting in-memory → store bersama saat scale-out</td>
+        <td>State <code>Map</code> per-proses hilang saat restart &amp; tidak terbagi antar instance; cukup untuk tahap ini, perlu Redis/shared store di produksi (Fase 3)</td>
+        <td><code>server/middleware/rate-limit.js</code></td>
+    </tr>
+    <tr>
+        <td>4</td>
+        <td>Audit log aksi admin (siapa &amp; kapan ubah role/unpublish/hapus)</td>
+        <td>Moderasi &amp; manajemen role saat ini tidak tercatat; berguna untuk akuntabilitas (Fase 3)</td>
+        <td><code>admin-service.js</code></td>
+    </tr>
+</table>
+
+<!-- ============================================================ -->
+<!-- RINGKASAN -->
+<!-- ============================================================ -->
+
+<h2>RINGKASAN</h2>
+
+<table>
+    <tr>
+        <th>Kategori</th>
+        <th>PASS</th>
+        <th>WARNING</th>
+        <th>ERROR</th>
+    </tr>
+    <tr>
+        <td>1. Internal Code Review</td>
+        <td class="status-pass">8</td>
+        <td class="status-warning">0</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td>2. Architecture Review</td>
+        <td class="status-pass">5</td>
+        <td class="status-warning">0</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td>3. QA Review</td>
+        <td class="status-pass">6</td>
+        <td class="status-warning">1</td>
+        <td>0</td>
+    </tr>
+    <tr>
+        <td>4. Engineering Review</td>
+        <td class="status-pass">5</td>
+        <td class="status-warning">0</td>
+        <td>0</td>
+    </tr>
+    <tr style="font-weight: 700; background: #f5f2ee;">
+        <td>TOTAL</td>
+        <td class="status-pass">24</td>
+        <td class="status-warning">1</td>
+        <td class="status-error">0</td>
+    </tr>
+</table>
+
+<div class="highlight-box">
+    <strong>Kesimpulan: ✅ AUDIT PASS</strong> — Sprint 5 (The Admin &amp; Account Security) memenuhi seluruh Acceptance Criteria. Verifikasi E2E 25/25 PASS terhadap PostgreSQL asli (AC3 tertutup), dokumentasi sinkron (AC4). Dua temuan LOW yang ditemukan selama audit (limiter ganda pada reset-password &amp; warning SMTP production) telah diperbaiki dan diverifikasi ulang 25/25 PASS. Seluruh temuan audit Sprint 4 tertutup dan tidak terulang. Kode siap dilanjutkan ke tahap Release v1.4.0.
+</div>
+
+<div class="footer">
+    <p><strong>BERNADA.ID Engineering Handbook</strong> · Sprint 5 Audit Report · v1.4.0</p>
+    <p>Dokumen ini bersifat rahasia dan hanya untuk penggunaan internal tim BERNADA.ID.</p>
+    <p>16 Agustus 2026 · AI Pair Programmer</p>
+</div>
+
+</body>
+</html>

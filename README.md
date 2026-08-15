@@ -6,7 +6,7 @@ Digital Wedding Invitation Platform
 
 ## Version
 
-v1.3.0 (The Guest Experience)
+v1.4.0 (The Admin & Account Security)
 
 ---
 

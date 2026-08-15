@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Sprint Context · Category : Context (living document)
-  Version  : 1.4.0 · Status : 🟠 Proses · Update : 16-08-2026
+  Version  : 1.5.0 · Status : 🟠 Proses · Update : 16-08-2026
 -->
 
 # Sprint
@@ -12,12 +12,16 @@
 
 ## Sprint Berjalan (Active)
 
+_Tidak ada sprint aktif._ Sprint 5 closed 16-08-2026 — menunggu planning Sprint 6 (Fase 3 — Launch: payment & pricing, optimasi performa & SEO, hardening produksi).
+
+## Sprint Sebelumnya (Closed)
+
 | Item | Detail |
 | --- | --- |
 | Sprint | Sprint 5 — The Admin & Account Security |
 | Tujuan | Dasbor admin (role management + moderasi) + lupa/reset password (SMTP + token) + verifikasi E2E |
-| Status | 🟠 Proses (Development selesai — menunggu audit & release) |
-| Release | v1.4.0 (menunggu keputusan) |
+| Status | ✅ Closed |
+| Release | v1.4.0 — The Admin & Account Security Release |
 | Referensi | `.docs/sprint-5.md` |
 
 ## Sprint Sebelumnya (Closed)
@@ -144,7 +148,8 @@
 - ✅ Email service — nodemailer; dev-log `[mail:dev]` + Reset URL bila `SMTP_HOST` kosong
 - ✅ UI login — form "Lupa password?" + `/login?reset=<token>` set password baru
 - ✅ Verifikasi E2E **25/25 PASS** — 0 bug aplikasi; rate limiting (auth 10/mnt) terkonfirmasi (`.docs/e2e/sprint-5-verification.md`)
-- 📌 Catatan: development berjalan sebelum planning difinalkan; dokumen sprint & sinkronisasi dibuat 16-08-2026; **audit & release v1.4.0 menunggu**
+- ✅ Audit Sprint 5 PASS — 24 PASS · 1 WARNING (resolved) · 0 ERROR (`.docs/audit/LAPORAN-AUDIT-SPRINT-5.html`); perbaikan: limiter ganda reset-password & warning SMTP production, diverifikasi ulang 25/25
+- ✅ Release v1.4.0 — The Admin & Account Security Release (tag `v1.4.0`) — **Sprint 5 closed**
 
 ## Aturan Sprint
 
@@ -156,6 +161,7 @@
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.5.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Closed | Sprint 5 closed — Audit PASS + Release v1.4.0 The Admin & Account Security (tag v1.4.0); menunggu planning Sprint 6 |
 | 1.4.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 5 Development — dasbor admin & keamanan akun (reset password), E2E 25/25 PASS; menunggu audit & release |
 | 1.3.0 | 11-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Closed | Sprint 4 closed — Audit PASS + Release v1.3.0 The Guest Experience (tag v1.3.0) |
 | 1.2.0 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 4 dimulai — Manajemen tamu + amplop digital + hardening LOW (Development) |

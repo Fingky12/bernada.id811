@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Sprint 5 · Category : Panduan (source of truth)
-  Version  : 1.0.0 · Status : 🟠 Proses · Update : 16-08-2026
+  Version  : 1.0.0 · Status : ✅ Closed · Update : 16-08-2026
 -->
 
 # Sprint 5 — The Admin & Account Security
@@ -18,9 +18,9 @@
 | --- | --- |
 | Sprint | Sprint 5 — The Admin & Account Security |
 | Tujuan | Dasbor admin (role management + moderasi) + lupa/reset password (SMTP email + token aman) + verifikasi E2E fitur baru |
-| Status | 🟠 Proses (Development selesai — menunggu audit & release) |
-| Release | v1.4.0 (menunggu keputusan) |
-| Tanggal | 12-08-2026 (Development admin) · 15-08-2026 (Development reset password) · 16-08-2026 (Verifikasi E2E) |
+| Status | ✅ Closed (16-08-2026) |
+| Release | v1.4.0 — The Admin & Account Security Release (tag `v1.4.0`) |
+| Tanggal | 12-08-2026 (Development admin) · 15-08-2026 (Development reset password) · 16-08-2026 (Verifikasi E2E, Audit & Release) |
 
 ---
 
@@ -53,6 +53,11 @@ Memberikan **kontrol administrasi** platform (kelola pengguna, role, moderasi un
 - ✅ **25/25 PASS** — skrip `scripts/e2e-sprint5.mjs` + rekaman `.docs/e2e/sprint-5-verification.md`. Reset password (anti-enumerasi, token valid/kedaluwarsa/pakai-ulang/tidak dikenal, login password baru) & admin (403 non-admin, promote script, stats/users/invitations/guestbook, unpublish, delete entri, guard role sendiri & admin terakhir).
 - ✅ **0 bug aplikasi ditemukan** — rate limiting in-memory (auth 10/menit) terkonfirmasi bekerja (429 `RATE_LIMITED`).
 
+### Audit & Release (16-08-2026)
+
+- ✅ **Audit Sprint 5 PASS** — 24 PASS · 1 WARNING (resolved) · 0 ERROR (`.docs/audit/LAPORAN-AUDIT-SPRINT-5.html`). Perbaikan: `authLimiter` ganda pada reset-password dihapus & warning SMTP production; diverifikasi ulang E2E **25/25 PASS**.
+- ✅ **Release v1.4.0 — The Admin & Account Security Release** — dokumen `.docs/releases/v1.4.0-admin-account-security.md`, `package.json` dibump ke `v1.4.0`, tag git `v1.4.0`; disetujui Product Owner, Senior Engineer & AI Pair Programmer. **Sprint 5 closed.**
+
 ---
 
 ## Scope
@@ -61,7 +66,7 @@ Memberikan **kontrol administrasi** platform (kelola pengguna, role, moderasi un
 2. **Reset password** — migrasi 0005 & 0006, service password reset + email (SMTP/dev-log), endpoint forgot & reset, UI login, konfigurasi env.
 3. **Verifikasi E2E** — skrip `scripts/e2e-sprint5.mjs` + rekaman `.docs/e2e/sprint-5-verification.md` (25/25 PASS).
 4. **Documentation** — sinkron `api.md`, `database.md`, `changelog.md`, roadmap, context AI.
-5. **Audit & Release** — 🟡 menunggu (Audit Sprint 5 + keputusan release v1.4.0).
+5. **Audit & Release** — ✅ Laporan Audit Sprint 5 PASS + Release v1.4.0 (tag `v1.4.0`).
 
 ---
 
@@ -81,7 +86,7 @@ Memberikan **kontrol administrasi** platform (kelola pengguna, role, moderasi un
 
 | Keputusan | Nilai |
 | --- | --- |
-| Release | v1.4.0 (menunggu keputusan) |
+| Release | v1.4.0 — The Admin & Account Security Release (✅ dirilis) |
 | Role admin | Kolom `users.role` (`user` | `admin`) + middleware `requireAdmin` (cek DB per-request) |
 | Reset password | Token acak (base64url) di-hash SHA-256, sekali pakai, kedaluwarsa 24 jam; respons forgot generik (anti-enumerasi) |
 | Email | `nodemailer`; dev-log bila `SMTP_HOST` kosong (tanpa dependency SMTP wajib untuk pengembangan) |
@@ -98,7 +103,7 @@ Memberikan **kontrol administrasi** platform (kelola pengguna, role, moderasi un
 2. Pengguna yang lupa password dapat meminta tautan reset (respons generik anti-enumerasi) dan mengganti password dengan token sekali pakai; token basi/kedaluwarsa/pakai-ulang ditolak.
 3. Verifikasi E2E fitur baru terekam (`.docs/e2e/sprint-5-verification.md`) — 25/25 PASS.
 4. Dokumentasi sinkron (sprint-5.md, api.md, database.md, changelog, roadmap, context AI).
-5. Audit Sprint 5 & Release v1.4.0 — 🟡 menunggu keputusan.
+5. Audit Sprint 5 PASS & Release v1.4.0 — ✅ selesai (LAPORAN-AUDIT-SPRINT-5.html, tag `v1.4.0`).
 
 ---
 
@@ -110,11 +115,11 @@ Memberikan **kontrol administrasi** platform (kelola pengguna, role, moderasi un
 | Development | Reset password (migrasi, service, endpoint, UI, env) | 15-08-2026 (selesai) |
 | Verification | E2E 25/25 PASS + rekaman | 16-08-2026 (selesai) |
 | Documentation | Sinkron dokumen & context | 16-08-2026 (selesai) |
-| Audit | Laporan Audit Sprint 5 + perbaikan temuan | 🟡 menunggu |
-| Release | v1.4.0 + approval + tag + sprint closed | 🟡 menunggu |
+| Audit | Laporan Audit Sprint 5 + perbaikan temuan | 16-08-2026 (selesai) |
+| Release | v1.4.0 — release doc + approval + tag + sprint closed | 16-08-2026 (selesai) |
 
 ---
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
-| 1.0.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 5 dibuat — Development admin & reset password selesai, E2E 25/25 PASS; menunggu audit & release |
+| 1.0.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Closed | Sprint 5 closed — Audit PASS + Release v1.4.0 The Admin & Account Security (tag `v1.4.0`); menunggu planning Sprint 6 (Fase 3 — Launch) |

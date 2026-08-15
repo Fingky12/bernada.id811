@@ -67,3 +67,8 @@
 
 - Seluruh Acceptance Criteria fitur baru Sprint 5 (reset password + admin dashboard) terverifikasi end-to-end terhadap PostgreSQL asli: **25/25 PASS**.
 - Script `scripts/e2e-sprint5.mjs` dapat dipakai ulang sebagai regression check.
+
+## Re-verifikasi pasca-audit (16-08-2026)
+
+- **25/25 PASS** kembali dijalankan setelah perbaikan temuan audit Sprint 5: `authLimiter` ganda pada `POST /api/auth/reset-password` dihapus (`api/routes/auth.js`) & warning production untuk `SMTP_HOST` kosong (`server/services/email-service.js`). Tidak ada regresi.
+- Referensi: `.docs/audit/LAPORAN-AUDIT-SPRINT-5.html`.

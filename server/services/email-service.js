@@ -33,6 +33,9 @@ export async function sendPasswordResetEmail({ to, fullName, resetUrl }) {
 
   const transport = createTransport();
   if (!transport) {
+    if (config.env === 'production') {
+      console.warn('[mail:warn] SMTP_HOST belum dikonfigurasi — email reset password tidak akan terkirim.');
+    }
     console.log(`[mail:dev] To: ${to} | Subject: ${subject}`);
     console.log(`[mail:dev] Reset URL: ${resetUrl}`);
     return { sent: false, devLogged: true };
