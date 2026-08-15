@@ -34,8 +34,9 @@ Database
 ### Frontend
 
 - `index.html` — landing page (buka langsung di browser, atau disajikan server).
-- `/login` — halaman masuk / daftar (`pages/login.html`).
+- `/login` — halaman masuk / daftar / lupa password (`pages/login.html`).
 - `/builder` — dasbor & editor undangan (`pages/builder.html`).
+- `/admin` — dasbor admin (kelola pengguna, undangan, buku tamu) — `pages/admin.html`.
 - `/u/:slug` — halaman publik undangan (`pages/invitation.html`).
 
 ### Backend (API)
@@ -62,6 +63,11 @@ npm run migrate      # jalankan migrasi skema (database/migrations/)
 | `npm run db:create` | Buat database PostgreSQL |
 | `npm run migrate` | Jalankan migrasi skema |
 | `npm run test:health` | Health check otomatis (PASS/FAIL) |
+| `npm run admin:promote -- <email>` | Jadikan akun sebagai admin |
+
+### Verifikasi E2E
+
+- `node --env-file-if-exists=.env scripts/e2e-sprint5.mjs` — verifikasi fitur Sprint 5 (reset password + admin), hasil direkam di `.docs/e2e/`.
 
 ### Health Check
 
@@ -69,11 +75,12 @@ npm run migrate      # jalankan migrasi skema (database/migrations/)
 
 ### Alur Penggunaan
 
-1. Buka `/login` → daftar akun baru.
+1. Buka `/login` → daftar akun baru (atau "Lupa password?" untuk reset via email).
 2. Masuk ke `/builder` → "Buat Undangan" → isi detail, pilih template, sesuaikan tema → simpan.
 3. Di "Kelola": tambah daftar tamu (tunggal/bulk) & kelola amplop digital (rekening transfer).
 4. "Terbitkan" → bagikan link `/u/<slug>` ke tamu.
 5. Tamu membuka link: melihat undangan, konfirmasi kehadiran & menulis buku tamu, dan melihat amplop digital untuk kirim kado.
+6. Admin: akses `/admin` untuk statistik platform, kelola pengguna & role, dan moderasi undangan/buku tamu.
 
 > Catatan: halaman publik `/u/:slug` tetap bisa dilihat lewat data demo bawaan (`assets/js/demo-invitations.js`) saat API tidak aktif.
 

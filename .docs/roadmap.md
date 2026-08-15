@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Roadmap · Category : Panduan (source of truth)
-  Version  : 1.2.0 · Status : 🟠 Proses · Update : 11-08-2026
+  Version  : 1.3.0 · Status : 🟠 Proses · Update : 16-08-2026
 -->
 
 # Roadmap BERNADA.ID
@@ -10,7 +10,7 @@
 >
 > Status item: 🟡 Belum · 🟠 Proses/sebagian · ✅ Selesai.
 >
-> **Sprint aktif:** Sprint 5 — (menunggu planning). Fase 2 selesai; arah berikutnya Fase 3 — Launch (payment & pricing, optimasi performa & SEO, hardening produksi).
+> **Sprint aktif:** Sprint 5 — The Admin & Account Security (Development selesai, menunggu audit & release). Arah berikutnya: Fase 3 — Launch (payment & pricing, optimasi performa & SEO, hardening produksi).
 
 ---
 
@@ -50,6 +50,17 @@
 | Amplop digital (`gifts`) | ✅ | tabel `gift_accounts` (migrasi 0004), API owner & publik, transfer info saja; wishlist 🟡 ditunda (Sprint 4) |
 | Payment / pricing engine | 🟡 | Fase 3 |
 
+## Sprint 5 — The Admin & Account Security · v1.4.0 (Development)
+
+> Sprint 5 (12–16-08-2026) — Development selesai; menunggu audit & release v1.4.0.
+
+| Item | Status | Catatan |
+| --- | --- | --- |
+| Dasbor admin & role management | ✅ | middleware `requireAdmin`, `/api/admin/*` (stats, users, role, invitations, guestbook), UI `pages/admin.html`, script `admin:promote` |
+| Lupa & reset password (SMTP + token) | ✅ | migrasi 0005 & 0006, `password-reset-service.js` + `email-service.js`, endpoint forgot/reset, UI login |
+| Verifikasi E2E fitur baru | ✅ | 25/25 PASS — `.docs/e2e/sprint-5-verification.md` |
+| Audit Sprint 5 & Release v1.4.0 | 🟡 | menunggu keputusan |
+
 ## Fase 3 — Launch · v1.0.0 GA
 
 - Pembayaran & penagihan
@@ -75,6 +86,7 @@
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.3.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 5 Development — dasbor admin & keamanan akun (reset password) selesai, E2E 25/25 PASS; menunggu audit & release v1.4.0 |
 | 1.2.0 | 11-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 4 closed — Release v1.3.0 The Guest Experience (tag v1.3.0); Fase 2 selesai; menunggu planning Sprint 5 (Fase 3 — Launch) |
 | 1.1.0 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 4 dimulai — Manajemen tamu + amplop digital + hardening LOW (Development) |
 | 1.0.9 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 3 closed — Release v1.2.0 The Core Features (tag v1.2.0); Fase 2 inti selesai |

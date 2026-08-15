@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Architecture · Category : Panduan (source of truth)
-  Version  : 1.0.2 · Status : 🟠 Proses · Update : 10-08-2026
+  Version  : 1.0.4 · Status : 🟠 Proses · Update : 16-08-2026
 -->
 
 # Arsitektur BERNADA.ID
@@ -47,9 +47,9 @@ Arsitektur tiga lapis (three-tier) yang terpisah jelas:
 
 | Lapisan | Status | Catatan |
 | --- | --- | --- |
-| Frontend | ✅ Selesai (v1.1.0 → v1.2.0) | Landing page 9 section + halaman `/login`, `/builder`, `/u/:slug` |
-| Backend | ✅ Selesai (Sprint 3) | Node.js + Express: config, app, error handler, middleware auth, lib (jwt/password/validation), service layer, router health/auth/templates/invitations + guestbook publik |
-| Database | 🟠 Sebagian | Migrasi 0001 (core) + 0002 (refresh_tokens + seed template) + 0003 (galeri & buku tamu); PostgreSQL belum diinstall lokal |
+| Frontend | ✅ Selesai (v1.3.0) | Landing page 9 section + halaman `/login` (masuk/daftar/lupa password), `/builder`, `/admin`, `/u/:slug` — same-origin via Express |
+| Backend | ✅ Selesai (Sprint 3–5) | Node.js + Express: config, app, error handler, middleware (auth, admin, rate-limit), lib (jwt/password/validation/http-error), service layer (auth, user, template, invitation, guestbook, guest, gift-account, admin, password-reset, email), router health/auth/templates/invitations/guests/gift-accounts/admin |
+| Database | ✅ Terpasang & termigrasi | PostgreSQL 18.4 lokal; migrasi 0001–0006 sukses (users, templates, invitations, refresh_tokens, guestbook, guests, gift_accounts, password_reset_tokens) |
 
 ## Keputusan Arsitektur
 
@@ -71,6 +71,9 @@ Setiap keputusan arsitektur penting (pola, teknologi, struktur data) wajib:
 | Service layer (`server/services/*`) | Route hanya validasi & HTTP; logika bisnis di service — single responsibility | Logika menumpuk di route | Mudah diuji & dipakai ulang | File service bertambah seiring fitur |
 | JWT access + refresh token rotasi | Access short-lived (memori), refresh di cookie httpOnly + hash SHA-256 di DB, dirotasi & di-revoke | Session murni / OAuth | Aman XSS (httpOnly), revoke-able, stateless access | Rotasi perlu transaksi & index `token_hash` |
 | `bcryptjs` (tanpa native build) | Aman di Windows & CI, tanpa dependency native | `bcrypt` / argon2 native | Mudah diinstall di semua OS | Sedikit lebih lambat dari native |
+| Reset password (token hash + email) | Token acak di-hash SHA-256 (sekali pakai, kedaluwarsa 24 jam); `nodemailer` dengan dev-log saat `SMTP_HOST` kosong; respons forgot generik (anti-enumerasi) | Token JWT stateless di email | Revoke-able, aman XSS, anti-enumerasi, tanpa state rahasia di URL | Butuh SMTP untuk produksi; token basi perlu cleanup |
+| Role admin + `requireAdmin` | Kolom `users.role`; middleware cek auth + role ke DB per-request; guard role sendiri & admin terakhir | ACL/claim JWT | Sederhana, revoke role instan | Query DB ekstra per request admin |
+| Rate limiting in-memory (`rate-limit.js`) | Map per IP + window; tanpa dependency; auth 10/mnt, guestbook 20/mnt, publik 120/mnt, admin 60/mnt, forgot 5/mnt | `express-rate-limit` / Redis | Tanpa dependency, cukup untuk satu proses | Tidak terdistribusi (perlu Redis bila multi-instance) |
 | Frontend same-origin via Express | `express.static` + route halaman — cookie same-site bekerja tanpa CORS | SPA terpisah + CORS | Sederhana, cookie aman, tanpa origin checker | Frontend terikat satu server |
 | Fallback demo publik (`demo-invitations.js`) | Halaman `/u/:slug` tetap terlihat saat API/DB mati (progressive enhancement) | Skeleton + error page | UX tidak mati total; berguna saat demo | Data contoh tidak dari DB (beri label "Pratinjau") |
 
@@ -78,6 +81,8 @@ Setiap keputusan arsitektur penting (pola, teknologi, struktur data) wajib:
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.0.4 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 4–5 — guest/gift-account/admin/password-reset/email service, require-admin, rate-limit, migrasi 0004–0006 |
+| 1.0.3 | 11-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 4 — guest & gift-account service, rate-limit, migrasi 0004 |
 | 1.0.2 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 3 — auth, service layer, template & invitation API, halaman publik, guestbook |
 | 1.0.1 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Backend & database awal (Fase 1) — keputusan arsitektur baru |
 | 1.0.0 | 03-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Review | Ringkasan arsitektur alpha |

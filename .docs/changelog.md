@@ -1,12 +1,24 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Changelog · Category : Catatan (living document)
-  Version  : 1.3.0 · Status : ✅ Stable · Update : 11-08-2026
+  Version  : 1.4.0 · Status : 🟠 Proses · Update : 16-08-2026
 -->
 
 # Changelog
 
 > Catatan perubahan penting project BERNADA.ID. Ditulis dari perubahan paling baru.
+
+---
+
+## 16-08-2026 — Sprint 5 Development: Dasbor Admin & Keamanan Akun
+
+### Release — v1.4.0 (Development, belum dirilis)
+
+- 🚀 **Sprint 5 — The Admin & Account Security** (Status: 🟠 Proses) — dasbor admin (role management + moderasi) + lupa/reset password (SMTP email + token aman) + verifikasi E2E. Detail: `.docs/sprint-5.md`.
+- 🛡️ **Dasbor admin & role management** — middleware `requireAdmin`, `server/services/admin-service.js`, API `/api/admin/*` (stats, users + role/detail, invitations + unpublish, guestbook + hapus), UI `pages/admin.html` + `assets/js/admin.js`, script `npm run admin:promote -- <email>`.
+- 🔑 **Lupa & reset password** — migrasi `0005_password_reset_tokens.sql` (token hash SHA-256, sekali pakai, kedaluwarsa 24 jam) & `0006` (fix `updated_at`); `password-reset-service.js` + `email-service.js` (nodemailer; dev-log `[mail:dev]` bila `SMTP_HOST` kosong); `POST /api/auth/forgot-password` (anti-enumerasi, 5/mnt) & `POST /api/auth/reset-password`; UI "Lupa password?" di `pages/login.html`.
+- ✅ **Verifikasi E2E 25/25 PASS** — skrip `scripts/e2e-sprint5.mjs` (self-healing terhadap rate limit) + rekaman `.docs/e2e/sprint-5-verification.md`. Reset password (token valid/kedaluwarsa/pakai-ulang/tidak dikenal) & admin (403 non-admin, promote, stats/users/invitations/guestbook, unpublish, delete, guard role sendiri & admin terakhir). **0 bug aplikasi** — rate limiting (auth 10/mnt) terkonfirmasi bekerja.
+- 📌 **Catatan:** development Sprint 5 berjalan sebelum planning difinalkan; dokumen sprint & sinkronisasi dibuat pada 16-08-2026. Audit Sprint 5 & release v1.4.0 menunggu keputusan.
 
 ---
 
@@ -242,6 +254,7 @@
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.2.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 5 Development — dasbor admin & keamanan akun (reset password), E2E 25/25 PASS |
 | 1.1.0 | 11-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Release v1.3.0 — The Guest Experience (Audit PASS + tag v1.3.0 + Sprint 4 closed) |
 | 1.0.9 | 10-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Sprint 4 Development — manajemen tamu & amplop digital, hardening LOW (v1.3.0) |
 | 1.0.8 | 09-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Halaman publik undangan `/u/:slug` — endpoint publik + cover, countdown, tema, musik, lokasi & kalender |

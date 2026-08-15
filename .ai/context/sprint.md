@@ -1,12 +1,12 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Sprint Context · Category : Context (living document)
-  Version  : 1.3.0 · Status : ✅ Stable · Update : 11-08-2026
+  Version  : 1.4.0 · Status : 🟠 Proses · Update : 16-08-2026
 -->
 
 # Sprint
 
-> Status sprint yang sedang berjalan. **Referensi lengkap**: `.docs/sprint-1.md`, `.docs/sprint-2.md`, `.docs/sprint-3.md`, `.docs/sprint-4.md`. Perbarui file ini saat sprint dimulai, berubah, atau selesai.
+> Status sprint yang sedang berjalan. **Referensi lengkap**: `.docs/sprint-1.md`, `.docs/sprint-2.md`, `.docs/sprint-3.md`, `.docs/sprint-4.md`, `.docs/sprint-5.md`. Perbarui file ini saat sprint dimulai, berubah, atau selesai.
 
 ---
 
@@ -14,11 +14,11 @@
 
 | Item | Detail |
 | --- | --- |
-| Sprint | (menunggu planning Sprint 5) |
-| Arah | Fase 3 — Launch (payment & pricing, optimasi performa & SEO, hardening produksi) |
-| Status | 🟡 Belum dimulai |
+| Sprint | Sprint 5 — The Admin & Account Security |
+| Tujuan | Dasbor admin (role management + moderasi) + lupa/reset password (SMTP + token) + verifikasi E2E |
+| Status | 🟠 Proses (Development selesai — menunggu audit & release) |
 | Release | v1.4.0 (menunggu keputusan) |
-| Referensi | `.docs/roadmap.md` |
+| Referensi | `.docs/sprint-5.md` |
 
 ## Sprint Sebelumnya (Closed)
 
@@ -129,6 +129,23 @@
 - ✅ Audit PASS — 24 PASS · 1 WARNING (resolved) · 0 ERROR (`.docs/audit/LAPORAN-AUDIT-SPRINT-4.html`)
 - ✅ Release v1.3.0 — The Guest Experience Release (tag `v1.3.0`) — **Sprint 4 closed**
 
+## Lingkup Sprint 5 (Disetujui)
+
+- Dasbor admin — middleware `requireAdmin`, service `admin-service.js`, API `/api/admin/*` (stats, users + role/detail, invitations + unpublish, guestbook + hapus), UI `pages/admin.html` + `assets/js/admin.js`
+- Script promote — `npm run admin:promote -- <email>` (`scripts/make-admin.mjs`)
+- Lupa & reset password — migrasi 0005 & 0006, `password-reset-service.js` + `email-service.js` (SMTP/dev-log), `POST /api/auth/forgot-password` & `POST /api/auth/reset-password`, UI "Lupa password?" di login
+- Verifikasi E2E fitur baru — `scripts/e2e-sprint5.mjs` + rekaman `.docs/e2e/sprint-5-verification.md`
+
+## Hasil Sprint 5 (Development)
+
+- ✅ Migrasi `0005_password_reset_tokens.sql` (token hash SHA-256, sekali pakai, kedaluwarsa 24 jam) + `0006` (fix `updated_at` trigger)
+- ✅ API admin — stats, users (+ search/role/page, detail + counts, role guard), invitations (unpublish), guestbook (list + hapus); `requireAdmin` cek role ke DB per-request
+- ✅ Reset password — anti-enumerasi (respons generik), token valid/kedaluwarsa/pakai-ulang/tidak dikenal tertangani, revoke refresh token saat reset
+- ✅ Email service — nodemailer; dev-log `[mail:dev]` + Reset URL bila `SMTP_HOST` kosong
+- ✅ UI login — form "Lupa password?" + `/login?reset=<token>` set password baru
+- ✅ Verifikasi E2E **25/25 PASS** — 0 bug aplikasi; rate limiting (auth 10/mnt) terkonfirmasi (`.docs/e2e/sprint-5-verification.md`)
+- 📌 Catatan: development berjalan sebelum planning difinalkan; dokumen sprint & sinkronisasi dibuat 16-08-2026; **audit & release v1.4.0 menunggu**
+
 ## Aturan Sprint
 
 1. Pekerjaan baru masuk lingkup sprint harus disetujui terlebih dahulu.
@@ -139,6 +156,7 @@
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.4.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 5 Development — dasbor admin & keamanan akun (reset password), E2E 25/25 PASS; menunggu audit & release |
 | 1.3.0 | 11-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Closed | Sprint 4 closed — Audit PASS + Release v1.3.0 The Guest Experience (tag v1.3.0) |
 | 1.2.0 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 4 dimulai — Manajemen tamu + amplop digital + hardening LOW (Development) |
 | 1.1.0 | 10-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Closed | Sprint 3 closed — Audit PASS + Release v1.2.0 The Core Features (tag v1.2.0) |

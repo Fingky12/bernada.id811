@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Database · Category : Panduan (source of truth)
-  Version  : 1.1.0 · Status : 🟠 Proses · Update : 10-08-2026
+  Version  : 1.2.0 · Status : 🟠 Proses · Update : 16-08-2026
 -->
 
 # Database BERNADA.ID
@@ -17,7 +17,7 @@
 | Engine | PostgreSQL 13+ |
 | Driver Node.js | `pg` (parameter binding / prepared statement) |
 | Migrasi | SQL mentah di `database/migrations/` (dijalankan `database/migrate.js`) |
-| Status | ✅ Skema inti (Fase 2) — users, templates, invitations, refresh_tokens, guestbook · 🟠 Sprint 4 — guests, gift_accounts |
+| Status | ✅ Skema inti (Fase 2) — users, templates, invitations, refresh_tokens, guestbook · ✅ Sprint 4 — guests, gift_accounts · 🟠 Sprint 5 — password_reset_tokens |
 
 ---
 
@@ -164,7 +164,35 @@ Index: `idx_gift_accounts_invitation_id` (invitation_id).
 
 ---
 
-## Rencana Tabel Berikutnya (Sprint 5+ — Fase 2 lanjutan / Fase 3)
+### Migrasi `0005_password_reset_tokens.sql` — Token Reset Password
+
+#### password_reset_tokens — token reset password (keamanan akun)
+
+| Kolom | Tipe | Keterangan |
+| --- | --- | --- |
+| `id` | UUID PK | |
+| `user_id` | UUID FK → users `ON DELETE CASCADE` | pemilik token |
+| `token_hash` | TEXT | hash SHA-256 token (tidak pernah plaintext) |
+| `expires_at` | TIMESTAMPTZ | batas berlaku (`RESET_TOKEN_EXPIRY_HOURS`, default 24 jam) |
+| `used_at` | TIMESTAMPTZ | waktu token dipakai (sekali pakai) — NULL bila masih aktif |
+| `created_at` / `updated_at` | TIMESTAMPTZ | otomatis |
+
+Index: `idx_password_reset_tokens_user_id` (user_id), `idx_password_reset_tokens_token_hash` (token_hash).
+
+---
+
+### Migrasi `0006_password_reset_tokens_updated_at.sql` — Fix `updated_at`
+
+Perbaikan migrasi 0005: trigger `trg_password_reset_tokens_updated_at` (via `set_updated_at()`) menulis `NEW.updated_at` yang belum ada di tabel → error `42703 undefined_column` saat `UPDATE`. Menambahkan kolom agar konsisten dengan tabel lain:
+
+```sql
+ALTER TABLE password_reset_tokens
+  ADD COLUMN updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW();
+```
+
+---
+
+## Rencana Tabel Berikutnya (Sprint 5+ — Fase 3)
 
 Tabel pendukung fitur yang dijanjikan landing page, dibuat lewat migrasi baru (bukan mengubah file yang sudah ada):
 
@@ -175,6 +203,7 @@ Tabel pendukung fitur yang dijanjikan landing page, dibuat lewat migrasi baru (b
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.2.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Migrasi 0005 (password_reset_tokens) & 0006 (fix updated_at) — Sprint 5 |
 | 1.1.0 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Migrasi 0004 (guests & gift_accounts) — Sprint 4 |
 | 1.0.1 | 10-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Migrasi 0002 (refresh_tokens + seed templates) & 0003 (gallery + guestbook) |
 | 1.0.0 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Skema awal (users, templates, invitations) + alur migrasi |

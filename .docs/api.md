@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : API · Category : Panduan (source of truth)
-  Version  : 1.2.0 · Status : 🟠 Proses · Update : 12-08-2026
+  Version  : 1.3.0 · Status : 🟠 Proses · Update : 16-08-2026
 -->
 
 # API BERNADA.ID
@@ -169,6 +169,66 @@ Menghapus sesi (refresh token di-revoke) dan membersihkan cookie.
 ### GET `/api/auth/me`
 
 Mengambil data pengguna yang sedang masuk (memerlukan access token).
+
+**Response 200:**
+
+```json
+{
+  "user": {
+    "id": "1e3f0b8a-0000-0000-0000-000000000001",
+    "email": "rara@contoh.com",
+    "fullName": "Rara Kirana",
+    "role": "user",
+    "createdAt": "2026-08-10T03:50:39.652Z"
+  }
+}
+```
+
+### POST `/api/auth/forgot-password`
+
+Meminta tautan reset password (dikirim via email SMTP). Rate limit 5/menit per IP.
+
+**Request:**
+
+```json
+{ "email": "rara@contoh.com" }
+```
+
+**Response 200 — selalu generik (anti-enumerasi):**
+
+```json
+{
+  "message": "Jika email terdaftar, tautan reset password telah dikirim."
+}
+```
+
+Catatan:
+
+- Response **sama** untuk email terdaftar maupun tidak — mencegah enumerasi akun.
+- Bila `SMTP_HOST` kosong (mode dev), email **tidak** dikirim; tautan reset dicatat di log server (`[mail:dev]`).
+- Token disimpan sebagai hash SHA-256 di tabel `password_reset_tokens`, kedaluwarsa `RESET_TOKEN_EXPIRY_HOURS` (default 24 jam).
+- Tautan menuju `APP_BASE_URL/login?reset=<token>`.
+
+### POST `/api/auth/reset-password`
+
+Mengganti password memakai token dari tautan reset.
+
+**Request:**
+
+```json
+{
+  "token": "<token-dari-email>",
+  "password": "rahasiaBaru123"
+}
+```
+
+Aturan:
+
+- `token` wajib (maks 200); `password` mengikuti aturan umum (min 8 karakter).
+- Token sekali pakai — **tidak bisa dipakai ulang** (`used_at`).
+- Token kedaluwarsa ditolak → **400** `EXPIRED_TOKEN`.
+- Token tidak dikenal / sudah dipakai → **400** `INVALID_TOKEN`.
+- Saat sukses: password baru disimpan (bcrypt), seluruh refresh token pengguna di-revoke (sesi lama dicabut).
 
 **Response 200:**
 
@@ -667,6 +727,7 @@ Aset statis disajikan via `/assets` dan `/pages`.
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.3.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Endpoint forgot-password & reset-password (Sprint 5 — keamanan akun) |
 | 1.2.0 | 12-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Endpoint admin — stats, users (+ role, detail), invitations (unpublish), guestbook (hapus) |
 | 1.0.3 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Endpoint tamu (CRUD + stats) & amplop digital (owner + publik), middleware rate limit |
 | 1.0.2 | 10-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Endpoint auth, templates, undangan CRUD/publish, guestbook publik & galeri |
