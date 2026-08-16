@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Database · Category : Panduan (source of truth)
-  Version  : 1.4.0 · Status : 🟠 Proses · Update : 16-08-2026
+  Version  : 1.5.0 · Status : 🟠 Proses · Update : 16-08-2026
 -->
 
 # Database BERNADA.ID
@@ -262,11 +262,36 @@ Aturan:
 
 ---
 
+### Migrasi `0009_payments.sql` — Boundary pembayaran (Sprint 6)
+
+Boundary provider-agnostic. Status hanya ditentukan backend/provider — tidak pernah dari request frontend.
+
+```sql
+CREATE TABLE payments (
+  id                      UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  order_id                UUID NOT NULL REFERENCES orders(id) ON DELETE RESTRICT,
+  provider                TEXT NOT NULL,
+  provider_transaction_id TEXT,
+  payment_reference       TEXT,
+  status                  TEXT NOT NULL DEFAULT 'pending'
+    CHECK (status IN ('pending','succeeded','failed','expired')),
+  amount                  BIGINT NOT NULL CHECK (amount >= 0),
+  currency                TEXT NOT NULL DEFAULT 'IDR',
+  metadata                JSONB NOT NULL DEFAULT '{}'::jsonb,
+  paid_at                 TIMESTAMPTZ,
+  created_at              TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at              TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+```
+
+Index: `order_id`, `provider_transaction_id`. Trigger `set_updated_at`.
+
+Adapter di `server/services/payment/index.js` (registry `defineProvider`/`getProvider`); provider saat ini: `manual` (dev, tanpa integrasi nyata — `PAYMENT PROVIDER DECISION REQUIRED`). `metadata` tidak pernah berisi secret.
+
+---
+
 ## Rencana Tabel Berikutnya (Sprint 6 — Fase 3)
 
-Tabel order & pembayaran, dibuat lewat migrasi baru (append-only, nomor setelah `0008`):
-
-- `payments` — boundary pembayaran (provider-agnostic)
 - `gift_items` — wishlist hadiah (ditunda dari Sprint 4)
 - `template_categories`
 
@@ -274,6 +299,7 @@ Tabel order & pembayaran, dibuat lewat migrasi baru (append-only, nomor setelah 
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.5.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Migrasi 0009 (payments) + adapter manual — Sprint 6 |
 | 1.4.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Migrasi 0008 (orders) — Sprint 6 |
 | 1.3.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Migrasi 0007 (packages & package_features) — Sprint 6 |
 | 1.1.0 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Migrasi 0004 (guests & gift_accounts) — Sprint 4 |

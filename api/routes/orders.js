@@ -3,6 +3,7 @@ import { requireAuth } from '../../server/middleware/require-auth.js';
 import { rateLimit } from '../../server/middleware/rate-limit.js';
 import { parseId, requiredString } from '../../server/lib/validation.js';
 import * as orderService from '../../server/services/order-service.js';
+import * as paymentService from '../../server/services/payment-service.js';
 
 export const ordersRouter = Router();
 
@@ -51,4 +52,19 @@ ordersRouter.post('/:id/cancel', requireAuth, async (req, res) => {
   const orderId = parseId(req.params.id, 'id');
   const order = await orderService.cancelOrder(req.user.id, orderId);
   res.status(200).json({ order });
+});
+
+ordersRouter.post('/:id/payment', requireAuth, rateLimit({
+  max: 5,
+  message: 'Terlalu banyak membuat pembayaran, coba lagi nanti.',
+}), async (req, res) => {
+  const orderId = parseId(req.params.id, 'id');
+  const { payment, created } = await paymentService.createOrderPayment(req.user.id, orderId);
+  res.status(created ? 201 : 200).json({ payment, created });
+});
+
+ordersRouter.get('/:id/payment', requireAuth, async (req, res) => {
+  const orderId = parseId(req.params.id, 'id');
+  const payment = await paymentService.getOrderPayment(req.user.id, orderId);
+  res.status(200).json({ payment });
 });

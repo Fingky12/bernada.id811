@@ -499,6 +499,51 @@ Membatalkan order. Hanya order berstatus `pending`/`awaiting_payment`.
 
 ---
 
+### POST `/api/orders/:id/payment`
+
+Membuat record pembayaran untuk order (boundary pembayaran). **Rate limit: 5/menit per order.**
+
+- Hanya untuk order berstatus `pending`/`awaiting_payment`.
+- Provider aktif saat ini: `manual` (dev) — `PAYMENT PROVIDER DECISION REQUIRED`.
+- Status payment selalu `pending` saat dibuat; **`succeeded` HANYA dapat diubah backend** (verifikasi manual admin / provider) — tidak pernah dari request frontend.
+- Payment `pending`/`succeeded` yang sudah ada untuk order yang sama **dipakai ulang** (`created: false`).
+
+**Response 201** (`created: true`):
+
+```json
+{
+  "payment": {
+    "id": "…",
+    "orderId": "…",
+    "provider": "manual",
+    "providerTransactionId": null,
+    "paymentReference": "MANUAL-ORD-20260816-B81B",
+    "status": "pending",
+    "amount": 99000,
+    "currency": "IDR",
+    "metadata": { "mode": "manual", "note": "PAYMENT PROVIDER DECISION REQUIRED — belum ada integrasi nyata." },
+    "paidAt": null,
+    "createdAt": "…",
+    "updatedAt": "…"
+  },
+  "created": true
+}
+```
+
+**Response 200** — payment yang sudah ada dipakai ulang (`created: false`).
+
+**Response 409** — `ALREADY_PAID` (order sudah `paid`, mis. paket Rp0 auto-paid) atau `ORDER_STATUS_CONFLICT` (order `cancelled`/`expired`/`failed`).
+
+**Response 404** — `NOT_FOUND` bila order tidak ada/bukan milik pengguna.
+
+### GET `/api/orders/:id/payment`
+
+Status pembayaran terbaru untuk order milik pengguna.
+
+**Response 200:** `{ "payment": { … } }` — `payment: null` bila belum ada pembayaran.
+
+---
+
 ## Endpoint Undangan (Terproteksi)
 
 > Seluruh endpoint di bawah memerlukan header `Authorization: Bearer <accessToken>` dan hanya mengakses/mengubah undangan **milik pengguna** (owner scoping). Akses ke undangan milik pengguna lain menghasilkan **404** `NOT_FOUND`.
