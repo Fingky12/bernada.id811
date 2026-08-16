@@ -20,7 +20,8 @@
 - 🖥️ **Frontend commerce** — pricing landing dinamis dari API (`assets/js/landing-pricing.js` + `index.html` `#pricing-grid`, tanpa harga hardcode); halaman checkout `pages/checkout.html` + `assets/js/checkout.js` (pilih paket → order idempotent → payment → status); `assets/js/api.js` + method commerce; login redirect `?next=`; badge status lifecycle di builder.
 - ✅ **Verifikasi E2E 38/38 PASS** — `scripts/e2e-sprint6.mjs` (pricing, order server-side + idempotency + ownership, payment state, lifecycle, rate limit, regression auth/templates/guestbook/gift-accounts/admin) + rekaman `.docs/e2e/sprint-6-verification.md`; regression Sprint 5 **25/25 PASS**. **0 bug aplikasi.**
 - 🔍 **Audit Sprint 6 PASS** — 25 PASS · 0 WARNING · 0 ERROR (`.docs/audit/LAPORAN-AUDIT-SPRINT-6.html`); temuan Sprint 5 tidak terulang.
-- 📦 **Release v1.5.0 kandidat** — `.docs/releases/v1.5.0-launch-commerce-foundation.md`; `package.json` dibump ke `v1.5.0`; menunggu approval untuk tag.
+- 📦 **Release v1.5.0 — The Launch & Commerce Foundation** (Status: ✅ Stable) — pricing/paket dari backend, order aman server-side + idempotency + ownership, payment boundary provider-agnostic (paid hanya dari backend), lifecycle undangan eksplisit & kompatibel, frontend commerce (pricing dinamis + checkout), E2E 38/38 + regression 25/25, Audit PASS 25/0/0. Detail: `.docs/releases/v1.5.0-launch-commerce-foundation.md`.
+- 🏷️ **Tag git v1.5.0** dibuat — release disetujui Product Owner, Senior Engineer & AI Pair Programmer; **Sprint 6 closed**.
 - 🧹 **Pembersihan data test historis** — 7 undangan `e2e-*@test.local` dihapus (user setujui) — kini 13 user asli, 6 undangan.
 - 📌 **Catatan operasional** — instance produksi :3000 belum di-redeploy (elevated; tanpa route Sprint 6) — perlu `taskkill /F /PID 7000` manual lalu restart.
 

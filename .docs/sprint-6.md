@@ -18,8 +18,8 @@
 | --- | --- |
 | Sprint | Sprint 6 — The Launch & Commerce Foundation |
 | Tujuan | Fondasi pricing/paket, order/checkout, boundary pembayaran, lifecycle undangan, kesiapan builder, UI commerce, production-readiness yang relevan |
-| Status | ✅ Closed (16-08-2026) — M0–M7 selesai; E2E Sprint 6 38/38 + regression Sprint 5 25/25; audit PASS; v1.5.0 kandidat menunggu tag |
-| Release | v1.5.0 — The Launch & Commerce Foundation (kandidat) |
+| Status | ✅ Closed (16-08-2026) — M0–M7 selesai; E2E Sprint 6 38/38 + regression Sprint 5 25/25; audit PASS; tag v1.5.0 dibuat |
+| Release | v1.5.0 — The Launch & Commerce Foundation (Stable, tag `v1.5.0`) |
 | Baseline | Sprint 5 Closed (v1.4.0) · E2E Sprint 5 25/25 PASS (16-08-2026) · PostgreSQL 18.4 connected · migrasi 0001–0006 applied |
 
 ---
@@ -299,6 +299,6 @@ Setiap milestone: test → self review → lapor hasil (command + PASS/FAIL) →
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
-| 0.3.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Closed | M0–M7 selesai; E2E Sprint 6 38/38 + regression 25/25; Audit PASS 25/0/0; v1.5.0 kandidat dibuat; menunggu approval tag v1.5.0 & redeploy :3000 |
+| 0.3.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Closed | M0–M7 selesai; E2E Sprint 6 38/38 + regression 25/25; Audit PASS 25/0/0; tag `v1.5.0` dibuat (release disetujui); sisa: redeploy :3000 |
 | 0.2.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Approved & Active | M0–M5 selesai; E2E Sprint 6 38/38 PASS + regression 25/25 PASS; menunggu audit & release (M7) |
 | 0.1.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟡 Draft | Planning Sprint 6 — menunggu approval Owner |

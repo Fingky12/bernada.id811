@@ -17,7 +17,7 @@
 | Nama | BERNADA.ID |
 | Jenis | Platform SaaS Undangan Digital |
 | Fokus | Undangan digital profesional (dimulai dari undangan pernikahan) |
-| Versi | v1.5.0 (The Launch & Commerce Foundation — kandidat) |
+| Versi | v1.5.0 (The Launch & Commerce Foundation — Stable, tag `v1.5.0`) |
 | Brand | Kombinasi **Merah** & **Emas** |
 | Karakter Brand | Elegan, Hangat, Romantis, Modern, Premium |
 

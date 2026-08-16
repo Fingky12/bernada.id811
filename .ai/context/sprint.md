@@ -16,8 +16,8 @@
 | --- | --- |
 | Sprint | Sprint 6 — The Launch & Commerce Foundation |
 | Tujuan | Fondasi pricing/paket, order/checkout, boundary pembayaran, lifecycle undangan, builder readiness, frontend commerce |
-| Status | ✅ Closed — M0–M7 selesai; E2E Sprint 6 38/38 PASS + regression Sprint 5 25/25 PASS; Audit PASS 25/0/0; v1.5.0 kandidat menunggu tag |
-| Release | v1.5.0 — The Launch & Commerce Foundation (kandidat) |
+| Status | ✅ Closed — M0–M7 selesai; E2E Sprint 6 38/38 PASS + regression Sprint 5 25/25 PASS; Audit PASS 25/0/0; tag `v1.5.0` dibuat |
+| Release | v1.5.0 — The Launch & Commerce Foundation (Stable, tag `v1.5.0`) |
 | Referensi | `.docs/sprint-6.md`, `.docs/e2e/sprint-6-verification.md`, `.docs/audit/LAPORAN-AUDIT-SPRINT-6.html`, `.docs/releases/v1.5.0-launch-commerce-foundation.md` |
 
 ### Lingkup Sprint 6 (Disetujui)
@@ -48,7 +48,7 @@
 - ✅ Verifikasi E2E **38/38 PASS** + regression Sprint 5 **25/25 PASS** — 0 bug aplikasi (`.docs/e2e/sprint-6-verification.md`)
 - ✅ Audit Sprint 6 PASS — 25 PASS · 0 WARNING · 0 ERROR (`.docs/audit/LAPORAN-AUDIT-SPRINT-6.html`)
 - ✅ Pembersihan data test historis — 7 undangan `e2e-*@test.local` dihapus (13 user asli, 6 undangan)
-- ✅ Release v1.5.0 kandidat — release doc + `package.json` v1.5.0; menunggu approval tag & redeploy :3000
+- ✅ Release v1.5.0 Stable — tag `v1.5.0` dibuat; Sprint 6 closed; sisa: redeploy :3000
 
 ## Sprint Sebelumnya (Closed)
 
@@ -197,7 +197,7 @@
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
-| 1.7.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Closed | Sprint 6 closed — E2E 38/38 + regression 25/25, Audit PASS 25/0/0, v1.5.0 kandidat dibuat; menunggu approval tag & redeploy :3000 |
+| 1.7.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Closed | Sprint 6 closed — E2E 38/38 + regression 25/25, Audit PASS 25/0/0, tag `v1.5.0`; sisa: redeploy :3000 |
 | 1.4.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 5 Development — dasbor admin & keamanan akun (reset password), E2E 25/25 PASS; menunggu audit & release |
 | 1.3.0 | 11-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Closed | Sprint 4 closed — Audit PASS + Release v1.3.0 The Guest Experience (tag v1.3.0) |
 | 1.2.0 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 4 dimulai — Manajemen tamu + amplop digital + hardening LOW (Development) |
