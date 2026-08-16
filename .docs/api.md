@@ -912,6 +912,7 @@ Hapus entri buku tamu (moderasi spam/ucapan tidak pantas).
 | `/login` | `pages/login.html` |
 | `/builder` | `pages/builder.html` |
 | `/admin` | `pages/admin.html` |
+| `/checkout` | `pages/checkout.html` |
 | `/u/:slug` | `pages/invitation.html` |
 
 Aset statis disajikan via `/assets` dan `/pages`.
