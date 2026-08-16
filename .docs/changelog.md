@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Changelog · Category : Catatan (living document)
-  Version  : 1.5.0 · Status : ✅ Stable · Update : 16-08-2026
+  Version  : 1.6.0 · Status : ✅ Stable · Update : 16-08-2026
 -->
 
 # Changelog
@@ -12,14 +12,17 @@
 
 ## 16-08-2026 — Sprint 6 Development: The Launch & Commerce Foundation
 
-- 🚀 **Sprint 6 — The Launch & Commerce Foundation** (Status: ✅ Approved & Active) — pricing/paket, order & payment boundary, invitation lifecycle, frontend commerce. Detail: `.docs/sprint-6.md`.
+- 🚀 **Sprint 6 — The Launch & Commerce Foundation** (Status: ✅ Closed) — pricing/paket, order & payment boundary, invitation lifecycle, frontend commerce. Detail: `.docs/sprint-6.md`.
 - 💳 **Pricing & packages** — migrasi `0007_commerce_packages.sql` (tabel `packages` + `package_features`, seed 4 paket `free/basic/premium/exclusive`, harga placeholder `BUSINESS DECISION REQUIRED`); `server/services/package-service.js`; `GET /api/packages` (+ `/:id`) publik, hanya aktif, urut `sortOrder`, fitur ter-sertakan.
 - 🧾 **Order foundation** — migrasi `0008_orders.sql` (tabel `orders`: `order_number` UNIQUE, `amount` CHECK ≥ 0, status 6 nilai, `idempotency_key` UNIQUE, FK user CASCADE / package RESTRICT / invitation SET NULL); `server/services/order-service.js`; `POST /api/orders` (amount **hanya dari server**, idempotency anti-duplicate, paket free auto-paid) + `GET /`, `GET /:id` (ownership 404), `POST /:id/cancel`; rate limit 10/mnt.
 - 🔌 **Payment boundary** — migrasi `0009_payments.sql` (tabel `payments`: status pending/succeeded/failed/expired, metadata JSONB, FK order RESTRICT); registry adapter provider (`server/services/payment/index.js` — `defineProvider`/`getProvider`) + provider `manual` (dev); `server/services/payment-service.js`; `POST /:id/payment` (rate limit 5/mnt) & `GET /:id/payment`; **status `succeeded` hanya dari backend** — `PAYMENT PROVIDER DECISION REQUIRED`.
 - 🔄 **Invitation lifecycle** — migrasi `0010_invitation_lifecycle.sql` (kolom `status` + `package_id`, backfill, trigger `sync_invitation_status`); service `setStatus` + transisi `draft → preview → published ⇄ unpublished → draft`; `GET/PATCH /api/invitations/:id/status` (409 `INVALID_TRANSITION`); API legacy `publish`/`unpublish` & jalur admin tetap sinkron via trigger.
 - 🖥️ **Frontend commerce** — pricing landing dinamis dari API (`assets/js/landing-pricing.js` + `index.html` `#pricing-grid`, tanpa harga hardcode); halaman checkout `pages/checkout.html` + `assets/js/checkout.js` (pilih paket → order idempotent → payment → status); `assets/js/api.js` + method commerce; login redirect `?next=`; badge status lifecycle di builder.
 - ✅ **Verifikasi E2E 38/38 PASS** — `scripts/e2e-sprint6.mjs` (pricing, order server-side + idempotency + ownership, payment state, lifecycle, rate limit, regression auth/templates/guestbook/gift-accounts/admin) + rekaman `.docs/e2e/sprint-6-verification.md`; regression Sprint 5 **25/25 PASS**. **0 bug aplikasi.**
-- 📌 **Catatan operasional** — instance produksi :3000 belum di-redeploy (tanpa route Sprint 6); 7 undangan test historis `e2e-*@test.local` menunggu keputusan pembersihan.
+- 🔍 **Audit Sprint 6 PASS** — 25 PASS · 0 WARNING · 0 ERROR (`.docs/audit/LAPORAN-AUDIT-SPRINT-6.html`); temuan Sprint 5 tidak terulang.
+- 📦 **Release v1.5.0 kandidat** — `.docs/releases/v1.5.0-launch-commerce-foundation.md`; `package.json` dibump ke `v1.5.0`; menunggu approval untuk tag.
+- 🧹 **Pembersihan data test historis** — 7 undangan `e2e-*@test.local` dihapus (user setujui) — kini 13 user asli, 6 undangan.
+- 📌 **Catatan operasional** — instance produksi :3000 belum di-redeploy (elevated; tanpa route Sprint 6) — perlu `taskkill /F /PID 7000` manual lalu restart.
 
 ---
 

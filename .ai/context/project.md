@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Project Context · Category : Context (living document)
-  Version  : 1.1.0 · Status : ✅ Stable · Update : 16-08-2026
+  Version  : 1.2.0 · Status : ✅ Stable · Update : 16-08-2026
 -->
 
 # Konteks Project

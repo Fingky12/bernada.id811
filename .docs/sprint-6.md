@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Sprint 6 · Category : Panduan (source of truth)
-  Version  : 0.2.0 · Status : ✅ Approved & Active (M0–M5 selesai, M6 testing) · Update : 16-08-2026
+  Version  : 0.3.0 · Status : ✅ Closed (M0–M7 selesai; v1.5.0 kandidat) · Update : 16-08-2026
 -->
 
 # Sprint 6 — The Launch & Commerce Foundation
@@ -18,7 +18,7 @@
 | --- | --- |
 | Sprint | Sprint 6 — The Launch & Commerce Foundation |
 | Tujuan | Fondasi pricing/paket, order/checkout, boundary pembayaran, lifecycle undangan, kesiapan builder, UI commerce, production-readiness yang relevan |
-| Status | ✅ Approved & Active (16-08-2026) — M0–M5 selesai; E2E Sprint 6 38/38 + regression Sprint 5 25/25 |
+| Status | ✅ Closed (16-08-2026) — M0–M7 selesai; E2E Sprint 6 38/38 + regression Sprint 5 25/25; audit PASS; v1.5.0 kandidat menunggu tag |
 | Release | v1.5.0 — The Launch & Commerce Foundation (kandidat) |
 | Baseline | Sprint 5 Closed (v1.4.0) · E2E Sprint 5 25/25 PASS (16-08-2026) · PostgreSQL 18.4 connected · migrasi 0001–0006 applied |
 
@@ -260,10 +260,10 @@ Keputusan: apakah `expired` berbasis `event_date` otomatis, atau berbasis masa a
 - [x] Regression Sprint 5 PASS (25/25)
 - [x] Security review selesai (amount server-side, ownership 404, idempotency, paid hanya dari backend)
 - [x] Self review selesai (`rules/09`)
-- [ ] Git diff bersih dari perubahan tidak disengaja
-- [ ] Dokumentasi sinkron (selesai setelah commit M6/M7)
-- [ ] Audit Sprint 6 PASS (M7)
-- [ ] Release preparation selesai (v1.5.0 kandidat) (M7)
+- [x] Git diff bersih dari perubahan tidak disengaja
+- [x] Dokumentasi sinkron (selesai setelah commit M6/M7)
+- [x] Audit Sprint 6 PASS (M7)
+- [x] Release preparation selesai (v1.5.0 kandidat) (M7)
 
 ## P. Milestone / Commit Plan
 
@@ -299,5 +299,6 @@ Setiap milestone: test → self review → lapor hasil (command + PASS/FAIL) →
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 0.3.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Closed | M0–M7 selesai; E2E Sprint 6 38/38 + regression 25/25; Audit PASS 25/0/0; v1.5.0 kandidat dibuat; menunggu approval tag v1.5.0 & redeploy :3000 |
 | 0.2.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Approved & Active | M0–M5 selesai; E2E Sprint 6 38/38 PASS + regression 25/25 PASS; menunggu audit & release (M7) |
 | 0.1.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟡 Draft | Planning Sprint 6 — menunggu approval Owner |

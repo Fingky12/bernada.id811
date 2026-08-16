@@ -1,14 +1,14 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Roadmap Context · Category : Context (living document)
-  Version  : 1.5.0 · Status : 🟠 Proses · Update : 16-08-2026
+  Version  : 1.6.0 · Status : ✅ Stable · Update : 16-08-2026
 -->
 
 # Roadmap
 
 > Arah pengembangan jangka panjang BERNADA.ID. **Sumber kebenaran tetap** ada di `.docs/roadmap.md`; file ini adalah ringkasan untuk AI agar tidak menebak fase pengembangan.
 >
-> **Sprint aktif:** Sprint 6 — The Launch & Commerce Foundation (Fase 3, 16-08-2026, ✅ Approved & Active).
+> **Sprint terakhir:** Sprint 6 — The Launch & Commerce Foundation (Fase 3, 16-08-2026, ✅ Closed; v1.5.0 kandidat menunggu tag).
 
 ---
 
@@ -52,7 +52,7 @@
 
 ### 🟢 Sprint 6 — The Launch & Commerce Foundation · v1.5.0 (Active)
 
-> ✅ Approved & Active 16-08-2026 — M0–M5 selesai; E2E Sprint 6 **38/38 PASS** + regression Sprint 5 25/25 PASS; menunggu audit & release v1.5.0 (M7). Detail: `.docs/sprint-6.md`, `.docs/e2e/sprint-6-verification.md`.
+> ✅ Closed 16-08-2026 — M0–M7 selesai; E2E Sprint 6 **38/38 PASS** + regression Sprint 5 25/25 PASS; Audit PASS 25/0/0; release v1.5.0 kandidat menunggu tag. Detail: `.docs/sprint-6.md`, `.docs/e2e/sprint-6-verification.md`, `.docs/audit/LAPORAN-AUDIT-SPRINT-6.html`, `.docs/releases/v1.5.0-launch-commerce-foundation.md`.
 
 - Pricing & packages ✅ — migrasi `0007`, `package-service.js`, `GET /api/packages` (+ `:id`), seed placeholder
 - Order foundation ✅ — migrasi `0008_orders.sql`, `order-service.js`, amount server-side, idempotency, ownership, rate limit
@@ -61,7 +61,7 @@
 - Builder readiness ✅ — badge status lifecycle
 - Frontend commerce ✅ — pricing dinamis (`landing-pricing.js`), checkout (`checkout.html`/`checkout.js`), login redirect `?next=`
 - E2E Sprint 6 & regression ✅ — 38/38 + 25/25 PASS
-- Audit & release v1.5.0 🟡 — M7 (menunggu)
+- Audit & release v1.5.0 ✅ — Audit PASS 25/0/0; release doc kandidat + `package.json` v1.5.0; menunggu approval tag
 
 ### 🟢 Fase 3 — Launch · v1.0.0 GA
 
@@ -88,7 +88,7 @@
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
-| 1.5.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 6 Active — Launch & Commerce Foundation: M0–M5 selesai, E2E 38/38 PASS + regression 25/25; menunggu audit & release v1.5.0 (M7) |
+| 1.6.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Closed | Sprint 6 closed — Launch & Commerce Foundation: E2E 38/38 + regression 25/25, Audit PASS 25/0/0, v1.5.0 kandidat; menunggu approval tag & redeploy :3000 |
 | 1.3.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 5 Development — dasbor admin & keamanan akun (reset password), E2E 25/25 PASS; menunggu audit & release v1.4.0 |
 | 1.2.0 | 11-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 4 closed — Release v1.3.0 The Guest Experience (tag v1.3.0); Fase 2 selesai; menunggu planning Sprint 5 (Fase 3) |
 | 1.1.0 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 4 dimulai — Manajemen tamu + amplop digital + hardening LOW (Development) |
