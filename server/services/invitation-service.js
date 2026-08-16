@@ -5,7 +5,7 @@ import { getTemplateById } from './template-service.js';
 const COLUMNS = `
   id, owner_id, template_id, slug, title, event_date, event_time,
   venue, location, couple, message, theme, music_url, gallery,
-  is_published, published_at, created_at, updated_at
+  is_published, status, package_id, published_at, created_at, updated_at
 `;
 
 function toInvitationDto(row) {
@@ -25,6 +25,8 @@ function toInvitationDto(row) {
     musicUrl: row.music_url,
     gallery: row.gallery || [],
     isPublished: row.is_published,
+    status: row.status,
+    packageId: row.package_id,
     publishedAt: row.published_at,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -161,6 +163,49 @@ export async function setPublished(id, ownerId, isPublished) {
      WHERE id = $2 AND owner_id = $3
      RETURNING ${COLUMNS}`,
     [isPublished, id, ownerId],
+  );
+  if (rows.length === 0) {
+    throw notFound();
+  }
+  return toInvitationDto(rows[0]);
+}
+
+const STATUS_OPTIONS = ['draft', 'preview', 'published', 'unpublished'];
+
+const STATUS_TRANSITIONS = {
+  draft: ['preview', 'published'],
+  preview: ['draft', 'published'],
+  published: ['unpublished'],
+  unpublished: ['published', 'draft'],
+};
+
+export async function setStatus(id, ownerId, nextStatus) {
+  if (!STATUS_OPTIONS.includes(nextStatus)) {
+    throw new HttpError(
+      400,
+      'VALIDATION_ERROR',
+      `Status harus salah satu dari: ${STATUS_OPTIONS.join(', ')}.`,
+    );
+  }
+  const current = await getInvitation(id, ownerId);
+  const allowed = STATUS_TRANSITIONS[current.status] || [];
+  if (!allowed.includes(nextStatus)) {
+    throw new HttpError(
+      409,
+      'INVALID_TRANSITION',
+      `Transisi status ${current.status} → ${nextStatus} tidak diizinkan.`,
+    );
+  }
+
+  const isPublished = nextStatus === 'published';
+  const { rows } = await pool.query(
+    `UPDATE invitations
+     SET status = $1,
+         is_published = $2,
+         published_at = CASE WHEN $2 THEN COALESCE(published_at, NOW()) ELSE NULL END
+     WHERE id = $3 AND owner_id = $4
+     RETURNING ${COLUMNS}`,
+    [nextStatus, isPublished, id, ownerId],
   );
   if (rows.length === 0) {
     throw notFound();

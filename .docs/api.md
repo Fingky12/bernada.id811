@@ -579,7 +579,7 @@ Validasi:
 - `theme` objek JSON (opsional).
 - `gallery` array teks, maksimal 100 item, 500 karakter/item.
 
-**Response 201:** objek undangan lengkap (termasuk `id`, `isPublished`, `publishedAt`, `createdAt`, `updatedAt`).
+**Response 201:** objek undangan lengkap (termasuk `id`, `isPublished`, `status`, `packageId`, `publishedAt`, `createdAt`, `updatedAt`).
 
 **Response 409** — `SLUG_TAKEN` bila slug sudah dipakai undangan lain.
 
@@ -624,6 +624,32 @@ Menerbitkan undangan — langsung bisa diakses publik via `/u/:slug` dan `GET /a
 Menonaktifkan undangan dari publik.
 
 **Response 200:** objek undangan (`isPublished: false`, `publishedAt` kosong).
+
+### GET `/api/invitations/:id/status`
+
+Status eksplisit undangan milik pengguna.
+
+**Response 200:**
+
+```json
+{ "id": "…", "status": "draft", "isPublished": false }
+```
+
+### PATCH `/api/invitations/:id/status`
+
+Transisi status (state machine). Endpoint ini menulis `status` **dan** `is_published` secara konsisten (sumber kebenaran akses publik tetap `is_published`).
+
+Status: `draft` → `preview` → `published` ⇄ `unpublished` → (`draft`). `published` tidak bisa langsung ke `preview`/`draft`.
+
+**Request:** `{ "status": "published" }`
+
+**Response 200:** `{ "id": "…", "status": "…", "isPublished": … }`.
+
+**Response 400** — `VALIDATION_ERROR` bila nilai `status` tidak dikenal.
+
+**Response 409** — `INVALID_TRANSITION` bila transisi tidak diizinkan.
+
+Catatan sinkronisasi: jalur tulis `is_published` lama (`publish`/`unpublish`, admin unpublish) otomatis menyinkronkan `status` via DB trigger (`published`/`unpublished`).
 
 ---
 
@@ -894,7 +920,7 @@ Aset statis disajikan via `/assets` dan `/pages`.
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
-| 1.3.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Endpoint forgot-password & reset-password (Sprint 5 — keamanan akun) |
+| 1.6.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Endpoint packages, orders, payments, invitation status (Sprint 6) |
 | 1.2.0 | 12-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Endpoint admin — stats, users (+ role, detail), invitations (unpublish), guestbook (hapus) |
 | 1.0.3 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Endpoint tamu (CRUD + stats) & amplop digital (owner + publik), middleware rate limit |
 | 1.0.2 | 10-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Endpoint auth, templates, undangan CRUD/publish, guestbook publik & galeri |

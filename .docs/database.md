@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Database · Category : Panduan (source of truth)
-  Version  : 1.5.0 · Status : 🟠 Proses · Update : 16-08-2026
+  Version  : 1.6.0 · Status : 🟠 Proses · Update : 16-08-2026
 -->
 
 # Database BERNADA.ID
@@ -290,6 +290,18 @@ Adapter di `server/services/payment/index.js` (registry `defineProvider`/`getPro
 
 ---
 
+### Migrasi `0010_invitation_lifecycle.sql` — Lifecycle undangan (Sprint 6)
+
+**Opsi A** (kompatibel): `is_published` tetap sumber kebenaran akses publik; menambah kolom `status` (`draft | preview | published | unpublished`) + `package_id` (nullable, FK → `packages` `ON DELETE RESTRICT`).
+
+- Backfill: `is_published = true` → `published`; selainnya → `draft`.
+- **Trigger `sync_invitation_status()`**: saat `is_published` diubah langsung tanpa mengubah `status` (jalur lama `publish`/`unpublish`, admin unpublish), `status` disinkronkan otomatis (`published`/`unpublished`).
+- Service `setStatus` menulis `status` + `is_published` sekaligus → trigger dilewati (kondisi `NEW.status = OLD.status` salah).
+
+State machine: `draft → preview → published ⇄ unpublished → draft`; `published` tidak langsung ke `preview`/`draft`.
+
+---
+
 ## Rencana Tabel Berikutnya (Sprint 6 — Fase 3)
 
 - `gift_items` — wishlist hadiah (ditunda dari Sprint 4)
@@ -299,7 +311,7 @@ Adapter di `server/services/payment/index.js` (registry `defineProvider`/`getPro
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
-| 1.5.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Migrasi 0009 (payments) + adapter manual — Sprint 6 |
+| 1.6.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Migrasi 0010 (invitation lifecycle: status + package_id + trigger) — Sprint 6 |
 | 1.4.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Migrasi 0008 (orders) — Sprint 6 |
 | 1.3.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Migrasi 0007 (packages & package_features) — Sprint 6 |
 | 1.1.0 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Migrasi 0004 (guests & gift_accounts) — Sprint 4 |
