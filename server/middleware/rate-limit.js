@@ -48,4 +48,5 @@ export function rateLimit({
   };
 }
 
+// Cleanup expired entries (hapus key yang tidak dipakai lagi)
 setInterval(() => cleanup(60 * 60 * 1000), 10 * 60 * 1000).unref();
