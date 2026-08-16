@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Database · Category : Panduan (source of truth)
-  Version  : 1.3.0 · Status : 🟠 Proses · Update : 16-08-2026
+  Version  : 1.4.0 · Status : 🟠 Proses · Update : 16-08-2026
 -->
 
 # Database BERNADA.ID
@@ -229,11 +229,43 @@ Catatan keamanan:
 
 ---
 
+### Migrasi `0008_orders.sql` — Order paket (Sprint 6)
+
+Transaksi pembelian paket: `amount` **ditentukan server** (dari `packages.price_amount`), anti-duplikat via `idempotency_key UNIQUE`, status lifecycle eksplisit.
+
+```sql
+CREATE TABLE orders (
+  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  order_number    TEXT NOT NULL UNIQUE,
+  user_id         UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  package_id      UUID NOT NULL REFERENCES packages(id) ON DELETE RESTRICT,
+  invitation_id   UUID REFERENCES invitations(id) ON DELETE SET NULL,
+  amount          BIGINT NOT NULL CHECK (amount >= 0),
+  currency        TEXT NOT NULL DEFAULT 'IDR',
+  status          TEXT NOT NULL DEFAULT 'pending'
+    CHECK (status IN ('pending','awaiting_payment','paid','cancelled','expired','failed')),
+  idempotency_key TEXT UNIQUE,
+  expires_at      TIMESTAMPTZ,
+  paid_at         TIMESTAMPTZ,
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+```
+
+Index: `user_id`, `status`, `invitation_id`. Trigger `set_updated_at`.
+
+Aturan:
+
+- `amount` tidak pernah berasal dari body request — hanya dari `packages.price_amount`.
+- `paid_at` hanya diisi oleh boundary pembayaran backend (atau auto-paid untuk paket Rp0).
+- `orders.order_number` dihasilkan service (`ORD-YYYYMMDD-XXXX`, unik, retry saat konflik).
+
+---
+
 ## Rencana Tabel Berikutnya (Sprint 6 — Fase 3)
 
-Tabel order & pembayaran, dibuat lewat migrasi baru (append-only, nomor setelah `0007`):
+Tabel order & pembayaran, dibuat lewat migrasi baru (append-only, nomor setelah `0008`):
 
-- `orders` — transaksi paket per user (idempotency, status lifecycle)
 - `payments` — boundary pembayaran (provider-agnostic)
 - `gift_items` — wishlist hadiah (ditunda dari Sprint 4)
 - `template_categories`
@@ -242,6 +274,7 @@ Tabel order & pembayaran, dibuat lewat migrasi baru (append-only, nomor setelah 
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 1.4.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Migrasi 0008 (orders) — Sprint 6 |
 | 1.3.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Migrasi 0007 (packages & package_features) — Sprint 6 |
 | 1.1.0 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Migrasi 0004 (guests & gift_accounts) — Sprint 4 |
 | 1.0.1 | 10-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Migrasi 0002 (refresh_tokens + seed templates) & 0003 (gallery + guestbook) |

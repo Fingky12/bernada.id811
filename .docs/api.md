@@ -415,6 +415,90 @@ Aturan validasi:
 
 ---
 
+## Endpoint Order (Terproteksi)
+
+> Seluruh endpoint di bawah memerlukan header `Authorization: Bearer <accessToken>` dan hanya mengakses order **milik pengguna** (owner scoping). Akses ke order milik pengguna lain menghasilkan **404** `NOT_FOUND`.
+
+**Keamanan finansial:**
+
+- `amount` **tidak pernah** diterima dari body — selalu dihitung server dari `packages.price_amount` saat order dibuat (body `amount`/`price` diabaikan).
+- `user_id` tidak pernah diterima dari body — selalu dari `req.user.id`.
+- Idempotency via `idempotencyKey` unik → submit ganda mengembalikan order yang sama.
+- Order paket `priceAmount = 0` langsung **auto-paid** (`paid`) pada saat dibuat.
+
+### POST `/api/orders`
+
+Membuat order paket. **Rate limit: 10/menit.**
+
+**Request:**
+
+```json
+{
+  "packageId": "…",
+  "invitationId": "…",
+  "idempotencyKey": "…"
+}
+```
+
+- `packageId` wajib (UUID). Paket harus `is_active = TRUE` → selain itu **404** `NOT_FOUND`.
+- `invitationId` opsional (UUID) — harus undangan **milik pengguna** (404 bila bukan miliknya).
+- `idempotencyKey` opsional, maksimal 100 karakter.
+
+**Response 201** (`created: true`) — order baru:
+
+```json
+{
+  "order": {
+    "id": "…",
+    "orderNumber": "ORD-20260816-A5D7",
+    "packageId": "…",
+    "invitationId": null,
+    "amount": 99000,
+    "currency": "IDR",
+    "status": "pending",
+    "idempotencyKey": "…",
+    "expiresAt": null,
+    "paidAt": null,
+    "package": { "id": "…", "code": "premium", "name": "Premium" },
+    "createdAt": "…",
+    "updatedAt": "…"
+  },
+  "created": true
+}
+```
+
+**Response 200** (`created: false`) — `idempotencyKey` sudah pernah dipakai (order yang sama dikembalikan).
+
+**Response 409** — `IDEMPOTENCY_CONFLICT` bila key dipakai user lain.
+
+**Response 429** — `RATE_LIMITED` (lebih dari 10 order/menit per `ip:POST:/api/orders`).
+
+### GET `/api/orders`
+
+Daftar order milik pengguna (terbaru dulu, maksimal 100).
+
+**Response 200:** `{ "orders": [ … ] }` — struktur item sama dengan detail order.
+
+### GET `/api/orders/:id`
+
+Detail satu order milik pengguna.
+
+**Response 200:** `{ "order": { … } }`.
+
+**Response 404** — `NOT_FOUND` bila tidak ada atau bukan milik pengguna.
+
+### POST `/api/orders/:id/cancel`
+
+Membatalkan order. Hanya order berstatus `pending`/`awaiting_payment`.
+
+**Response 200:** `{ "order": { … } }` dengan `status: "cancelled"`.
+
+**Response 409** — `ORDER_STATUS_CONFLICT` bila status tidak dapat dibatalkan (mis. `paid`/`cancelled`).
+
+**Response 404** — `NOT_FOUND` bila tidak ada atau bukan milik pengguna.
+
+---
+
 ## Endpoint Undangan (Terproteksi)
 
 > Seluruh endpoint di bawah memerlukan header `Authorization: Bearer <accessToken>` dan hanya mengakses/mengubah undangan **milik pengguna** (owner scoping). Akses ke undangan milik pengguna lain menghasilkan **404** `NOT_FOUND`.
