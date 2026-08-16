@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Database · Category : Panduan (source of truth)
-  Version  : 1.2.0 · Status : 🟠 Proses · Update : 16-08-2026
+  Version  : 1.3.0 · Status : 🟠 Proses · Update : 16-08-2026
 -->
 
 # Database BERNADA.ID
@@ -192,18 +192,57 @@ ALTER TABLE password_reset_tokens
 
 ---
 
-## Rencana Tabel Berikutnya (Sprint 5+ — Fase 3)
+### Migrasi `0007_commerce_packages.sql` — Paket & harga (Sprint 6)
 
-Tabel pendukung fitur yang dijanjikan landing page, dibuat lewat migrasi baru (bukan mengubah file yang sudah ada):
+Fondasi komersial: tabel `packages` + `package_features`. **Harga seed masih placeholder** (`BUSINESS DECISION REQUIRED`) — rupiah utuh sebagai BIGINT, tanpa desimal.
 
+```sql
+CREATE TABLE packages (
+  id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  code         VARCHAR(50)  NOT NULL UNIQUE,
+  name         VARCHAR(100) NOT NULL,
+  description  TEXT,
+  price_amount BIGINT NOT NULL DEFAULT 0,
+  currency     VARCHAR(3) NOT NULL DEFAULT 'IDR',
+  is_active    BOOLEAN NOT NULL DEFAULT TRUE,
+  sort_order   INT NOT NULL DEFAULT 0,
+  created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE package_features (
+  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  package_id UUID NOT NULL REFERENCES packages(id) ON DELETE CASCADE,
+  label      VARCHAR(255) NOT NULL,
+  sort_order INT NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  UNIQUE (package_id, label)
+);
+```
+
+Seed (placeholder, `sort_order` 1–4): `free` (Gratis, Rp0, 3 fitur), `basic` (Basic, Rp0, 3 fitur), `premium` (Premium, Rp99.000, 4 fitur), `exclusive` (Exclusive, Rp199.000, 3 fitur) — total 13 baris `package_features`.
+
+Catatan keamanan:
+
+- `price_amount` **tidak pernah** berasal dari request — hanya dari tabel `packages` (server-side).
+- Endpoint yang menyentuh harga memakai **rate-limit** (pola `server/middleware/rate-limit.js`).
+
+---
+
+## Rencana Tabel Berikutnya (Sprint 6 — Fase 3)
+
+Tabel order & pembayaran, dibuat lewat migrasi baru (append-only, nomor setelah `0007`):
+
+- `orders` — transaksi paket per user (idempotency, status lifecycle)
+- `payments` — boundary pembayaran (provider-agnostic)
 - `gift_items` — wishlist hadiah (ditunda dari Sprint 4)
-- `template_categories` / fitur pembayaran & penagihan (Fase 3)
+- `template_categories`
 
 ---
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
-| 1.2.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Migrasi 0005 (password_reset_tokens) & 0006 (fix updated_at) — Sprint 5 |
+| 1.3.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Migrasi 0007 (packages & package_features) — Sprint 6 |
 | 1.1.0 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Migrasi 0004 (guests & gift_accounts) — Sprint 4 |
 | 1.0.1 | 10-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Migrasi 0002 (refresh_tokens + seed templates) & 0003 (gallery + guestbook) |
 | 1.0.0 | 05-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Skema awal (users, templates, invitations) + alur migrasi |

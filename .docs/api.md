@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : API · Category : Panduan (source of truth)
-  Version  : 1.3.0 · Status : 🟠 Proses · Update : 16-08-2026
+  Version  : 1.4.0 · Status : 🟠 Proses · Update : 16-08-2026
 -->
 
 # API BERNADA.ID
@@ -272,6 +272,44 @@ Daftar template undangan yang aktif (untuk dipakai builder).
 ```
 
 Catatan: hanya template `is_active = TRUE` yang dikembalikan.
+
+### GET `/api/packages`
+
+Daftar paket & harga undangan yang aktif (publik). **Backend = source of truth** untuk harga — frontend tidak pernah menampilkan/hardcode harga final.
+
+**Response 200:**
+
+```json
+{
+  "packages": [
+    {
+      "id": "…",
+      "code": "free",
+      "name": "Gratis",
+      "description": "Untuk mencoba merasakan pengalaman membuat undangan digital.",
+      "priceAmount": 0,
+      "currency": "IDR",
+      "isActive": true,
+      "sortOrder": 1,
+      "features": ["Buat undangan digital", "Template dasar", "Halaman undangan publik"]
+    }
+  ]
+}
+```
+
+Catatan:
+
+- Hanya paket `is_active = TRUE` yang dikembalikan, urut `sortOrder`.
+- `priceAmount` dalam rupiah utuh (BIGINT → Number). Harga seed masih **placeholder** (`BUSINESS DECISION REQUIRED`).
+- `features` adalah array label fitur dari `package_features`.
+
+### GET `/api/packages/:id`
+
+Detail satu paket aktif (termasuk fitur).
+
+**Response 200:** `{ "package": { … } }` — struktur sama dengan item list.
+
+**Response 404** — `NOT_FOUND` bila paket tidak ada atau tidak aktif.
 
 ### GET `/api/invitations/public/:slug`
 
