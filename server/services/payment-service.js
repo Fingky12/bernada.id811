@@ -1,5 +1,6 @@
 import { pool } from '../db.js';
 import { HttpError } from '../lib/http-error.js';
+import { recordAudit } from './audit-service.js';
 import {
   getOrderById,
   toOrderDto,
@@ -179,7 +180,7 @@ export async function getOrderPayment(userId, orderId) {
   return rows.length === 0 ? null : toPaymentDto(rows[0]);
 }
 
-export async function listPayments({ status = '', limit = 20, offset = 0 } = {}) {
+export async function listPayments({ status = '', search = '', limit = 20, offset = 0 } = {}) {
   await expireOverdueOrders();
   const values = [];
   const conditions = [];
@@ -187,10 +188,18 @@ export async function listPayments({ status = '', limit = 20, offset = 0 } = {})
     values.push(status);
     conditions.push(`p.status = $${values.length}`);
   }
+  if (search) {
+    values.push(`%${search}%`);
+    conditions.push(`u.email ILIKE $${values.length}`);
+  }
   const where = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
 
   const countResult = await pool.query(
-    `SELECT COUNT(*) AS total FROM payments p ${where}`,
+    `SELECT COUNT(*) AS total
+       FROM payments p
+       LEFT JOIN orders o ON o.id = p.order_id
+       LEFT JOIN users u ON u.id = o.user_id
+       ${where}`,
     values,
   );
   const total = Number(countResult.rows[0].total);
@@ -199,10 +208,14 @@ export async function listPayments({ status = '', limit = 20, offset = 0 } = {})
     `SELECT ${PAYMENT_COLUMNS_P},
             o.order_number AS order_number,
             o.status AS order_status,
-            u.email AS owner_email
+            u.email AS owner_email,
+            pk.id AS package_id,
+            pk.code AS package_code,
+            pk.name AS package_name
        FROM payments p
        LEFT JOIN orders o ON o.id = p.order_id
        LEFT JOIN users u ON u.id = o.user_id
+       LEFT JOIN packages pk ON pk.id = o.package_id
        ${where}
       ORDER BY p.created_at DESC
       LIMIT $${values.length + 1} OFFSET $${values.length + 2}`,
@@ -216,6 +229,13 @@ export async function listPayments({ status = '', limit = 20, offset = 0 } = {})
         id: row.order_id,
         orderNumber: row.order_number,
         status: row.order_status,
+        package: row.package_id
+          ? {
+              id: row.package_id,
+              code: row.package_code,
+              name: row.package_name,
+            }
+          : null,
       },
       ownerEmail: row.owner_email,
     })),
@@ -225,9 +245,26 @@ export async function listPayments({ status = '', limit = 20, offset = 0 } = {})
   };
 }
 
-export async function verifyManualPayment(paymentId) {
+export async function verifyManualPayment(paymentId, actor = null) {
   const client = await pool.connect();
   let committed = false;
+  let pay = null;
+  // Snapshot untuk audit trail saat gagal (409). Diisi di tiap titik lempar.
+  let auditFailure = null;
+  const auditEntry = (result, overrides = {}) => ({
+    actorUserId: actor?.id ?? null,
+    actorEmail: actor?.email ?? '',
+    action: 'payment.verify',
+    paymentId,
+    orderId: pay?.order_id ?? null,
+    orderNumber: pay?._order_number ?? null,
+    prevPaymentStatus: pay?.status ?? null,
+    newPaymentStatus: pay?.status ?? null,
+    prevOrderStatus: pay?._order_status ?? null,
+    newOrderStatus: pay?._order_status ?? null,
+    result,
+    ...overrides,
+  });
   try {
     await client.query('BEGIN');
 
@@ -247,7 +284,7 @@ export async function verifyManualPayment(paymentId) {
     if (payRows.length === 0) {
       throw new HttpError(404, 'NOT_FOUND', 'Pembayaran tidak ditemukan.');
     }
-    const pay = payRows[0];
+    pay = payRows[0];
 
     if (pay.provider !== 'manual') {
       throw new HttpError(
@@ -257,6 +294,7 @@ export async function verifyManualPayment(paymentId) {
       );
     }
     if (pay.status !== 'pending') {
+      auditFailure = auditEntry('PAYMENT_STATUS_CONFLICT');
       throw new HttpError(
         409,
         'PAYMENT_STATUS_CONFLICT',
@@ -264,6 +302,7 @@ export async function verifyManualPayment(paymentId) {
       );
     }
     if (!['pending', 'awaiting_payment'].includes(pay._order_status)) {
+      auditFailure = auditEntry('ORDER_STATUS_CONFLICT');
       throw new HttpError(
         409,
         'ORDER_STATUS_CONFLICT',
@@ -287,6 +326,10 @@ export async function verifyManualPayment(paymentId) {
       );
       await client.query('COMMIT');
       committed = true;
+      auditFailure = auditEntry('ORDER_STATUS_CONFLICT', {
+        newPaymentStatus: 'expired',
+        newOrderStatus: 'expired',
+      });
       throw new HttpError(
         409,
         'ORDER_STATUS_CONFLICT',
@@ -301,6 +344,7 @@ export async function verifyManualPayment(paymentId) {
       [paymentId],
     );
     if (payUpdate.rows.length === 0) {
+      auditFailure = auditEntry('PAYMENT_STATUS_CONFLICT');
       throw new HttpError(409, 'PAYMENT_STATUS_CONFLICT', 'Pembayaran sudah berubah status.');
     }
 
@@ -311,6 +355,7 @@ export async function verifyManualPayment(paymentId) {
       [pay.order_id],
     );
     if (orderUpdate.rows.length === 0) {
+      auditFailure = auditEntry('ORDER_STATUS_CONFLICT');
       throw new HttpError(409, 'ORDER_STATUS_CONFLICT', 'Order sudah dalam status terminal.');
     }
     const order = orderUpdate.rows[0];
@@ -332,6 +377,14 @@ export async function verifyManualPayment(paymentId) {
       }
     }
 
+    if (actor) {
+      await recordAudit(client, {
+        ...auditEntry('success'),
+        newPaymentStatus: 'succeeded',
+        newOrderStatus: 'paid',
+      });
+    }
+
     await client.query('COMMIT');
     committed = true;
     return {
@@ -342,6 +395,11 @@ export async function verifyManualPayment(paymentId) {
   } catch (error) {
     if (!committed) {
       await client.query('ROLLBACK').catch(() => {});
+    }
+    // Audit trail untuk percobaan yang gagal (409 bisnis) — dicatat di luar
+    // transaksi agar tidak ke-rollback. Gagal mencatat tidak mengubah respons.
+    if (actor && error.status === 409 && auditFailure) {
+      await recordAudit(pool, auditFailure).catch(() => {});
     }
     throw error;
   } finally {

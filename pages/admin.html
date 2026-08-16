@@ -38,6 +38,7 @@
 
                 <div class="admin-tabs" role="tablist" aria-label="Navigasi panel admin">
                     <button id="tab-summary" class="admin-tab is-active" role="tab" aria-selected="true" type="button">Ringkasan</button>
+                    <button id="tab-payments" class="admin-tab" role="tab" aria-selected="false" type="button">Pembayaran</button>
                     <button id="tab-invitations" class="admin-tab" role="tab" aria-selected="false" type="button">Undangan</button>
                     <button id="tab-guestbook" class="admin-tab" role="tab" aria-selected="false" type="button">Buku Tamu</button>
                 </div>
@@ -55,6 +56,10 @@
                         <div class="stat-card">
                             <span class="stat-value" id="stat-gift-accounts">–</span>
                             <span class="stat-label">Rekening <span id="stat-gift-active" class="stat-sub"></span></span>
+                        </div>
+                        <div class="stat-card stat-card-action" id="stat-pending-payments-card" role="button" tabindex="0" aria-label="Lihat pembayaran menunggu konfirmasi">
+                            <span class="stat-value" id="stat-pending-payments">–</span>
+                            <span class="stat-label">Menunggu Pembayaran</span>
                         </div>
                     </div>
 
@@ -98,6 +103,54 @@
                             <button id="prev-page" class="btn btn-outline btn-sm" type="button">← Sebelumnya</button>
                             <span id="page-info" class="pagination-info">Halaman 1</span>
                             <button id="next-page" class="btn btn-outline btn-sm" type="button">Berikutnya →</button>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- ===== Tab: Pembayaran ===== -->
+                <div id="panel-payments" class="admin-panel d-none" role="tabpanel">
+                    <div class="admin-section" aria-label="Moderasi pembayaran">
+                        <div class="admin-toolbar admin-toolbar-3col">
+                            <div class="form-group">
+                                <label class="form-label" for="pay-search">Cari Email Pelanggan</label>
+                                <input class="input" id="pay-search" type="search" placeholder="Cari email pelanggan..." maxlength="100" autocomplete="off">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="pay-status">Status</label>
+                                <select class="input" id="pay-status">
+                                    <option value="">Semua</option>
+                                    <option value="pending">Menunggu Konfirmasi</option>
+                                    <option value="succeeded">Selesai</option>
+                                    <option value="failed">Gagal</option>
+                                    <option value="expired">Kedaluwarsa</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="admin-table-wrap">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Order</th>
+                                        <th scope="col">Pelanggan</th>
+                                        <th scope="col">Paket</th>
+                                        <th scope="col">Referensi</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Waktu</th>
+                                        <th scope="col"><span class="sr-only">Aksi</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="payments-tbody" aria-live="polite"></tbody>
+                            </table>
+                            <div id="payments-empty" class="admin-empty d-none">
+                                <p class="empty-state-text">Tidak ada pembayaran yang cocok.</p>
+                            </div>
+                        </div>
+
+                        <nav class="admin-pagination" aria-label="Navigasi halaman pembayaran">
+                            <button id="pay-prev-page" class="btn btn-outline btn-sm" type="button">← Sebelumnya</button>
+                            <span id="pay-page-info" class="pagination-info">Halaman 1</span>
+                            <button id="pay-next-page" class="btn btn-outline btn-sm" type="button">Berikutnya →</button>
                         </nav>
                     </div>
                 </div>
@@ -189,6 +242,32 @@
     </main>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <!-- ===== Modal: Detail Pembayaran ===== -->
+    <div id="payment-detail-modal" class="modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="payment-detail-title">
+        <div class="modal-panel modal-panel-lg" role="document">
+            <div class="modal-head">
+                <h2 id="payment-detail-title" class="modal-title">Detail Pembayaran</h2>
+                <button id="close-payment-detail" class="modal-close" type="button" aria-label="Tutup detail pembayaran">&times;</button>
+            </div>
+            <div id="payment-detail-body" class="modal-body" aria-live="polite"></div>
+        </div>
+    </div>
+
+    <!-- ===== Modal: Konfirmasi Verifikasi ===== -->
+    <div id="verify-confirm-modal" class="modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="verify-confirm-title">
+        <div class="modal-panel" role="document">
+            <div class="modal-head">
+                <h2 id="verify-confirm-title" class="modal-title">Konfirmasi Verifikasi</h2>
+                <button id="close-verify-confirm" class="modal-close" type="button" aria-label="Tutup konfirmasi">&times;</button>
+            </div>
+            <div id="verify-confirm-body" class="modal-body"></div>
+            <div class="modal-foot">
+                <button id="verify-cancel" class="btn btn-outline" type="button">Batal</button>
+                <button id="verify-confirm-btn" class="btn btn-primary" type="button">Verifikasi</button>
+            </div>
+        </div>
+    </div>
 
     <script type="module" src="../assets/js/admin.js"></script>
 </body>

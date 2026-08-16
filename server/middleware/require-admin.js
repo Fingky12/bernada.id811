@@ -13,6 +13,7 @@ export function requireAdmin(req, res, next) {
         return next(new HttpError(403, 'FORBIDDEN', 'Akses khusus administrator.'));
       }
       req.user.role = user.role;
+      req.user.email = user.email;
       return next();
     } catch (error) {
       return next(error);

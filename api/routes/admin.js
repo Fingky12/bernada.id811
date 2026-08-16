@@ -100,14 +100,18 @@ adminRouter.get('/payments', async (req, res) => {
   const pageSize = queryInt(req.query.pageSize, 20, 1, 100);
   const rawStatus = queryString(req.query.status, 20);
   const status = ['pending', 'succeeded', 'failed', 'expired'].includes(rawStatus) ? rawStatus : '';
+  const search = queryString(req.query.search, 100);
   const offset = (page - 1) * pageSize;
 
-  const result = await paymentService.listPayments({ status, limit: pageSize, offset });
+  const result = await paymentService.listPayments({ status, search, limit: pageSize, offset });
   res.status(200).json({ ...result, page });
 });
 
 adminRouter.post('/payments/:id/verify', async (req, res) => {
   const id = parseId(req.params.id);
-  const result = await paymentService.verifyManualPayment(id);
+  const result = await paymentService.verifyManualPayment(id, {
+    id: req.user.id,
+    email: req.user.email,
+  });
   res.status(200).json(result);
 });

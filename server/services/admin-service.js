@@ -27,7 +27,8 @@ export async function getStats() {
       (SELECT COUNT(*) FROM guestbook)                        AS guestbook_entries,
       (SELECT COUNT(*) FROM guests)                           AS guests,
       (SELECT COUNT(*) FROM gift_accounts)                    AS gift_accounts,
-      (SELECT COUNT(*) FROM gift_accounts WHERE is_active)    AS gift_accounts_active
+      (SELECT COUNT(*) FROM gift_accounts WHERE is_active)    AS gift_accounts_active,
+      (SELECT COUNT(*) FROM payments WHERE status = 'pending') AS pending_payments
   `);
   const row = rows[0];
   return {
@@ -39,6 +40,7 @@ export async function getStats() {
     guests: Number(row.guests),
     giftAccounts: Number(row.gift_accounts),
     giftAccountsActive: Number(row.gift_accounts_active),
+    pendingPayments: Number(row.pending_payments),
   };
 }
 

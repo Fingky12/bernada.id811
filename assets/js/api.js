@@ -303,6 +303,19 @@ export const api = {
     return data.stats;
   },
 
+  async listAdminPayments({ search = '', status = '', page = 1, pageSize = 20 } = {}) {
+    const params = new URLSearchParams();
+    if (search) params.set('search', search);
+    if (status) params.set('status', status);
+    params.set('page', String(page));
+    params.set('pageSize', String(pageSize));
+    return request(`/admin/payments?${params.toString()}`);
+  },
+
+  async verifyAdminPayment(paymentId) {
+    return request(`/admin/payments/${paymentId}/verify`, { method: 'POST' });
+  },
+
   async listAdminUsers({ search = '', role = '', page = 1, pageSize = 20 } = {}) {
     const params = new URLSearchParams();
     if (search) params.set('search', search);
