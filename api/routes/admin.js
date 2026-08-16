@@ -4,6 +4,7 @@ import { rateLimit } from '../../server/middleware/rate-limit.js';
 import { HttpError } from '../../server/lib/http-error.js';
 import { parseId } from '../../server/lib/validation.js';
 import * as adminService from '../../server/services/admin-service.js';
+import * as paymentService from '../../server/services/payment-service.js';
 
 function queryInt(value, fallback, min, max) {
   if (value === undefined || value === null || value === '') {
@@ -92,4 +93,21 @@ adminRouter.delete('/guestbook/:entryId', async (req, res) => {
   const entryId = parseId(req.params.entryId);
   await adminService.deleteGuestbookEntry(entryId);
   res.status(204).end();
+});
+
+adminRouter.get('/payments', async (req, res) => {
+  const page = queryInt(req.query.page, 1, 1, 100000);
+  const pageSize = queryInt(req.query.pageSize, 20, 1, 100);
+  const rawStatus = queryString(req.query.status, 20);
+  const status = ['pending', 'succeeded', 'failed', 'expired'].includes(rawStatus) ? rawStatus : '';
+  const offset = (page - 1) * pageSize;
+
+  const result = await paymentService.listPayments({ status, limit: pageSize, offset });
+  res.status(200).json({ ...result, page });
+});
+
+adminRouter.post('/payments/:id/verify', async (req, res) => {
+  const id = parseId(req.params.id);
+  const result = await paymentService.verifyManualPayment(id);
+  res.status(200).json(result);
 });

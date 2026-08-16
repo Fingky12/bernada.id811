@@ -228,46 +228,10 @@
                     <h2 class="section-title">Pilih Paket Sesuai <span class="accent-text">Kebutuhan Anda</span></h2>
                     <p class="section-subtitle">Mulai dari gratis hingga paket eksklusif untuk momen paling berharga.</p>
                 </div>
-                <div class="pricing-grid">
-                    <article class="card pricing-card">
-                        <h3 class="pricing-tier">Gratis</h3>
-                        <p class="pricing-price"><span class="currency">Rp</span>0<span class="pricing-period">/ undangan</span></p>
-                        <p class="pricing-desc">Untuk mencoba merasakan pengalaman membuat undangan digital.</p>
-                        <ul class="pricing-features">
-                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>1 template dasar</li>
-                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>1 foto &amp; teks</li>
-                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Link undangan</li>
-                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Buku tamu sederhana</li>
-                        </ul>
-                        <a class="btn btn-outline w-100 pricing-cta" href="/login">Mulai Gratis</a>
-                    </article>
-                    <article class="card pricing-card pricing-popular">
-                        <span class="pricing-popular-badge">Paling Populer</span>
-                        <h3 class="pricing-tier">Premium</h3>
-                        <p class="pricing-price"><span class="currency">Rp</span>99 rb<span class="pricing-period">/ undangan</span></p>
-                        <p class="pricing-desc">Paket lengkap untuk undangan yang berkesan dan mudah dikelola.</p>
-                        <ul class="pricing-features">
-                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Semua template elegan</li>
-                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>RSVP &amp; manajemen tamu</li>
-                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Hitung mundur &amp; musik</li>
-                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Amplop digital</li>
-                        </ul>
-                        <a class="btn btn-primary w-100 pricing-cta" href="/login">Pilih Premium</a>
-                    </article>
-                    <article class="card pricing-card">
-                        <h3 class="pricing-tier">Gold</h3>
-                        <p class="pricing-price"><span class="currency">Rp</span>199 rb<span class="pricing-period">/ undangan</span></p>
-                        <p class="pricing-desc">Paket eksklusif untuk pengalaman paling premium dan personal.</p>
-                        <ul class="pricing-features">
-                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Semua fitur Premium</li>
-                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Desain custom &amp; private</li>
-                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Video &amp; galeri lengkap</li>
-                            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Dukungan prioritas</li>
-                        </ul>
-                        <a class="btn btn-outline w-100 pricing-cta" href="/login">Pilih Gold</a>
-                    </article>
+                <div class="pricing-grid" id="pricing-grid">
+                    <!-- Render dinamis dari GET /api/packages — frontend TIDAK menentukan harga final (Sprint 6) -->
                 </div>
-                <p class="pricing-note">Harga sampel — detail paket dan pembayaran menyusul.</p>
+                <p class="pricing-note" id="pricing-note">Memuat daftar paket…</p>
             </div>
         </section>
 
@@ -515,5 +479,6 @@
     <script src="assets/js/navigation.js" defer></script>
     <script src="assets/js/accordion.js" defer></script>
     <script src="assets/js/scroll-effects.js" defer></script>
+    <script type="module" src="assets/js/landing-pricing.js"></script>
 </body>
 </html>

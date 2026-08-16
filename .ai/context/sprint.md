@@ -1,18 +1,54 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Sprint Context · Category : Context (living document)
-  Version  : 1.5.0 · Status : 🟠 Proses · Update : 16-08-2026
+  Version  : 1.7.0 · Status : ✅ Stable · Update : 16-08-2026
 -->
 
 # Sprint
 
-> Status sprint yang sedang berjalan. **Referensi lengkap**: `.docs/sprint-1.md`, `.docs/sprint-2.md`, `.docs/sprint-3.md`, `.docs/sprint-4.md`, `.docs/sprint-5.md`. Perbarui file ini saat sprint dimulai, berubah, atau selesai.
+> Status sprint yang sedang berjalan. **Referensi lengkap**: `.docs/sprint-1.md`, `.docs/sprint-2.md`, `.docs/sprint-3.md`, `.docs/sprint-4.md`, `.docs/sprint-5.md`, `.docs/sprint-6.md`. Perbarui file ini saat sprint dimulai, berubah, atau selesai.
 
 ---
 
-## Sprint Berjalan (Active)
+## Sprint Terakhir (Closed)
 
-_Tidak ada sprint aktif._ Sprint 5 closed 16-08-2026 — menunggu planning Sprint 6 (Fase 3 — Launch: payment & pricing, optimasi performa & SEO, hardening produksi).
+| Item | Detail |
+| --- | --- |
+| Sprint | Sprint 6 — The Launch & Commerce Foundation |
+| Tujuan | Fondasi pricing/paket, order/checkout, boundary pembayaran, lifecycle undangan, builder readiness, frontend commerce |
+| Status | ✅ Closed — M0–M7 selesai; E2E Sprint 6 38/38 PASS + regression Sprint 5 25/25 PASS; Audit PASS 25/0/0; tag `v1.5.0` dibuat |
+| Release | v1.5.0 — The Launch & Commerce Foundation (Stable, tag `v1.5.0`) |
+| Referensi | `.docs/sprint-6.md`, `.docs/e2e/sprint-6-verification.md`, `.docs/audit/LAPORAN-AUDIT-SPRINT-6.html`, `.docs/releases/v1.5.0-launch-commerce-foundation.md` |
+
+### Lingkup Sprint 6 (Disetujui)
+
+- Pricing & packages — migrasi `0007`, `package-service.js`, `GET /api/packages` (+ `:id`), seed placeholder
+- Order foundation — migrasi `0008_orders.sql`, `order-service.js`, `POST/GET /api/orders` + `GET /:id` + `POST /:id/cancel`; amount server-side, idempotency, ownership, rate limit 10/mnt
+- Payment boundary — migrasi `0009_payments.sql`, adapter registry + provider `manual`, `POST/GET /api/orders/:id/payment`; paid hanya dari backend
+- Invitation lifecycle — migrasi `0010_invitation_lifecycle.sql` (status + package_id + trigger), `GET/PATCH /api/invitations/:id/status`
+- Builder readiness — badge status lifecycle
+- Frontend commerce — pricing dinamis, `pages/checkout.html` + `checkout.js`, login redirect `?next=`
+- E2E Sprint 6 + regression + docs + audit + release
+
+### Keputusan Bisnis Terbuka (Sprint 6)
+
+- Harga final per paket — placeholder (`BUSINESS DECISION REQUIRED`)
+- Provider pembayaran — `PAYMENT PROVIDER DECISION REQUIRED`; verifikasi manual admin menunggu keputusan
+- Lifecycle `expired` undangan — belum terverifikasi requirement
+- Instance produksi :3000 perlu redeploy (elevated; belum memuat route Sprint 6) — perlu `taskkill /F /PID 7000` manual lalu restart
+
+## Hasil Sprint 6 (Development)
+
+- ✅ Migrasi `0007` (packages + package_features + seed 4 paket), `0008` (orders), `0009` (payments), `0010` (invitation lifecycle + trigger sync)
+- ✅ Pricing API — `GET /api/packages` (+ `/:id`) publik, aktif, urut sortOrder, fitur ter-sertakan
+- ✅ Order — `POST/GET /api/orders` + `GET /:id` + `POST /:id/cancel`; amount server-side, `order_number`, idempotency UNIQUE, ownership 404, rate limit 10/mnt
+- ✅ Payment boundary — adapter registry + provider `manual`; `POST/GET /api/orders/:id/payment`; `succeeded` hanya dari backend; rate limit 5/mnt
+- ✅ Invitation lifecycle — `status` (draft/preview/published/unpublished) sinkron `is_published` via service + trigger; `GET/PATCH /api/invitations/:id/status` (409 INVALID_TRANSITION); API legacy kompatibel
+- ✅ Frontend commerce — pricing dinamis (`landing-pricing.js`), `pages/checkout.html` + `checkout.js`, route `/checkout`, login redirect `?next=`, badge status builder
+- ✅ Verifikasi E2E **38/38 PASS** + regression Sprint 5 **25/25 PASS** — 0 bug aplikasi (`.docs/e2e/sprint-6-verification.md`)
+- ✅ Audit Sprint 6 PASS — 25 PASS · 0 WARNING · 0 ERROR (`.docs/audit/LAPORAN-AUDIT-SPRINT-6.html`)
+- ✅ Pembersihan data test historis — 7 undangan `e2e-*@test.local` dihapus (13 user asli, 6 undangan)
+- ✅ Release v1.5.0 Stable — tag `v1.5.0` dibuat; Sprint 6 closed; sisa: redeploy :3000
 
 ## Sprint Sebelumnya (Closed)
 
@@ -161,7 +197,7 @@ _Tidak ada sprint aktif._ Sprint 5 closed 16-08-2026 — menunggu planning Sprin
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
-| 1.5.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Closed | Sprint 5 closed — Audit PASS + Release v1.4.0 The Admin & Account Security (tag v1.4.0); menunggu planning Sprint 6 |
+| 1.7.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Closed | Sprint 6 closed — E2E 38/38 + regression 25/25, Audit PASS 25/0/0, tag `v1.5.0`; sisa: redeploy :3000 |
 | 1.4.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 5 Development — dasbor admin & keamanan akun (reset password), E2E 25/25 PASS; menunggu audit & release |
 | 1.3.0 | 11-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Closed | Sprint 4 closed — Audit PASS + Release v1.3.0 The Guest Experience (tag v1.3.0) |
 | 1.2.0 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 4 dimulai — Manajemen tamu + amplop digital + hardening LOW (Development) |

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout — BERNADA.ID</title>
+    <meta name="description" content="Pilih paket, buat order, dan pantau status pembayaran undangan digital BERNADA.ID.">
+    <link rel="icon" type="image/svg+xml" href="../assets/img/favicon.svg">
+    <link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body class="auth-page">
+
+    <main class="auth-card" aria-labelledby="checkout-title">
+        <div class="auth-brand">
+            <span class="auth-brand-mark" aria-hidden="true">B</span>
+            <span class="brand-text">BERNADA<em>.ID</em></span>
+        </div>
+
+        <h1 id="checkout-title" class="auth-title">Checkout</h1>
+        <p id="checkout-subtitle" class="auth-subtitle">Ringkasan pesanan dan status pembayaran.</p>
+
+        <div id="checkout-alert" class="auth-alert auth-alert-danger d-none" role="alert" aria-live="polite"></div>
+
+        <!-- Ringkasan paket -->
+        <section id="checkout-summary" class="auth-form d-none" aria-label="Ringkasan paket">
+            <div class="form-group">
+                <label class="form-label">Paket</label>
+                <p id="co-package-name" class="checkout-line checkout-line-strong">—</p>
+                <p id="co-package-desc" class="checkout-line">—</p>
+                <p id="co-package-price" class="checkout-line checkout-line-price">—</p>
+                <ul id="co-package-features" class="checkout-features"></ul>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="co-invitation">Undangan (opsional)</label>
+                <select class="input" id="co-invitation" name="invitationId">
+                    <option value="">— Pilih undangan (opsional) —</option>
+                </select>
+                <p class="form-hint">Hubungkan order dengan undangan milik Anda.</p>
+            </div>
+
+            <button id="co-submit" class="btn btn-primary w-100" type="button">Buat Order</button>
+            <p class="auth-helper">
+                <a href="/#harga">← Kembali ke daftar paket</a>
+            </p>
+        </section>
+
+        <!-- Hasil order & status pembayaran -->
+        <section id="checkout-result" class="auth-form d-none" aria-label="Status order">
+            <div id="co-result-body"></div>
+            <p class="auth-helper">
+                <a href="/builder">Ke Dasbor Undangan →</a>
+            </p>
+        </section>
+
+        <p class="auth-footer">
+            <a href="/">← Kembali ke beranda</a>
+        </p>
+    </main>
+
+    <script type="module" src="../assets/js/checkout.js"></script>
+</body>
+</html>

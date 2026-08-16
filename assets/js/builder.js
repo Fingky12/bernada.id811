@@ -152,6 +152,17 @@ function getTheme() {
     DAFTAR UNDANGAN
   ========================================================== */
 
+function statusBadge(invitation) {
+  const status = invitation.status || (invitation.isPublished ? 'published' : 'draft');
+  const config = {
+    draft: { label: 'Draf', class: 'badge-warning' },
+    preview: { label: 'Pratonton', class: 'badge-primary' },
+    published: { label: 'Terbit', class: 'badge-success' },
+    unpublished: { label: 'Nonaktif', class: 'badge-danger' },
+  }[status] || { label: status, class: 'badge-warning' };
+  return `<span class="badge ${config.class} badge-sm">${config.label}</span>`;
+}
+
 function renderInvitations(invitations) {
   const hasItems = invitations.length > 0;
   elements.emptyState.classList.toggle('d-none', hasItems);
@@ -159,9 +170,7 @@ function renderInvitations(invitations) {
   elements.grid.innerHTML = invitations
     .map((invitation) => {
       const published = invitation.isPublished;
-      const badge = published
-        ? '<span class="badge badge-success badge-sm">Terbit</span>'
-        : '<span class="badge badge-warning badge-sm">Draf</span>';
+      const badge = statusBadge(invitation);
       return `
         <article class="invitation-card">
           <div class="invitation-card-top">

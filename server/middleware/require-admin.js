@@ -7,11 +7,15 @@ export function requireAdmin(req, res, next) {
     if (err) {
       return next(err);
     }
-    const user = await getUserById(req.user.id);
-    if (!user || user.role !== 'admin') {
-      return next(new HttpError(403, 'FORBIDDEN', 'Akses khusus administrator.'));
+    try {
+      const user = await getUserById(req.user.id);
+      if (!user || user.role !== 'admin') {
+        return next(new HttpError(403, 'FORBIDDEN', 'Akses khusus administrator.'));
+      }
+      req.user.role = user.role;
+      return next();
+    } catch (error) {
+      return next(error);
     }
-    req.user.role = user.role;
-    return next();
   });
 }

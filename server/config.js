@@ -60,4 +60,8 @@ export const config = {
 
   // Password reset token expiry (hours)
   resetTokenExpiryHours: Number.parseInt(getEnv('RESET_TOKEN_EXPIRY_HOURS', '24'), 10),
+
+  // Masa berlaku pembayaran order (jam) — order pending/awaiting_payment
+  // yang melewati batas ini menjadi 'expired' (F2-08).
+  orderPaymentExpiryHours: Number.parseInt(getEnv('ORDER_PAYMENT_EXPIRY_HOURS', '24'), 10),
 };

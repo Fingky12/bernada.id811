@@ -24,6 +24,9 @@ const subtitle = document.getElementById('auth-subtitle');
 
 const resetToken = new URLSearchParams(window.location.search).get('reset');
 
+const nextUrlParam = new URLSearchParams(window.location.search).get('next');
+const nextUrl = nextUrlParam && nextUrlParam.startsWith('/') ? nextUrlParam : null;
+
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const FIELD_NAMES = ['email', 'password', 'fullName'];
 
@@ -211,7 +214,7 @@ async function submit(form, handler, onSuccess) {
       setLoading(button, false);
       onSuccess(result);
     } else {
-      window.location.href = result?.role === 'admin' ? '/admin' : '/builder';
+      window.location.href = nextUrl || (result?.role === 'admin' ? '/admin' : '/builder');
     }
   } catch (error) {
     handleApiError(form, error);

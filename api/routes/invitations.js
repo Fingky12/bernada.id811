@@ -180,3 +180,24 @@ invitationsRouter.post('/:id/unpublish', async (req, res) => {
   const invitation = await invitationService.setPublished(id, req.user.id, false);
   res.status(200).json({ invitation });
 });
+
+invitationsRouter.get('/:id/status', async (req, res) => {
+  const id = parseId(req.params.id);
+  const invitation = await invitationService.getInvitation(id, req.user.id);
+  res.status(200).json({
+    id: invitation.id,
+    status: invitation.status,
+    isPublished: invitation.isPublished,
+  });
+});
+
+invitationsRouter.patch('/:id/status', async (req, res) => {
+  const id = parseId(req.params.id);
+  const nextStatus = requiredString(req.body?.status, 'status', { max: 20 }).toLowerCase();
+  const invitation = await invitationService.setStatus(id, req.user.id, nextStatus);
+  res.status(200).json({
+    id: invitation.id,
+    status: invitation.status,
+    isPublished: invitation.isPublished,
+  });
+});

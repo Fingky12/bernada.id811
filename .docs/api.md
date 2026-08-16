@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : API · Category : Panduan (source of truth)
-  Version  : 1.3.0 · Status : 🟠 Proses · Update : 16-08-2026
+  Version  : 1.6.0 · Status : 🟠 Proses · Update : 16-08-2026
 -->
 
 # API BERNADA.ID
@@ -273,6 +273,44 @@ Daftar template undangan yang aktif (untuk dipakai builder).
 
 Catatan: hanya template `is_active = TRUE` yang dikembalikan.
 
+### GET `/api/packages`
+
+Daftar paket & harga undangan yang aktif (publik). **Backend = source of truth** untuk harga — frontend tidak pernah menampilkan/hardcode harga final.
+
+**Response 200:**
+
+```json
+{
+  "packages": [
+    {
+      "id": "…",
+      "code": "free",
+      "name": "Gratis",
+      "description": "Untuk mencoba merasakan pengalaman membuat undangan digital.",
+      "priceAmount": 0,
+      "currency": "IDR",
+      "isActive": true,
+      "sortOrder": 1,
+      "features": ["Buat undangan digital", "Template dasar", "Halaman undangan publik"]
+    }
+  ]
+}
+```
+
+Catatan:
+
+- Hanya paket `is_active = TRUE` yang dikembalikan, urut `sortOrder`.
+- `priceAmount` dalam rupiah utuh (BIGINT → Number). Harga seed masih **placeholder** (`BUSINESS DECISION REQUIRED`).
+- `features` adalah array label fitur dari `package_features`.
+
+### GET `/api/packages/:id`
+
+Detail satu paket aktif (termasuk fitur).
+
+**Response 200:** `{ "package": { … } }` — struktur sama dengan item list.
+
+**Response 404** — `NOT_FOUND` bila paket tidak ada atau tidak aktif.
+
 ### GET `/api/invitations/public/:slug`
 
 Mengambil undangan yang sudah diterbitkan (publik). Endpoint ini dipakai halaman undangan di `/u/:slug`.
@@ -377,6 +415,138 @@ Aturan validasi:
 
 ---
 
+## Endpoint Order (Terproteksi)
+
+> Seluruh endpoint di bawah memerlukan header `Authorization: Bearer <accessToken>` dan hanya mengakses order **milik pengguna** (owner scoping). Akses ke order milik pengguna lain menghasilkan **404** `NOT_FOUND`.
+
+**Keamanan finansial:**
+
+- `amount` **tidak pernah** diterima dari body — selalu dihitung server dari `packages.price_amount` saat order dibuat (body `amount`/`price` diabaikan).
+- `user_id` tidak pernah diterima dari body — selalu dari `req.user.id`.
+- Idempotency via `idempotencyKey` unik → submit ganda mengembalikan order yang sama.
+- Order paket `priceAmount = 0` langsung **auto-paid** (`paid`) pada saat dibuat.
+
+### POST `/api/orders`
+
+Membuat order paket. **Rate limit: 10/menit.**
+
+**Request:**
+
+```json
+{
+  "packageId": "…",
+  "invitationId": "…",
+  "idempotencyKey": "…"
+}
+```
+
+- `packageId` wajib (UUID). Paket harus `is_active = TRUE` → selain itu **404** `NOT_FOUND`.
+- `invitationId` opsional (UUID) — harus undangan **milik pengguna** (404 bila bukan miliknya).
+- `idempotencyKey` opsional, maksimal 100 karakter.
+
+**Response 201** (`created: true`) — order baru:
+
+```json
+{
+  "order": {
+    "id": "…",
+    "orderNumber": "ORD-20260816-A5D7",
+    "packageId": "…",
+    "invitationId": null,
+    "amount": 99000,
+    "currency": "IDR",
+    "status": "pending",
+    "idempotencyKey": "…",
+    "expiresAt": "2026-08-17T09:00:00.000Z",
+    "paidAt": null,
+    "package": { "id": "…", "code": "premium", "name": "Premium" },
+    "createdAt": "…",
+    "updatedAt": "…"
+  },
+  "created": true
+}
+```
+
+- `expiresAt` diisi saat order dibuat untuk paket berbayar (default 24 jam, `ORDER_PAYMENT_EXPIRY_HOURS`). Paket free (auto-paid) → `expiresAt: null`.
+- **F2-08 Order expiry:** order berstatus `pending`/`awaiting_payment` yang melewati `expiresAt` otomatis menjadi `expired` (mekanisme lazy — terlihat saat order diakses; sweap deterministik saat list). Order `paid`/`cancelled`/terminal **tidak** ter-expriy. Order `expired` tidak bisa dibuatkan payment, diverifikasi admin, atau dibatalkan (409 `ORDER_STATUS_CONFLICT`).
+
+**Response 200** (`created: false`) — `idempotencyKey` sudah pernah dipakai (order yang sama dikembalikan).
+
+**Response 409** — `IDEMPOTENCY_CONFLICT` bila key dipakai user lain.
+
+**Response 429** — `RATE_LIMITED` (lebih dari 10 order/menit per `ip:POST:/api/orders`).
+
+### GET `/api/orders`
+
+Daftar order milik pengguna (terbaru dulu, maksimal 100).
+
+**Response 200:** `{ "orders": [ … ] }` — struktur item sama dengan detail order.
+
+### GET `/api/orders/:id`
+
+Detail satu order milik pengguna.
+
+**Response 200:** `{ "order": { … } }`.
+
+**Response 404** — `NOT_FOUND` bila tidak ada atau bukan milik pengguna.
+
+### POST `/api/orders/:id/cancel`
+
+Membatalkan order. Hanya order berstatus `pending`/`awaiting_payment`.
+
+**Response 200:** `{ "order": { … } }` dengan `status: "cancelled"`.
+
+**Response 409** — `ORDER_STATUS_CONFLICT` bila status tidak dapat dibatalkan (mis. `paid`/`cancelled`/`expired`).
+
+**Response 404** — `NOT_FOUND` bila tidak ada atau bukan milik pengguna.
+
+---
+
+### POST `/api/orders/:id/payment`
+
+Membuat record pembayaran untuk order (boundary pembayaran). **Rate limit: 5/menit per order.**
+
+- Hanya untuk order berstatus `pending`/`awaiting_payment`.
+- Provider aktif saat ini: `manual` (dev) — `PAYMENT PROVIDER DECISION REQUIRED`.
+- Status payment selalu `pending` saat dibuat; **`succeeded` HANYA dapat diubah backend** (verifikasi manual admin / provider) — tidak pernah dari request frontend.
+- Payment `pending`/`succeeded` yang sudah ada untuk order yang sama **dipakai ulang** (`created: false`).
+
+**Response 201** (`created: true`):
+
+```json
+{
+  "payment": {
+    "id": "…",
+    "orderId": "…",
+    "provider": "manual",
+    "providerTransactionId": null,
+    "paymentReference": "MANUAL-ORD-20260816-B81B",
+    "status": "pending",
+    "amount": 99000,
+    "currency": "IDR",
+    "metadata": { "mode": "manual", "note": "PAYMENT PROVIDER DECISION REQUIRED — belum ada integrasi nyata." },
+    "paidAt": null,
+    "createdAt": "…",
+    "updatedAt": "…"
+  },
+  "created": true
+}
+```
+
+**Response 200** — payment yang sudah ada dipakai ulang (`created: false`).
+
+**Response 409** — `ALREADY_PAID` (order sudah `paid`, mis. paket Rp0 auto-paid) atau `ORDER_STATUS_CONFLICT` (order `cancelled`/`expired`/`failed`, termasuk order yang melewati `expires_at`).
+
+**Response 404** — `NOT_FOUND` bila order tidak ada/bukan milik pengguna.
+
+### GET `/api/orders/:id/payment`
+
+Status pembayaran terbaru untuk order milik pengguna.
+
+**Response 200:** `{ "payment": { … } }` — `payment: null` bila belum ada pembayaran.
+
+---
+
 ## Endpoint Undangan (Terproteksi)
 
 > Seluruh endpoint di bawah memerlukan header `Authorization: Bearer <accessToken>` dan hanya mengakses/mengubah undangan **milik pengguna** (owner scoping). Akses ke undangan milik pengguna lain menghasilkan **404** `NOT_FOUND`.
@@ -412,7 +582,7 @@ Validasi:
 - `theme` objek JSON (opsional).
 - `gallery` array teks, maksimal 100 item, 500 karakter/item.
 
-**Response 201:** objek undangan lengkap (termasuk `id`, `isPublished`, `publishedAt`, `createdAt`, `updatedAt`).
+**Response 201:** objek undangan lengkap (termasuk `id`, `isPublished`, `status`, `packageId`, `publishedAt`, `createdAt`, `updatedAt`).
 
 **Response 409** — `SLUG_TAKEN` bila slug sudah dipakai undangan lain.
 
@@ -457,6 +627,32 @@ Menerbitkan undangan — langsung bisa diakses publik via `/u/:slug` dan `GET /a
 Menonaktifkan undangan dari publik.
 
 **Response 200:** objek undangan (`isPublished: false`, `publishedAt` kosong).
+
+### GET `/api/invitations/:id/status`
+
+Status eksplisit undangan milik pengguna.
+
+**Response 200:**
+
+```json
+{ "id": "…", "status": "draft", "isPublished": false }
+```
+
+### PATCH `/api/invitations/:id/status`
+
+Transisi status (state machine). Endpoint ini menulis `status` **dan** `is_published` secara konsisten (sumber kebenaran akses publik tetap `is_published`).
+
+Status: `draft` → `preview` → `published` ⇄ `unpublished` → (`draft`). `published` tidak bisa langsung ke `preview`/`draft`.
+
+**Request:** `{ "status": "published" }`
+
+**Response 200:** `{ "id": "…", "status": "…", "isPublished": … }`.
+
+**Response 400** — `VALIDATION_ERROR` bila nilai `status` tidak dikenal.
+
+**Response 409** — `INVALID_TRANSITION` bila transisi tidak diizinkan.
+
+Catatan sinkronisasi: jalur tulis `is_published` lama (`publish`/`unpublish`, admin unpublish) otomatis menyinkronkan `status` via DB trigger (`published`/`unpublished`).
 
 ---
 
@@ -693,6 +889,66 @@ Hapus entri buku tamu (moderasi spam/ucapan tidak pantas).
 
 **Response 204** — tanpa body. **404** bila entri tidak ada.
 
+### GET `/api/admin/payments`
+
+Daftar pembayaran (moderasi/ops verifikasi) — semua order, dengan informasi order & pemilik.
+
+Query (semua opsional): `status` (`pending` \| `succeeded` \| `failed` \| `expired`; kosong = semua), `page`, `pageSize`.
+
+**Response 200:**
+
+```json
+{
+  "payments": [
+    {
+      "id": "…",
+      "orderId": "…",
+      "provider": "manual",
+      "providerTransactionId": null,
+      "paymentReference": "MANUAL-ORD-20260816-ABCD",
+      "status": "pending",
+      "amount": 99000,
+      "currency": "IDR",
+      "paidAt": null,
+      "createdAt": "…",
+      "order": { "id": "…", "orderNumber": "ORD-20260816-ABCD", "status": "awaiting_payment" },
+      "ownerEmail": "buyer@example.com"
+    }
+  ],
+  "total": 1,
+  "limit": 20,
+  "offset": 0,
+  "page": 1
+}
+```
+
+### POST `/api/admin/payments/:id/verify`
+
+Verifikasi pembayaran **manual** (provider `manual`/dev) oleh admin — satu-satunya jalur backend untuk menandai payment `pending` → `succeeded`. Atomik (satu transaksi): payment `succeeded` + `paid_at`, order `paid` + `paid_at`, dan entitlement undangan (F2-07): `invitations.package_id` diisi `package_id` order (bila order memiliki `invitation_id`). Provider nyata nanti dikonfirmasi via webhook signature-verified, bukan endpoint ini.
+
+**Response 200:**
+
+```json
+{
+  "payment": { "id": "…", "status": "succeeded", "paidAt": "…", "…": "…" },
+  "order": { "id": "…", "status": "paid", "paidAt": "…", "…": "…" },
+  "entitlement": { "invitationId": "…", "packageId": "…", "status": "draft" }
+}
+```
+
+`entitlement` = `null` bila order tidak terkait undangan.
+
+**Error:**
+
+| Status | Code | Kondisi |
+| --- | --- | --- |
+| 401 | `UNAUTHORIZED` | Tanpa token |
+| 403 | `FORBIDDEN` | Bukan admin |
+| 404 | `NOT_FOUND` | Payment tidak ditemukan |
+| 409 | `VERIFY_NOT_ALLOWED` | Provider bukan `manual` |
+| 409 | `PAYMENT_STATUS_CONFLICT` | Payment bukan `pending` (mis. sudah diverifikasi) |
+| 409 | `ORDER_STATUS_CONFLICT` | Order bukan `pending`/`awaiting_payment` |
+
 ---
 
 ## Middleware
@@ -719,6 +975,7 @@ Hapus entri buku tamu (moderasi spam/ucapan tidak pantas).
 | `/login` | `pages/login.html` |
 | `/builder` | `pages/builder.html` |
 | `/admin` | `pages/admin.html` |
+| `/checkout` | `pages/checkout.html` |
 | `/u/:slug` | `pages/invitation.html` |
 
 Aset statis disajikan via `/assets` dan `/pages`.
@@ -727,7 +984,7 @@ Aset statis disajikan via `/assets` dan `/pages`.
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
-| 1.3.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Endpoint forgot-password & reset-password (Sprint 5 — keamanan akun) |
+| 1.6.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Endpoint packages, orders, payments, invitation status (Sprint 6) |
 | 1.2.0 | 12-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Endpoint admin — stats, users (+ role, detail), invitations (unpublish), guestbook (hapus) |
 | 1.0.3 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Endpoint tamu (CRUD + stats) & amplop digital (owner + publik), middleware rate limit |
 | 1.0.2 | 10-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Endpoint auth, templates, undangan CRUD/publish, guestbook publik & galeri |

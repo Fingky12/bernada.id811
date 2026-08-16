@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Roadmap · Category : Panduan (source of truth)
-  Version  : 1.4.0 · Status : 🟠 Proses · Update : 16-08-2026
+  Version  : 1.5.0 · Status : 🟠 Proses · Update : 16-08-2026
 -->
 
 # Roadmap BERNADA.ID
@@ -10,7 +10,30 @@
 >
 > Status item: 🟡 Belum · 🟠 Proses/sebagian · ✅ Selesai.
 >
-> **Sprint aktif:** tidak ada (Sprint 5 closed 16-08-2026). Arah berikutnya: Fase 3 — Launch (payment & pricing, optimasi performa & SEO, hardening produksi) — menunggu planning Sprint 6.
+> **Sprint berikutnya:** Sprint 8 (belum direncanakan) · **Sprint aktif:** Sprint 7 — Security & Commerce Hardening (Fase 1–4, 16-08-2026, 🟠 Proses — F2-08 ✅, siap release v1.5.1). Detail: `.docs/changelog.md`.
+
+---
+
+## Sprint 7 — Security & Commerce Hardening (🟠 Proses)
+
+> Sprint 7 (16-08-2026, 🟠 Proses) — Fase 1 audit v1.5.0 (PASS), Fase 2 fix F2-01..F2-06 (hardening keamanan & race condition), Fase 3 verifikasi pembayaran manual + entitlement (keputusan #6 S6), Fase 4 F2-08 order expiry (lazy + deterministik, tanpa worker). Detail: `.docs/changelog.md`.
+
+| Item | Status | Catatan |
+| --- | --- | --- |
+| Fase 1 — Audit v1.5.0 (security & commerce) | ✅ | Audit PASS (P0/P1 tidak ada; P2×8, P3×14) — F2-01..F2-08 + P3 |
+| F2-01 JWT algorithm hardening (HS256 eksplisit) | ✅ | `server/lib/jwt.js`; token `alg:none`/`RS256` ditolak |
+| F2-02 Refresh token race (claim atomik) | ✅ | Dua refresh konkuren → satu token hidup |
+| F2-03 Refresh token reuse detection | ✅ | Replay → revoke family + 401 |
+| F2-04 Invitation slug race → 409 | ✅ | DB constraint sebagai sumber kebenaran |
+| F2-05 Order idempotency race | ✅ | SAVEPOINT + beda constraint idempotency vs order_number |
+| F2-06 Duplicate pending payment | ✅ | Migrasi 0011 partial unique index |
+| F2-07 Entitlement `package_id` saat paid | ✅ | Admin verify + free auto-paid; E2E terverifikasi |
+| F2-08 Order expiry enforcement | ✅ | `expires_at` 24 jam (config) + lazy expiry; 15/15 PASS; guard anti-race |
+| Verifikasi pembayaran manual via admin (keputusan #6 S6) | ✅ | `POST /api/admin/payments/:id/verify` + `GET /api/admin/payments` |
+| E2E Sprint 7 & regression | ✅ | F2: 21/21 · Fase 3: 15/15 · F2-08: 15/15 · Regression Sprint 6: 38/38 |
+| Release v1.5.1 (deploy :3000) | 🟡 | Commit siap; redeploy menunggu persetujuan |
+| Item P3 (14) | 🟡 | Ditunda — backlog hardening |
+| Integrasi provider pembayaran nyata | 🟡 | `PAYMENT PROVIDER DECISION REQUIRED` — menunggu keputusan owner + API key sandbox |
 
 ---
 
@@ -61,9 +84,24 @@
 | Verifikasi E2E fitur baru | ✅ | 25/25 PASS — `.docs/e2e/sprint-5-verification.md` |
 | Audit Sprint 5 & Release v1.4.0 | ✅ | Audit PASS (24 PASS · 1 WARNING resolved · 0 ERROR) + tag `v1.4.0` — Sprint 5 closed |
 
+## Sprint 6 — The Launch & Commerce Foundation · v1.5.0 (Closed)
+
+> Sprint 6 (16-08-2026) — ✅ Closed. M0–M7 selesai; E2E Sprint 6 **38/38 PASS** + regression Sprint 5 25/25 PASS; Audit PASS (25/0/0); tag `v1.5.0` dibuat. Sisa: redeploy :3000. Detail: `.docs/sprint-6.md`, `.docs/e2e/sprint-6-verification.md`, `.docs/audit/LAPORAN-AUDIT-SPRINT-6.html`, `.docs/releases/v1.5.0-launch-commerce-foundation.md`.
+
+| Item | Status | Catatan |
+| --- | --- | --- |
+| Pricing & packages | ✅ | migrasi `0007`, `package-service.js`, `GET /api/packages` (+ `:id`), seed placeholder (`BUSINESS DECISION REQUIRED`) |
+| Order foundation | ✅ | migrasi `0008_orders.sql`, `order-service.js` — amount server-side, `order_number`, idempotency, ownership 404, rate limit 10/mnt |
+| Payment boundary | ✅ | migrasi `0009_payments.sql`, adapter registry (`server/services/payment/index.js`) + provider `manual`, paid hanya dari backend; `PAYMENT PROVIDER DECISION REQUIRED` |
+| Invitation lifecycle | ✅ | migrasi `0010_invitation_lifecycle.sql` — status `draft/preview/published/unpublished` + `package_id` + trigger sync; endpoint status (GET/PATCH) |
+| Builder readiness | ✅ | badge status lifecycle di builder (`statusBadge`) |
+| Frontend commerce | ✅ | pricing landing dinamis (`landing-pricing.js`), flow checkout (`pages/checkout.html` + `checkout.js`), login redirect `?next=` |
+| E2E Sprint 6 & regression | ✅ | `scripts/e2e-sprint6.mjs` 38/38 PASS + Sprint 5 25/25 PASS |
+| Audit & release v1.5.0 | ✅ | Audit PASS 25/0/0; release doc Stable + tag `v1.5.0`; sisa: redeploy :3000 |
+
 ## Fase 3 — Launch · v1.0.0 GA
 
-- Pembayaran & penagihan
+- Pembayaran & penagihan — 🟠 boundary + order + manual verify + entitlement selesai (Sprint 6–7); integrasi provider nyata & webhook menunggu keputusan owner (`PAYMENT PROVIDER DECISION REQUIRED`)
 - Optimasi performa & SEO
 - Uji coba & hardening produksi
 
@@ -86,7 +124,7 @@
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
-| 1.4.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 5 closed — Release v1.4.0 The Admin & Account Security (tag v1.4.0); menunggu planning Sprint 6 (Fase 3 — Launch) |
+| 1.5.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Closed | Sprint 6 Closed — Launch & Commerce Foundation: E2E 38/38 + regression 25/25, Audit PASS 25/0/0, tag `v1.5.0`; sisa: redeploy :3000 |
 | 1.3.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 5 Development — dasbor admin & keamanan akun (reset password) selesai, E2E 25/25 PASS; menunggu audit & release v1.4.0 |
 | 1.2.0 | 11-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 4 closed — Release v1.3.0 The Guest Experience (tag v1.3.0); Fase 2 selesai; menunggu planning Sprint 5 (Fase 3 — Launch) |
 | 1.1.0 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 4 dimulai — Manajemen tamu + amplop digital + hardening LOW (Development) |

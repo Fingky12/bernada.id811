@@ -173,6 +173,17 @@ export const api = {
     return data.invitation;
   },
 
+  async getInvitationStatus(id) {
+    return request(`/invitations/${id}/status`);
+  },
+
+  async setInvitationStatus(id, status) {
+    return request(`/invitations/${id}/status`, {
+      method: 'PATCH',
+      body: { status },
+    });
+  },
+
   /* ---- Manajemen tamu ---- */
 
   async listGuests(invitationId) {
@@ -237,6 +248,52 @@ export const api = {
 
   async deleteGiftAccount(giftAccountId) {
     await request(`/gift-accounts/${giftAccountId}`, { method: 'DELETE' });
+  },
+
+  /* ---- Komersial: paket, order, pembayaran (Sprint 6) ---- */
+
+  async listPackages() {
+    const data = await request('/packages');
+    return data.packages;
+  },
+
+  async getPackage(id) {
+    const data = await request(`/packages/${id}`);
+    return data.package;
+  },
+
+  async createOrder({ packageId, invitationId, idempotencyKey }) {
+    return request('/orders', {
+      method: 'POST',
+      body: {
+        packageId,
+        invitationId: invitationId || undefined,
+        idempotencyKey,
+      },
+    });
+  },
+
+  async listOrders() {
+    const data = await request('/orders');
+    return data.orders;
+  },
+
+  async getOrder(id) {
+    const data = await request(`/orders/${id}`);
+    return data.order;
+  },
+
+  async cancelOrder(id) {
+    const data = await request(`/orders/${id}/cancel`, { method: 'POST' });
+    return data.order;
+  },
+
+  async createOrderPayment(orderId) {
+    return request(`/orders/${orderId}/payment`, { method: 'POST' });
+  },
+
+  async getOrderPayment(orderId) {
+    return request(`/orders/${orderId}/payment`);
   },
 
   /* ---- Admin (Sprint 5) ---- */
