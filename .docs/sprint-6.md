@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Sprint 6 · Category : Panduan (source of truth)
-  Version  : 0.1.0 · Status : 🟡 Draft (menunggu approval Owner) · Update : 16-08-2026
+  Version  : 0.2.0 · Status : ✅ Approved & Active (M0–M5 selesai, M6 testing) · Update : 16-08-2026
 -->
 
 # Sprint 6 — The Launch & Commerce Foundation
@@ -18,7 +18,7 @@
 | --- | --- |
 | Sprint | Sprint 6 — The Launch & Commerce Foundation |
 | Tujuan | Fondasi pricing/paket, order/checkout, boundary pembayaran, lifecycle undangan, kesiapan builder, UI commerce, production-readiness yang relevan |
-| Status | 🟡 Draft planning (16-08-2026) — menunggu **APPROVE SPRINT 6** |
+| Status | ✅ Approved & Active (16-08-2026) — M0–M5 selesai; E2E Sprint 6 38/38 + regression Sprint 5 25/25 |
 | Release | v1.5.0 — The Launch & Commerce Foundation (kandidat) |
 | Baseline | Sprint 5 Closed (v1.4.0) · E2E Sprint 5 25/25 PASS (16-08-2026) · PostgreSQL 18.4 connected · migrasi 0001–0006 applied |
 
@@ -248,22 +248,22 @@ Keputusan: apakah `expired` berbasis `event_date` otomatis, atau berbasis masa a
 
 ## O. Definition of Done
 
-- [ ] Pricing foundation selesai (paket + fitur + API + seed placeholder)
-- [ ] Order foundation selesai (status, order number, amount server-side, idempotency, ownership)
-- [ ] Payment boundary selesai (tabel + adapter interface + dokumentasi keputusan)
-- [ ] Invitation lifecycle jelas & tested
-- [ ] Builder flow tidak regress
-- [ ] Frontend commerce flow selesai (pricing → order → status)
-- [ ] API & database terdokumentasi
-- [ ] Migrasi tested (0007, 0008, ...)
-- [ ] E2E Sprint 6 PASS
-- [ ] Regression Sprint 5 PASS
-- [ ] Security review selesai
-- [ ] Self review selesai (`rules/09`)
+- [x] Pricing foundation selesai (paket + fitur + API + seed placeholder)
+- [x] Order foundation selesai (status, order number, amount server-side, idempotency, ownership)
+- [x] Payment boundary selesai (tabel + adapter interface + dokumentasi keputusan)
+- [x] Invitation lifecycle jelas & tested
+- [x] Builder flow tidak regress
+- [x] Frontend commerce flow selesai (pricing → order → status)
+- [x] API & database terdokumentasi
+- [x] Migrasi tested (0007, 0008, 0009, 0010)
+- [x] E2E Sprint 6 PASS (38/38)
+- [x] Regression Sprint 5 PASS (25/25)
+- [x] Security review selesai (amount server-side, ownership 404, idempotency, paid hanya dari backend)
+- [x] Self review selesai (`rules/09`)
 - [ ] Git diff bersih dari perubahan tidak disengaja
-- [ ] Dokumentasi sinkron
-- [ ] Audit Sprint 6 PASS
-- [ ] Release preparation selesai (v1.5.0 kandidat)
+- [ ] Dokumentasi sinkron (selesai setelah commit M6/M7)
+- [ ] Audit Sprint 6 PASS (M7)
+- [ ] Release preparation selesai (v1.5.0 kandidat) (M7)
 
 ## P. Milestone / Commit Plan
 
@@ -299,4 +299,5 @@ Setiap milestone: test → self review → lapor hasil (command + PASS/FAIL) →
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
+| 0.2.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Approved & Active | M0–M5 selesai; E2E Sprint 6 38/38 PASS + regression 25/25 PASS; menunggu audit & release (M7) |
 | 0.1.0 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟡 Draft | Planning Sprint 6 — menunggu approval Owner |

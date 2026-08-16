@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : API · Category : Panduan (source of truth)
-  Version  : 1.4.0 · Status : 🟠 Proses · Update : 16-08-2026
+  Version  : 1.6.0 · Status : 🟠 Proses · Update : 16-08-2026
 -->
 
 # API BERNADA.ID

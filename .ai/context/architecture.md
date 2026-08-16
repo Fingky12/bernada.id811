@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Architecture Context · Category : Context (living document)
-  Version  : 1.0.6 · Status : 🟠 Proses · Update : 16-08-2026
+  Version  : 1.0.7 · Status : 🟠 Proses · Update : 16-08-2026
 -->
 
 # Arsitektur
@@ -48,9 +48,9 @@ Setiap keputusan arsitektur penting (pola, teknologi, struktur data) wajib:
 
 ## Status Saat Ini
 
-- **Frontend:** ✅ Landing page 9 section (v1.1.0) + halaman aplikasi: `pages/login.html`, `pages/builder.html`, `pages/invitation.html`, `pages/admin.html`.
-- **Backend:** ✅ Node.js + Express (ESM) — `server/` (config, db, app, error handler, lib: jwt/password/validation/http-error, middleware rate-limit/require-admin, services incl. admin & password-reset & email) + `api/` (health, auth, templates, invitations, guestbook publik, guests, gift-accounts, admin).
-- **Database:** ✅ Migrasi `0001` (core) + `0002` (auth/templates) + `0003` (galeri/buku tamu) + `0004` (guests/gift_accounts) + `0005` (password_reset_tokens) + `0006` (fix updated_at) — PostgreSQL 18.4 terpasang lokal.
+- **Frontend:** ✅ Landing page 9 section (v1.1.0) + halaman aplikasi: `pages/login.html`, `pages/builder.html`, `pages/invitation.html`, `pages/admin.html`, `pages/checkout.html`; pricing landing dinamis dari `GET /api/packages`.
+- **Backend:** ✅ Node.js + Express (ESM) — `server/` (config, db, app, error handler, lib: jwt/password/validation/http-error, middleware rate-limit/require-admin, services incl. admin, password-reset, email, **package, order, payment (adapter registry + provider manual), invitation status**) + `api/` (health, auth, templates, invitations, guestbook publik, guests, gift-accounts, admin, **packages, orders**).
+- **Database:** ✅ Migrasi `0001`–`0010` — `0001` (core) + `0002` (auth/templates) + `0003` (galeri/buku tamu) + `0004` (guests/gift_accounts) + `0005` (password_reset_tokens) + `0006` (fix updated_at) + `0007` (packages/package_features) + `0008` (orders) + `0009` (payments) + `0010` (invitation lifecycle status + package_id + trigger sync) — PostgreSQL 18.4 terpasang lokal.
 
 ## Keputusan Arsitektur Kunci
 
@@ -64,13 +64,15 @@ Setiap keputusan arsitektur penting (pola, teknologi, struktur data) wajib:
 - **Keamanan akun** — reset password via token acak hash SHA-256 (sekali pakai, kedaluwarsa 24 jam); email via `nodemailer` dengan dev-log bila `SMTP_HOST` kosong; respons forgot generik (anti-enumerasi).
 - **Admin** — role `users.role` + middleware `requireAdmin` (auth + cek role ke DB per-request); guard tidak bisa ubah role sendiri & tidak bisa turunkan admin terakhir.
 - **Frontend same-origin** — Express menyajikan halaman & aset statis; `assets/js/api.js` client menangani auto-refresh.
+- **Payment boundary** — `server/services/payment/index.js` registry adapter (`defineProvider`/`getProvider`) + provider `manual` (dev); `amount` order selalu dari `packages.price_amount` (server), idempotency key anti-duplicate, status `succeeded` HANYA dari backend — `PAYMENT PROVIDER DECISION REQUIRED`.
+- **Invitation lifecycle** — kolom `status` (`draft/preview/published/unpublished`) + `is_published` tetap source of truth akses publik; disinkronkan service `setStatus` (menulis dua kolom) + trigger DB `sync_invitation_status` untuk tulis langsung (termasuk jalur admin).
 - **Progressive enhancement & fallback demo** — halaman publik `/u/:slug` tetap berfungsi dengan data demo saat API/DB tidak aktif.
 
 ---
 
 | Version | Date | Author | Status | Description |
 | --- | --- | --- | --- | --- |
-| 1.0.6 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 5 — admin-service, password-reset-service, email-service, require-admin, migrasi 0005 & 0006 |
+| 1.0.7 | 16-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 6 — package-service, order-service, payment adapter (manual), invitation status + trigger, migrasi 0007–0010 |
 | 1.0.5 | 11-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Sprint 4 closed — guest-service, gift-account-service, rate-limit, migrasi 0004, verifikasi E2E 21/21 |
 | 1.0.4 | 10-08-2026 | AI Pair Programmer + Senior Engineer | 🟠 Proses | Sprint 4 — guest-service, gift-account-service, middleware rate-limit, migrasi 0004 |
 | 1.0.3 | 10-08-2026 | AI Pair Programmer + Senior Engineer | ✅ Stable | Release v1.2.0 — The Core Features (Audit PASS) |
