@@ -82,12 +82,21 @@ export async function refresh(refreshToken) {
   }
 
   const { rows } = await pool.query(
-    'SELECT id, user_id, expires_at FROM refresh_tokens WHERE token_hash = $1 AND revoked_at IS NULL',
+    'SELECT id, user_id, expires_at, revoked_at FROM refresh_tokens WHERE token_hash = $1',
     [hashToken(refreshToken)],
   );
   const record = rows[0];
 
   if (!record) {
+    throw new HttpError(401, 'UNAUTHORIZED', 'Sesi tidak valid.');
+  }
+  if (record.revoked_at) {
+    // Deteksi reuse: token yang sudah dipakai/revoked dipresentasikan lagi.
+    // Cabut seluruh sesi aktif pengguna (token family) sebagai respons keamanan.
+    await pool.query(
+      'UPDATE refresh_tokens SET revoked_at = NOW() WHERE user_id = $1 AND revoked_at IS NULL',
+      [record.user_id],
+    );
     throw new HttpError(401, 'UNAUTHORIZED', 'Sesi tidak valid.');
   }
   if (new Date(record.expires_at) < new Date()) {
@@ -97,10 +106,20 @@ export async function refresh(refreshToken) {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
-    await client.query(
-      'UPDATE refresh_tokens SET revoked_at = NOW() WHERE id = $1',
+    // Klaim atomik: hanya satu request yang boleh berhasil dari satu token lama.
+    const claimed = await client.query(
+      'UPDATE refresh_tokens SET revoked_at = NOW() WHERE id = $1 AND revoked_at IS NULL RETURNING id',
       [record.id],
     );
+    if (claimed.rowCount === 0) {
+      // Kalah dalam race / token sudah dipakai request lain → cabut family pengguna.
+      await client.query(
+        'UPDATE refresh_tokens SET revoked_at = NOW() WHERE user_id = $1 AND revoked_at IS NULL',
+        [record.user_id],
+      );
+      await client.query('COMMIT');
+      throw new HttpError(401, 'UNAUTHORIZED', 'Sesi tidak valid.');
+    }
     const accessToken = signAccessToken({ sub: record.user_id });
     const { refreshToken: newToken, expiresAt } = await issueRefreshToken(client, record.user_id);
     await client.query('COMMIT');

@@ -10,7 +10,30 @@
 >
 > Status item: 🟡 Belum · 🟠 Proses/sebagian · ✅ Selesai.
 >
-> **Sprint berikutnya:** Sprint 7 (belum direncanakan) · **Sprint terakhir:** Sprint 6 — The Launch & Commerce Foundation (Fase 3, 16-08-2026, ✅ Closed; tag `v1.5.0`).
+> **Sprint berikutnya:** Sprint 8 (belum direncanakan) · **Sprint aktif:** Sprint 7 — Security & Commerce Hardening (Fase 1–4, 16-08-2026, 🟠 Proses — F2-08 ✅, siap release v1.5.1). Detail: `.docs/changelog.md`.
+
+---
+
+## Sprint 7 — Security & Commerce Hardening (🟠 Proses)
+
+> Sprint 7 (16-08-2026, 🟠 Proses) — Fase 1 audit v1.5.0 (PASS), Fase 2 fix F2-01..F2-06 (hardening keamanan & race condition), Fase 3 verifikasi pembayaran manual + entitlement (keputusan #6 S6), Fase 4 F2-08 order expiry (lazy + deterministik, tanpa worker). Detail: `.docs/changelog.md`.
+
+| Item | Status | Catatan |
+| --- | --- | --- |
+| Fase 1 — Audit v1.5.0 (security & commerce) | ✅ | Audit PASS (P0/P1 tidak ada; P2×8, P3×14) — F2-01..F2-08 + P3 |
+| F2-01 JWT algorithm hardening (HS256 eksplisit) | ✅ | `server/lib/jwt.js`; token `alg:none`/`RS256` ditolak |
+| F2-02 Refresh token race (claim atomik) | ✅ | Dua refresh konkuren → satu token hidup |
+| F2-03 Refresh token reuse detection | ✅ | Replay → revoke family + 401 |
+| F2-04 Invitation slug race → 409 | ✅ | DB constraint sebagai sumber kebenaran |
+| F2-05 Order idempotency race | ✅ | SAVEPOINT + beda constraint idempotency vs order_number |
+| F2-06 Duplicate pending payment | ✅ | Migrasi 0011 partial unique index |
+| F2-07 Entitlement `package_id` saat paid | ✅ | Admin verify + free auto-paid; E2E terverifikasi |
+| F2-08 Order expiry enforcement | ✅ | `expires_at` 24 jam (config) + lazy expiry; 15/15 PASS; guard anti-race |
+| Verifikasi pembayaran manual via admin (keputusan #6 S6) | ✅ | `POST /api/admin/payments/:id/verify` + `GET /api/admin/payments` |
+| E2E Sprint 7 & regression | ✅ | F2: 21/21 · Fase 3: 15/15 · F2-08: 15/15 · Regression Sprint 6: 38/38 |
+| Release v1.5.1 (deploy :3000) | 🟡 | Commit siap; redeploy menunggu persetujuan |
+| Item P3 (14) | 🟡 | Ditunda — backlog hardening |
+| Integrasi provider pembayaran nyata | 🟡 | `PAYMENT PROVIDER DECISION REQUIRED` — menunggu keputusan owner + API key sandbox |
 
 ---
 
@@ -78,7 +101,7 @@
 
 ## Fase 3 — Launch · v1.0.0 GA
 
-- Pembayaran & penagihan
+- Pembayaran & penagihan — 🟠 boundary + order + manual verify + entitlement selesai (Sprint 6–7); integrasi provider nyata & webhook menunggu keputusan owner (`PAYMENT PROVIDER DECISION REQUIRED`)
 - Optimasi performa & SEO
 - Uji coba & hardening produksi
 

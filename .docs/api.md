@@ -457,7 +457,7 @@ Membuat order paket. **Rate limit: 10/menit.**
     "currency": "IDR",
     "status": "pending",
     "idempotencyKey": "…",
-    "expiresAt": null,
+    "expiresAt": "2026-08-17T09:00:00.000Z",
     "paidAt": null,
     "package": { "id": "…", "code": "premium", "name": "Premium" },
     "createdAt": "…",
@@ -466,6 +466,9 @@ Membuat order paket. **Rate limit: 10/menit.**
   "created": true
 }
 ```
+
+- `expiresAt` diisi saat order dibuat untuk paket berbayar (default 24 jam, `ORDER_PAYMENT_EXPIRY_HOURS`). Paket free (auto-paid) → `expiresAt: null`.
+- **F2-08 Order expiry:** order berstatus `pending`/`awaiting_payment` yang melewati `expiresAt` otomatis menjadi `expired` (mekanisme lazy — terlihat saat order diakses; sweap deterministik saat list). Order `paid`/`cancelled`/terminal **tidak** ter-expriy. Order `expired` tidak bisa dibuatkan payment, diverifikasi admin, atau dibatalkan (409 `ORDER_STATUS_CONFLICT`).
 
 **Response 200** (`created: false`) — `idempotencyKey` sudah pernah dipakai (order yang sama dikembalikan).
 
@@ -493,7 +496,7 @@ Membatalkan order. Hanya order berstatus `pending`/`awaiting_payment`.
 
 **Response 200:** `{ "order": { … } }` dengan `status: "cancelled"`.
 
-**Response 409** — `ORDER_STATUS_CONFLICT` bila status tidak dapat dibatalkan (mis. `paid`/`cancelled`).
+**Response 409** — `ORDER_STATUS_CONFLICT` bila status tidak dapat dibatalkan (mis. `paid`/`cancelled`/`expired`).
 
 **Response 404** — `NOT_FOUND` bila tidak ada atau bukan milik pengguna.
 
@@ -532,7 +535,7 @@ Membuat record pembayaran untuk order (boundary pembayaran). **Rate limit: 5/men
 
 **Response 200** — payment yang sudah ada dipakai ulang (`created: false`).
 
-**Response 409** — `ALREADY_PAID` (order sudah `paid`, mis. paket Rp0 auto-paid) atau `ORDER_STATUS_CONFLICT` (order `cancelled`/`expired`/`failed`).
+**Response 409** — `ALREADY_PAID` (order sudah `paid`, mis. paket Rp0 auto-paid) atau `ORDER_STATUS_CONFLICT` (order `cancelled`/`expired`/`failed`, termasuk order yang melewati `expires_at`).
 
 **Response 404** — `NOT_FOUND` bila order tidak ada/bukan milik pengguna.
 
@@ -885,6 +888,66 @@ Query (semua opsional): `search` (nama tamu/ucapan, ILIKE), `page`, `pageSize`.
 Hapus entri buku tamu (moderasi spam/ucapan tidak pantas).
 
 **Response 204** — tanpa body. **404** bila entri tidak ada.
+
+### GET `/api/admin/payments`
+
+Daftar pembayaran (moderasi/ops verifikasi) — semua order, dengan informasi order & pemilik.
+
+Query (semua opsional): `status` (`pending` \| `succeeded` \| `failed` \| `expired`; kosong = semua), `page`, `pageSize`.
+
+**Response 200:**
+
+```json
+{
+  "payments": [
+    {
+      "id": "…",
+      "orderId": "…",
+      "provider": "manual",
+      "providerTransactionId": null,
+      "paymentReference": "MANUAL-ORD-20260816-ABCD",
+      "status": "pending",
+      "amount": 99000,
+      "currency": "IDR",
+      "paidAt": null,
+      "createdAt": "…",
+      "order": { "id": "…", "orderNumber": "ORD-20260816-ABCD", "status": "awaiting_payment" },
+      "ownerEmail": "buyer@example.com"
+    }
+  ],
+  "total": 1,
+  "limit": 20,
+  "offset": 0,
+  "page": 1
+}
+```
+
+### POST `/api/admin/payments/:id/verify`
+
+Verifikasi pembayaran **manual** (provider `manual`/dev) oleh admin — satu-satunya jalur backend untuk menandai payment `pending` → `succeeded`. Atomik (satu transaksi): payment `succeeded` + `paid_at`, order `paid` + `paid_at`, dan entitlement undangan (F2-07): `invitations.package_id` diisi `package_id` order (bila order memiliki `invitation_id`). Provider nyata nanti dikonfirmasi via webhook signature-verified, bukan endpoint ini.
+
+**Response 200:**
+
+```json
+{
+  "payment": { "id": "…", "status": "succeeded", "paidAt": "…", "…": "…" },
+  "order": { "id": "…", "status": "paid", "paidAt": "…", "…": "…" },
+  "entitlement": { "invitationId": "…", "packageId": "…", "status": "draft" }
+}
+```
+
+`entitlement` = `null` bila order tidak terkait undangan.
+
+**Error:**
+
+| Status | Code | Kondisi |
+| --- | --- | --- |
+| 401 | `UNAUTHORIZED` | Tanpa token |
+| 403 | `FORBIDDEN` | Bukan admin |
+| 404 | `NOT_FOUND` | Payment tidak ditemukan |
+| 409 | `VERIFY_NOT_ALLOWED` | Provider bukan `manual` |
+| 409 | `PAYMENT_STATUS_CONFLICT` | Payment bukan `pending` (mis. sudah diverifikasi) |
+| 409 | `ORDER_STATUS_CONFLICT` | Order bukan `pending`/`awaiting_payment` |
 
 ---
 

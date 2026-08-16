@@ -61,29 +61,36 @@ export async function createInvitation(ownerId, data) {
   await assertUniqueSlug(data.slug);
   await assertValidTemplate(data.templateId);
 
-  const { rows } = await pool.query(
-    `INSERT INTO invitations
-       (owner_id, template_id, slug, title, event_date, event_time,
-        venue, location, couple, message, theme, music_url, gallery)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-     RETURNING ${COLUMNS}`,
-    [
-      ownerId,
-      data.templateId,
-      data.slug,
-      data.title,
-      data.eventDate,
-      data.eventTime,
-      data.venue,
-      data.location,
-      data.couple,
-      data.message,
-      data.theme,
-      data.musicUrl,
-      data.gallery,
-    ],
-  );
-  return toInvitationDto(rows[0]);
+  try {
+    const { rows } = await pool.query(
+      `INSERT INTO invitations
+         (owner_id, template_id, slug, title, event_date, event_time,
+          venue, location, couple, message, theme, music_url, gallery)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+       RETURNING ${COLUMNS}`,
+      [
+        ownerId,
+        data.templateId,
+        data.slug,
+        data.title,
+        data.eventDate,
+        data.eventTime,
+        data.venue,
+        data.location,
+        data.couple,
+        data.message,
+        data.theme,
+        data.musicUrl,
+        data.gallery,
+      ],
+    );
+    return toInvitationDto(rows[0]);
+  } catch (error) {
+    if (error?.code === '23505' && error?.constraint === 'invitations_slug_key') {
+      throw new HttpError(409, 'SLUG_TAKEN', 'Slug sudah dipakai pada undangan lain.');
+    }
+    throw error;
+  }
 }
 
 export async function listInvitations(ownerId) {
@@ -143,12 +150,21 @@ export async function updateInvitation(id, ownerId, changes) {
   }
   values.push(id, ownerId);
 
-  const { rows } = await pool.query(
-    `UPDATE invitations SET ${sets.join(', ')}
-     WHERE id = $${index} AND owner_id = $${index + 1}
-     RETURNING ${COLUMNS}`,
-    values,
-  );
+  let rows;
+  try {
+    const result = await pool.query(
+      `UPDATE invitations SET ${sets.join(', ')}
+       WHERE id = $${index} AND owner_id = $${index + 1}
+       RETURNING ${COLUMNS}`,
+      values,
+    );
+    rows = result.rows;
+  } catch (error) {
+    if (error?.code === '23505' && error?.constraint === 'invitations_slug_key') {
+      throw new HttpError(409, 'SLUG_TAKEN', 'Slug sudah dipakai pada undangan lain.');
+    }
+    throw error;
+  }
   if (rows.length === 0) {
     throw notFound();
   }

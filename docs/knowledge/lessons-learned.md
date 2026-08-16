@@ -218,3 +218,61 @@ Tool bash opencode (Windows) menganggap tool SELESAI dari EOF pipe stdout-nya. `
 - ❌ `Start-Process` proses long-running langsung di tool call (terutama `-WindowStyle Hidden`) — hang (conhost pegang pipe); redirect ke file tidak menolong.
 - ❌ Menyimpulkan tool "kembali" tanpa bukti `time.end` di `opencode.db`; ❌ mengutip klaim "spawn+redirect aman" (L-007 versi lama).
 - ❌ Meluncurkan helper dengan `UseShellExecute=$false` atau `CreateNoWindow` — mengalahkan tujuan detach.
+
+---
+
+## L-009 — Rate limiter in-memory bersifat global per server instance → skrip E2E beruntun saling kena 429
+
+- Tanggal: 16-08-2026
+- Referensi: `server/middleware/rate-limit.js`, `scripts/test-f2-hardening.mjs`, `scripts/e2e-sprint7-payment.mjs`, `scripts/e2e-sprint6.mjs`, `.docs/e2e/sprint-7-fase3-verification.md`
+
+**ROOT CAUSE**
+Rate limiter in-memory (`state` Map di modul rate-limit.js) hidup di **satu server instance**, bukan per-proses skrip. Bucket `ip:method:basePath` (mis. `POST /api/auth/register` max 10/60s) terakumulasi lintas skrip E2E yang dijalankan beruntun terhadap instance yang sama dalam window 60s. Saat 3 skrip dijalankan (register 3+5+3 = 11 > 10), register terakhir kena 429; helper `api()` di `e2e-sprint6.mjs` menunggu 61s lalu retry — namun skrip `e2e-sprint6.mjs` memakai `regC.data.user.id` **tanpa optional chaining** sehingga data null → `TypeError: Cannot read properties of undefined (reading 'id')` → skrip abort di tengah, cleanup tidak berjalan (data leftover).
+
+**EVIDENCE**
+- Run beruntun F3→F2→e2e-sprint6 di :3004: hasil e2e-sprint6 **34/35** dengan error `Cannot read properties of undefined (reading 'id')`; `e2e6.admin` tidak terbuat di DB (register kena 429); leftover 2 user + 1 payment.
+- Restart :3004 (bucket reset) lalu jalankan `e2e-sprint6.mjs` sendirian → **38/38 PASS**. Skrip lain pada instance segar: `test-f2-hardening` 21/21, `e2e-sprint7-payment` 15/15.
+- `server/middleware/rate-limit.js:3` `const state = new Map();` — state modul di-share seluruh request instance.
+
+**FIX**
+Jalankan skrip E2E terhadap **instance server segar** bila dijalankan beruntun dalam ≤60s (restart via `start-api.ps1` → bucket in-memory reset). Untuk skrip baru, akses properti response yang rawan 429 dengan optional chaining (`reg?.data?.user?.id`) atau buat data sebelum dipakai. Simpan hasil run terisolasi sebagai baseline.
+
+**VERIFICATION**
+- `e2e-sprint6.mjs` pada instance segar → **38/38 PASS** (2× terverifikasi).
+- Fase 2 21/21 & Fase 3 15/15 pada instance segar → PASS.
+- Verifikasi akhir DB: `leftover users=0, orders=0, payments=0`.
+
+**DO NOT REPEAT**
+- ❌ Menjalankan beberapa skrip E2E beruntun (dalam 1 menit) terhadap instance server yang sama tanpa memperhitungkan bucket limiter yang terakumulasi.
+- ❌ Mengakses `data.user.id` tanpa optional chaining pada respons endpoint ber-rate-limit di skrip E2E.
+- ❌ Menyimpulkan "regresi produk" dari kegagalan 429 lintas-skrip tanpa uji ulang pada instance segar.
+
+---
+
+## L-010 — Order expiry tanpa background worker: lazy + sweep deterministik (F2-08)
+
+- Tanggal: 16-08-2026
+- Referensi: `server/services/order-service.js` (`expireOrderIfDue`, `expireOverdueOrders`), `server/services/payment-service.js` (guard `FOR UPDATE` + in-transaction expiry), `scripts/e2e-sprint7-expiry.mjs`, `.docs/e2e/sprint-7-fase3-verification.md`
+
+**ROOT CAUSE**
+Order berbayar yang tidak dibayar bisa menggantung di status `pending`/`awaiting_payment` tanpa batas waktu, padahal kolom `expires_at` sudah ada di schema `0008` namun tidak pernah diisi. Transisi `→ expired` belum didefinisikan, sehingga order kedaluwarsa secara konseptual masih bisa dibuatkan payment/diverifikasi menjadi paid.
+
+**EVIDENCE**
+- `database/migrations/0008_orders.sql:22` — kolom `expires_at TIMESTAMPTZ` nullable, tidak pernah di-set (INSERT order-service lama tidak menyertakan `expires_at`).
+- Tidak ada mekanisme transisi `awaiting_payment → expired` di service mana pun; `NON_STARTABLE_STATUSES` sudah memuat `'expired'` tetapi status itu tak pernah tercapai.
+- Setelah implementasi: `scripts/e2e-sprint7-expiry.mjs` **15/15 PASS** + regression F2 21/21, Fase 3 15/15, Sprint 6 38/38.
+
+**FIX**
+1. `expires_at` di-set saat order berbayar dibuat (`config.orderPaymentExpiryHours`, default 24 jam; free auto-paid → `null`).
+2. Transisi `pending/awaiting_payment → expired` hanya bila `expires_at <= NOW()` — **lazy**: `expireOrderIfDue(orderId)` dipanggil dari `getOrderById` (scoped), dan **sweep deterministik**: `expireOverdueOrders()` dipanggil dari `listOrders`/`listPayments`. Tanpa setInterval/worker — tidak ada proses latar.
+3. Payment pending order yang expired ikut `→ expired` dalam transaksi yang sama.
+4. **Anti-race**: `createOrderPayment` me-recheck status+expiry dengan `SELECT … FOR UPDATE` di dalam transaksi; `verifyManualPayment` memeriksa `expires_at` di dalam transaksi dan **mempersist expiry sebelum melempar 409** (commit-before-throw dengan flag `committed` agar catch tidak menjalankan ROLLBACK setelah COMMIT); `UPDATE orders SET status='paid' WHERE status IN ('pending','awaiting_payment')` menjadi backstop — order expired tidak mungkin jadi paid.
+
+**VERIFICATION**
+- E2E F2-08 15/15 PASS: expires_at konsisten, lazy expiry (GET), payment expired, guard payment/verify/cancel 409, boundary belum-expired tetap bisa diverifikasi, paid/cancelled tidak ter-expriy, admin list menampilkan `order_status=expired`.
+- Full regression pada instance terisolasi: F2 21/21 · Fase 3 15/15 · Sprint 6 38/38; DB bersih 0/0/0.
+
+**DO NOT REPEAT**
+- ❌ Commit status `expired` lalu throw di dalam transaksi TANPA commit-before-throw — ROLLBACK di catch akan membatalkan expiry (status tetap `awaiting_payment`); gunakan flag `committed` + `ROLLBACK.catch(()=>{})`.
+- ❌ Mengandalkan satu jalur expiry (mis. hanya lazy di getOrderById) tanpa guard DB-level (`WHERE status IN (...)`) pada transisi paid — race dengan verify/expiry bisa meloloskan order kedaluwarsa jadi paid.
+- ❌ Membuat `setInterval` worker permanen untuk sweep bila lazy + sweep-on-access sudah memenuhi kebutuhan — pertahankan deterministik & tanpa proses latar.

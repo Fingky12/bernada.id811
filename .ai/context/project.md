@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Project Context · Category : Context (living document)
-  Version  : 1.2.0 · Status : ✅ Stable · Update : 16-08-2026
+  Version  : 1.3.0 · Status : ✅ Stable · Update : 16-08-2026
 -->
 
 # Konteks Project
@@ -17,7 +17,7 @@
 | Nama | BERNADA.ID |
 | Jenis | Platform SaaS Undangan Digital |
 | Fokus | Undangan digital profesional (dimulai dari undangan pernikahan) |
-| Versi | v1.5.0 (The Launch & Commerce Foundation — Stable, tag `v1.5.0`) |
+| Versi | v1.5.1 (Sprint 7 — Security & Commerce Hardening; produksi :3000 masih v1.5.0 — redeploy menunggu persetujuan) |
 | Brand | Kombinasi **Merah** & **Emas** |
 | Karakter Brand | Elegan, Hangat, Romantis, Modern, Premium |
 

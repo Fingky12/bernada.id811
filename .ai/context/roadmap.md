@@ -1,14 +1,14 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Roadmap Context · Category : Context (living document)
-  Version  : 1.6.0 · Status : ✅ Stable · Update : 16-08-2026
+  Version  : 1.6.1 · Status : ✅ Stable · Update : 16-08-2026
 -->
 
 # Roadmap
 
 > Arah pengembangan jangka panjang BERNADA.ID. **Sumber kebenaran tetap** ada di `.docs/roadmap.md`; file ini adalah ringkasan untuk AI agar tidak menebak fase pengembangan.
 >
-> **Sprint terakhir:** Sprint 6 — The Launch & Commerce Foundation (Fase 3, 16-08-2026, ✅ Closed; tag `v1.5.0`).
+> **Sprint aktif:** Sprint 7 — Security & Commerce Hardening (16-08-2026, 🟠 Proses) — Fase 1 audit PASS; Fase 2 F2-01..F2-06 ✅ (21/21); Fase 3 admin verify + entitlement ✅ (15/15); Fase 4 F2-08 order expiry ✅ (15/15). Regression F2 21/21 · Fase 3 15/15 · Sprint 6 38/38. Release **v1.5.1** siap di-commit (redeploy :3000 menunggu persetujuan). **Sprint terakhir:** Sprint 6 (✅ Closed, tag `v1.5.0`).
 
 ---
 

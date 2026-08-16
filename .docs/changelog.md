@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Changelog · Category : Catatan (living document)
-  Version  : 1.6.0 · Status : ✅ Stable · Update : 16-08-2026
+  Version  : 1.7.0 · Status : ✅ Stable · Update : 16-08-2026
 -->
 
 # Changelog
@@ -10,7 +10,34 @@
 
 ---
 
-## 16-08-2026 — Sprint 6 Development: The Launch & Commerce Foundation
+## 16-08-2026 — Sprint 7 · Fase 4 — F2-08 Order Expiry & Release v1.5.1
+
+- ⏳ **F2-08 Order expiry** — order berbayar mendapat `expires_at` saat dibuat (default 24 jam, `ORDER_PAYMENT_EXPIRY_HOURS`, `server/config.js`). Mekanisme **lazy + deterministik tanpa background worker**: `expireOrderIfDue()` (scoped, dipanggil di `getOrderById`) & `expireOverdueOrders()` (sweep global, dipanggil di `listOrders`/`listPayments`).
+- 🔁 **Transisi `pending/awaiting_payment → expired`** — hanya bila `expires_at` terlewat; **order terminal (paid/cancelled/failed/expired) tidak pernah ter-expriy**. Payment pending order yang expired ikut menjadi `expired`.
+- 🛡️ **Guard anti-race** — `createOrderPayment` re-check status+expiry di bawah `SELECT … FOR UPDATE`; `verifyManualPayment` memeriksa `expires_at` di dalam transaksi (order+payment di-expire lalu 409 `ORDER_STATUS_CONFLICT`, persist via commit-before-throw dengan flag `committed`); `UPDATE orders … WHERE status IN ('pending','awaiting_payment')` sebagai backstop konstitusional. Order expired **tidak bisa** dibuatkan payment (409), diverifikasi admin (409), atau dibatalkan (409).
+- ✅ **Verifikasi F2-08 — 15/15 PASS** — `scripts/e2e-sprint7-expiry.mjs` (expires_at konsisten, lazy expiry, guard payment/verify/cancel, boundary belum-expired, paid/cancelled tidak ter-expriy, sweep admin list) di :3004.
+- 🔁 **Full regression — F2 21/21 · Fase 3 15/15 · Sprint 6 38/38 PASS** (masing-masing instance terisolasi) + health check DB connected + **DB bersih** (0 leftover user/order/payment test).
+- 📦 **Release v1.5.1** — bump `package.json`; seluruh perubahan Sprint 7 (F2-01..F2-08, admin verify, entitlement) siap di-deploy ke :3000.
+
+---
+
+## 16-08-2026 — Sprint 7 Development: Security & Commerce Hardening (Fase 1–3)
+
+- 🛡️ **Sprint 7 — Security & Commerce Hardening** (Status: 🟠 Proses — Fase 2, 3 & 4 selesai; F2-08 ✅) — hardening keamanan & race condition + verifikasi pembayaran manual admin + entitlement. Detail: audit Fase 1 → fix F2-01..F2-06 → Fase 3 payment loop.
+- 🔐 **F2-01 JWT algorithm hardening** — `server/lib/jwt.js`: `sign` eksplisit `algorithm:'HS256'`, `verify` membatasi `algorithms:['HS256']` → token `alg:none` / `RS256` ditolak.
+- 🔑 **F2-02 Refresh token race** — `server/services/auth-service.js`: claim refresh atomik `UPDATE … WHERE id AND revoked_at IS NULL RETURNING` → dua refresh konkuren hanya menghasilkan satu token hidup.
+- 🕵️ **F2-03 Refresh token reuse detection** — replay token bekas → revoke seluruh token aktif milik user (family) + 401; sesi user lain tidak terganggu.
+- 🆔 **F2-04 Invitation slug race** — `server/services/invitation-service.js`: catch `23505 invitations_slug_key` → 409 `SLUG_TAKEN` (DB sebagai sumber kebenaran saat create/update konkuren).
+- 🧾 **F2-05 Order idempotency race** — `server/services/order-service.js`: SAVEPOINT + pembedaan constraint `orders_idempotency_key_key` (→ return existing `created:false`) vs `orders_order_number_key` (→ retry); retry dalam transaksi kini valid.
+- 💳 **F2-06 Duplicate pending payment** — migrasi `0011_payments_unique_pending_order.sql` (partial unique index `(order_id) WHERE status='pending'`) + `ON CONFLICT DO NOTHING` + re-query pemenang.
+- ✅ **Verifikasi Fase 2 — 21/21 PASS** — `scripts/test-f2-hardening.mjs` (JWT unit + concurrency refresh/slug/idempotency/payment + reuse) di :3004.
+- 🧑‍💼 **Keputusan #6 S6 — Verifikasi pembayaran manual via admin** — `POST /api/admin/payments/:id/verify` (+ `GET /api/admin/payments` list & filter) di `api/routes/admin.js` + `payment-service.js`; atomik: payment `succeeded`+`paid_at`, order `paid`+`paid_at`, entitlement undangan; guard 401/403/404/409.
+- 🎁 **F2-07 Entitlement `invitations.package_id`** — diisi saat order paid: jalur admin verify (premium) & jalur auto-paid (paket free, di `order-service.js` createOrder); status lifecycle undangan tidak diubah.
+- ✅ **Verifikasi Fase 3 — 15/15 PASS** — `scripts/e2e-sprint7-payment.mjs` (loop penuh order → payment → verify admin → paid → entitlement, guard error, regression) di :3004.
+- 🔁 **Regression Sprint 6 — 38/38 PASS** di instance terisolasi (limiter in-memory di-reset per skrip); F2 hardening tetap 21/21 PASS.
+- 📌 **Catatan operasional** — limiter rate-limit in-memory bersama antar-skrip E2E dalam window 60s: jalankan skrip E2E terhadap instance server segar bila beruntun dalam 1 menit.
+
+---
 
 - 🚀 **Sprint 6 — The Launch & Commerce Foundation** (Status: ✅ Closed) — pricing/paket, order & payment boundary, invitation lifecycle, frontend commerce. Detail: `.docs/sprint-6.md`.
 - 💳 **Pricing & packages** — migrasi `0007_commerce_packages.sql` (tabel `packages` + `package_features`, seed 4 paket `free/basic/premium/exclusive`, harga placeholder `BUSINESS DECISION REQUIRED`); `server/services/package-service.js`; `GET /api/packages` (+ `/:id`) publik, hanya aktif, urut `sortOrder`, fitur ter-sertakan.

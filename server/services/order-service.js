@@ -1,16 +1,17 @@
 import crypto from 'node:crypto';
 import { pool } from '../db.js';
+import { config } from '../config.js';
 import { HttpError } from '../lib/http-error.js';
 import { getActivePackageById } from './package-service.js';
 
-const ORDER_COLUMNS = `
+export const ORDER_COLUMNS = `
   id, order_number, user_id, package_id, invitation_id, amount, currency,
   status, idempotency_key, expires_at, paid_at, created_at, updated_at
 `;
 
 const CANCELLABLE_STATUSES = ['pending', 'awaiting_payment'];
 
-function toOrderDto(row, pkg = null) {
+export function toOrderDto(row, pkg = null) {
   return {
     id: row.id,
     orderNumber: row.order_number,
@@ -65,6 +66,85 @@ async function findByIdentity(identifier, value) {
   return rows.length === 0 ? null : rows[0];
 }
 
+// F2-08 — Order expiry (mekanisme lazy + deterministik, tanpa background worker).
+// Transisi: pending/awaiting_payment → expired, hanya bila expires_at terlewat.
+// Order terminal (paid/cancelled/failed/expired) tidak pernah ter-expriy.
+async function expireOrderRows(client, orderId) {
+  const { rows } = await client.query(
+    `UPDATE orders SET status = 'expired'
+     WHERE id = $1 AND status IN ('pending', 'awaiting_payment')
+       AND expires_at IS NOT NULL AND expires_at <= NOW()
+     RETURNING id`,
+    [orderId],
+  );
+  if (rows.length > 0) {
+    await client.query(
+      `UPDATE payments SET status = 'expired'
+       WHERE order_id = $1 AND status = 'pending'`,
+      [orderId],
+    );
+  }
+  return rows.length > 0;
+}
+
+function isDueForExpiry(row) {
+  if (!row || !row.expires_at) return false;
+  if (!['pending', 'awaiting_payment'].includes(row.status)) return false;
+  return new Date(row.expires_at).getTime() <= Date.now();
+}
+
+// Expiry scoped satu order — dipanggil dari jalur baca/transisi yang menyentuh
+// order, sehingga status expired selalu terlihat konsisten tanpa worker.
+export async function expireOrderIfDue(orderId) {
+  const { rows } = await pool.query(
+    'SELECT status, expires_at FROM orders WHERE id = $1',
+    [orderId],
+  );
+  if (!isDueForExpiry(rows[0])) return false;
+
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const expired = await expireOrderRows(client, orderId);
+    await client.query('COMMIT');
+    return expired;
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
+// Sweep global satu kali — dipakai pada list orders/payments agar status order
+// kedaluwarsa akurat saat dilihat. Deterministik & idempoten.
+export async function expireOverdueOrders() {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    const { rows } = await client.query(
+      `UPDATE orders SET status = 'expired'
+       WHERE status IN ('pending', 'awaiting_payment')
+         AND expires_at IS NOT NULL AND expires_at <= NOW()
+       RETURNING id`,
+    );
+    for (const row of rows) {
+      await client.query(
+        `UPDATE payments SET status = 'expired'
+         WHERE order_id = $1 AND status = 'pending'`,
+        [row.id],
+      );
+    }
+    await client.query('COMMIT');
+    return rows.length;
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
+}
+
 export async function createOrder(userId, { packageId, invitationId, idempotencyKey }) {
   const pkg = await getActivePackageById(packageId);
 
@@ -85,19 +165,23 @@ export async function createOrder(userId, { packageId, invitationId, idempotency
   const autoPaid = Number(pkg.priceAmount) === 0;
   const status = autoPaid ? 'paid' : 'pending';
   const paidAt = autoPaid ? new Date() : null;
+  // F2-08: batas waktu pembayaran ditetapkan saat order dibuat (konsisten untuk
+  // order berbayar — termasuk yang nantinya menjadi 'awaiting_payment').
+  const expiresAt = autoPaid
+    ? null
+    : new Date(Date.now() + config.orderPaymentExpiryHours * 60 * 60 * 1000);
 
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
-    let orderNumber;
-    let inserted = null;
-    for (let attempt = 0; attempt < 5 && !inserted; attempt += 1) {
-      orderNumber = await nextOrderNumber();
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      const orderNumber = await nextOrderNumber();
       try {
+        await client.query('SAVEPOINT order_insert');
         const { rows } = await client.query(
           `INSERT INTO orders
-             (order_number, user_id, package_id, invitation_id, amount, currency, status, idempotency_key, paid_at)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+             (order_number, user_id, package_id, invitation_id, amount, currency, status, idempotency_key, expires_at, paid_at)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
            RETURNING ${ORDER_COLUMNS}`,
           [
             orderNumber,
@@ -108,19 +192,46 @@ export async function createOrder(userId, { packageId, invitationId, idempotency
             pkg.currency,
             status,
             idempotencyKey ?? null,
+            expiresAt,
             paidAt,
           ],
         );
-        inserted = rows[0];
-      } catch (error) {
-        const isUniqueViolation = error?.code === '23505';
-        if (!isUniqueViolation || attempt === 4) {
-          throw error;
+        await client.query('RELEASE SAVEPOINT order_insert');
+        if (rows[0].status === 'paid' && rows[0].invitation_id) {
+          await client.query(
+            `UPDATE invitations SET package_id = $1
+             WHERE id = $2 AND package_id IS DISTINCT FROM $1`,
+            [rows[0].package_id, rows[0].invitation_id],
+          );
         }
+        await client.query('COMMIT');
+        return { order: toOrderDto(rows[0], pkg), created: true };
+      } catch (error) {
+        await client.query('ROLLBACK TO SAVEPOINT order_insert');
+        if (error?.code === '23505' && error?.constraint === 'orders_idempotency_key_key') {
+          // Duplikat idempotency dari request konkuren — DB sebagai sumber kebenaran:
+          // kembalikan order yang sudah menang.
+          const { rows: existingRows } = await client.query(
+            `SELECT ${ORDER_COLUMNS} FROM orders WHERE idempotency_key = $1 LIMIT 1`,
+            [idempotencyKey],
+          );
+          await client.query('COMMIT');
+          const existing = existingRows[0];
+          if (!existing) {
+            throw new HttpError(500, 'INTERNAL_ERROR', 'Konflik idempotency tidak dapat diselesaikan.');
+          }
+          if (existing.user_id !== userId) {
+            throw new HttpError(409, 'IDEMPOTENCY_CONFLICT', 'Kunci idempotency sudah dipakai.');
+          }
+          return { order: toOrderDto(existing), created: false };
+        }
+        if (error?.code === '23505' && error?.constraint === 'orders_order_number_key' && attempt < 4) {
+          continue;
+        }
+        throw error;
       }
     }
-    await client.query('COMMIT');
-    return { order: toOrderDto(inserted, pkg), created: true };
+    throw new HttpError(500, 'INTERNAL_ERROR', 'Gagal membuat nomor order unik.');
   } catch (error) {
     await client.query('ROLLBACK');
     throw error;
@@ -130,6 +241,7 @@ export async function createOrder(userId, { packageId, invitationId, idempotency
 }
 
 export async function getOrderById(userId, orderId) {
+  await expireOrderIfDue(orderId);
   const row = await findByIdentity('id', orderId);
   if (!row || row.user_id !== userId) {
     throw notFound();
@@ -149,6 +261,7 @@ export async function getPackageSummary(packageId) {
 }
 
 export async function listOrders(userId) {
+  await expireOverdueOrders();
   const { rows } = await pool.query(
     `SELECT o.id, o.order_number, o.user_id, o.package_id, o.invitation_id, o.amount, o.currency,
             o.status, o.idempotency_key, o.expires_at, o.paid_at, o.created_at, o.updated_at,
