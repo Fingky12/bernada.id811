@@ -218,3 +218,30 @@ Tool bash opencode (Windows) menganggap tool selesai dari EOF pipe stdout-nya. `
 - ❌ `Start-Process` proses long-running langsung di tool call (terutama yang bikin console baru) — hang; redirect tidak menolong.
 - ❌ Menganggap "Start-Process+redirect TERBUKTI aman" tanpa memeriksa path mana (reuse/spawn) yang benar-benar tereksekusi di DB.
 - ❌ Menyimpulkan tool "kembali" tanpa bukti `time.end` di `opencode.db`.
+
+---
+
+## INC-008 — BOM di package.json dari `Set-Content -Encoding UTF8` (PS 5.1) memecah boot server
+
+- Tanggal: 16-08-2026 (Sprint 6, M7)
+- Severity: high (server tidak bisa boot; menyentuh file JSON inti)
+- Status: ✅ Resolved
+- Referensi: commit `2fa12b1`, `server/config.js:3-5`, `package.json`
+
+**ROOT CAUSE**
+Bump versi `package.json` 1.4.0 → 1.5.0 dilakukan via PowerShell `Set-Content -Encoding UTF8`. Windows PowerShell 5.1 `-Encoding UTF8` menulis **BOM (U+FEFF, byte EF BB BF)** di awal file. `server/config.js` melakukan `JSON.parse(readFileSync('../package.json','utf8'))` tanpa strip BOM → `SyntaxError: Unexpected token '﻿'` → semua instance gagal boot.
+
+**EVIDENCE**
+`%TEMP%\opencode\bernada-api-3004.err.log`: `SyntaxError: Unexpected token '﻿', "{" ... is not valid JSON at JSON.parse (server/config.js:3:26)`; byte pertama file: `239 187 191` (EF BB BF); `start-api.ps1 -Port 3004` → `NODE-EXITED-EARLY`. Efek kedua: PS 5.1 `Get-Content -Raw` (ANSI default) membaca em-dash UTF-8 sebagai mojibake lalu menulis kembali → deskripsi `—` ter-double-encode.
+
+**FIX**
+- Hapus BOM: baca `[System.IO.File]::ReadAllText` (UTF-8), `TrimStart([char]0xFEFF)`, tulis `[System.IO.File]::WriteAllText` dengan `[System.Text.UTF8Encoding]::new($false)` (no BOM).
+- Perbaiki deskripsi yang ter-double-encode dengan Edit tool (writes UTF-8 bersih).
+
+**VERIFICATION**
+Byte pertama file kembali `123` (`{`); `node -e "require('./package.json')"` → `JSON OK, version = 1.5.0`; `& .\scripts\start-api.ps1 -Port 3004` → `STARTED / HEALTH=OK / DB=CONNECTED`; E2E Sprint 6 **38/38 PASS** di instance tersebut; `git diff package.json` hanya menampilkan perubahan versi.
+
+**DO NOT REPEAT**
+- ❌ Memakai `Set-Content`/`Out-File -Encoding UTF8` untuk file berbasis teks program (JSON/JS/HTML) — PS 5.1 menyisipkan BOM. Gunakan Edit/Write tool, atau `[System.IO.File]::WriteAllText($path, $text, [System.Text.UTF8Encoding]::new($false))`.
+- ❌ Membaca file UTF-8 tanpa BOM via `Get-Content -Raw` default (PS 5.1 memakai ANSI) lalu menulis ulang — double-encode karakter non-ASCII.
+- ❌ Meng-edit `package.json` via shell — server mem-parsing file ini saat boot; selalu verifikasi dengan `node -e "require('./package.json')"` setelah menyentuhnya.
