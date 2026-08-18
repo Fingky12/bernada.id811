@@ -176,6 +176,23 @@
   --color-overlay-dark: rgba(20, 8, 8, 0.5);              /* peredam gelap lebih kuat */
 
   /* ------------------------------------------
+    GLASS EFFECT
+    Efek glassmorphism untuk card translusen.
+  ------------------------------------------ */
+
+  --color-glass-bg: rgba(255, 255, 255, 0.35);            /* latar belakang translusen */
+  --color-glass-border: rgba(255, 255, 255, 0.3);         /* border translusen */
+
+  /* ------------------------------------------
+    FOCUS RING (FORM)
+    Warna focus ring untuk input form berdasarkan status.
+  ------------------------------------------ */
+
+  --color-focus-ring-primary: rgba(161, 40, 40, 0.15);    /* ring fokus default (merah) */
+  --color-focus-ring-danger: rgba(239, 68, 68, 0.15);     /* ring fokus error */
+  --color-focus-ring-success: rgba(16, 185, 129, 0.15);   /* ring fokus sukses */
+
+  /* ------------------------------------------
     BACKWARD COMPATIBILITY ALIAS
     Alias nama variabel lama agar komponen yang sudah ada
     tetap berfungsi. Kode baru sebaiknya memakai awalan --color-.

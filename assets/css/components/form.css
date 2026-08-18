@@ -48,7 +48,7 @@
 
 .input:focus {
     border-color: var(--color-primary-500);
-    box-shadow: 0 0 0 4px rgba(161, 40, 40, 0.15);
+    box-shadow: 0 0 0 4px var(--color-focus-ring-primary);
     outline: none;
 }
 
@@ -74,7 +74,7 @@
 
 .input-error:focus {
     border-color: var(--color-danger-500);
-    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.15);
+    box-shadow: 0 0 0 4px var(--color-focus-ring-danger);
 }
 
 /* ------------------------------------------
@@ -88,7 +88,7 @@
 
 .input-success:focus {
     border-color: var(--color-success-500);
-    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15);
+    box-shadow: 0 0 0 4px var(--color-focus-ring-success);
 }
 
 

@@ -30,10 +30,14 @@ const corsOrigin = getEnv('CORS_ORIGIN', env === 'production' ? '' : '*');
 // JWT_SECRET wajib diisi pada production.
 // Di development, jika tidak di-set, dipakai default 'dev-secret-bernada-jangan-dipakai-produksi'
 // HANYA untuk keperluan lokal. Jangan pernah memakai nilai default ini di environment lain.
-const jwtSecret = getEnv('JWT_SECRET', env === 'production' ? '' : 'dev-secret-bernada-jangan-dipakai-produksi');
+const JWT_DEV_DEFAULT = 'dev-secret-bernada-jangan-dipakai-produksi';
+const jwtSecret = getEnv('JWT_SECRET', env === 'production' ? '' : JWT_DEV_DEFAULT);
 
 if (env === 'production' && !jwtSecret) {
   throw new Error('Environment variable JWT_SECRET wajib diisi pada mode production.');
+}
+if (jwtSecret === JWT_DEV_DEFAULT && env !== 'development') {
+  throw new Error('JWT_SECRET tidak boleh memakai default dev di environment selain development.');
 }
 
 export const config = {

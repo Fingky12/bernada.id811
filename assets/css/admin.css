@@ -36,7 +36,7 @@
 }
 
 .stat-card .stat-value {
-    font-family: var(--font-family-display);
+    font-family: var(--font-family-heading);
     font-size: var(--font-size-2xl);
     font-weight: var(--font-weight-bold);
     color: var(--color-gray-900);
@@ -298,7 +298,7 @@
 }
 
 .admin-detail-name {
-    font-family: var(--font-family-display);
+    font-family: var(--font-family-heading);
     font-size: var(--font-size-xl);
     color: var(--color-gray-900);
 }
@@ -333,7 +333,7 @@
 }
 
 .admin-detail-stat strong {
-    font-family: var(--font-family-display);
+    font-family: var(--font-family-heading);
     font-size: var(--font-size-lg);
     color: var(--color-gray-900);
 }
