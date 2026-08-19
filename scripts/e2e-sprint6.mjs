@@ -93,7 +93,7 @@ async function run() {
   const codes = pkgList.map((p) => p.code);
   record(
     'GET /api/packages (list aktif, urut sortOrder, fitur)',
-    packages.ok && codes.join(',') === 'free,basic,premium,exclusive'
+    packages.ok && codes.join(',') === 'basic,premium,exclusive'
       && pkgList.every((p) => p.isActive === true && Array.isArray(p.features)),
     `status=${packages.status} codes=${codes.join(',')} count=${pkgList.length}`,
   );
@@ -103,7 +103,7 @@ async function run() {
   const pkgDetail = await api(`/api/packages/${premium.id}`);
   record(
     'GET /api/packages/:id (detail + fitur)',
-    pkgDetail.ok && pkgDetail.data?.package?.priceAmount === 99000
+    pkgDetail.ok && pkgDetail.data?.package?.priceAmount === 129000
       && pkgDetail.data?.package?.features?.length >= 1,
     `status=${pkgDetail.status} price=${pkgDetail.data?.package?.priceAmount}`,
   );
@@ -149,7 +149,7 @@ async function run() {
   record(
     'POST /api/orders (premium → pending, amount server)',
     order1.ok && order1.data?.created === true
-      && premiumOrder?.amount === 99000 && premiumOrder?.status === 'pending'
+      && premiumOrder?.amount === 129000 && premiumOrder?.status === 'pending'
       && /^ORD-\d{8}-[0-9A-F]{4}$/.test(premiumOrder?.orderNumber ?? '')
       && premiumOrder?.package?.code === 'premium',
     `status=${order1.status} amount=${premiumOrder?.amount} orderNumber=${premiumOrder?.orderNumber}`,
@@ -169,19 +169,19 @@ async function run() {
     `status=${order1dup.status} created=${order1dup.data?.created}`,
   );
 
-  // --- 9. Manipulasi amount diabaikan (paket free → auto-paid) -------------
-  const freePkg = pkgList.find((p) => p.code === 'free');
-  const orderFree = await api('/api/orders', {
+  // --- 9. Manipulasi amount diabaikan (paket basic → pending, amount server) --
+  const basicPkg = pkgList.find((p) => p.code === 'basic');
+  const orderBasic = await api('/api/orders', {
     method: 'POST',
     token: tokenA,
-    body: { packageId: freePkg.id, amount: 500000, price: 999999, idempotencyKey: `s6-free-${Date.now()}` },
+    body: { packageId: basicPkg.id, amount: 500000, price: 999999, idempotencyKey: `s6-basic-${Date.now()}` },
     expect: 201,
   });
-  const freeOrder = orderFree.data?.order;
+  const basicOrder = orderBasic.data?.order;
   record(
-    'POST /api/orders (amount tampering diabaikan; free → auto-paid)',
-    orderFree.ok && freeOrder?.amount === 0 && freeOrder?.status === 'paid' && !!freeOrder?.paidAt,
-    `status=${orderFree.status} amount=${freeOrder?.amount} status=${freeOrder?.status}`,
+    'POST /api/orders (amount tampering diabaikan; basic → pending, amount server)',
+    orderBasic.ok && basicOrder?.amount === 77000 && basicOrder?.status === 'pending' && basicOrder?.package?.code === 'basic',
+    `status=${orderBasic.status} amount=${basicOrder?.amount} status=${basicOrder?.status}`,
   );
 
   // --- 10. Paket invalid → 404 ----------------------------------------------
@@ -214,7 +214,7 @@ async function run() {
   const foundIds = orderList.data?.orders?.map((o) => o.id);
   record(
     'GET /api/orders (list milik user)',
-    orderList.ok && foundIds.includes(premiumOrder?.id) && foundIds.includes(freeOrder?.id),
+    orderList.ok && foundIds.includes(premiumOrder?.id) && foundIds.includes(basicOrder?.id),
     `status=${orderList.status} count=${orderList.data?.orders?.length}`,
   );
 
@@ -223,7 +223,7 @@ async function run() {
   record(
     'GET /api/orders/:id (detail)',
     orderDetail.ok && orderDetail.data?.order?.id === premiumOrder.id
-      && orderDetail.data?.order?.amount === 99000,
+      && orderDetail.data?.order?.amount === 129000,
     `status=${orderDetail.status}`,
   );
 
@@ -281,28 +281,32 @@ async function run() {
   record(
     'GET /api/orders/:id/payment (detail)',
     payGet.ok && payGet.data?.payment?.status === 'pending'
-      && payGet.data?.payment?.amount === 99000,
+      && payGet.data?.payment?.amount === 129000,
     `status=${payGet.status} amount=${payGet.data?.payment?.amount}`,
   );
 
-  // --- 19. Order free (auto-paid) → payment 409 ALREADY_PAID -------------------
-  const payFree = await api(`/api/orders/${freeOrder.id}/payment`, {
+  // --- 19. Order basic (pending) → payment 409 ALREADY_PAID jika sudah ada ------
+  const payBasic = await api(`/api/orders/${basicOrder.id}/payment`, {
     method: 'POST',
     token: tokenA,
-    expect: 409,
+    expect: 201,
   });
   record(
-    'POST payment (order free auto-paid → 409 ALREADY_PAID)',
-    payFree.ok && payFree.data?.error?.code === 'ALREADY_PAID',
-    `status=${payFree.status} code=${payFree.data?.error?.code}`,
+    'POST payment (order basic pending → 201 created)',
+    payBasic.ok && payBasic.data?.created === true && payBasic.data?.payment?.status === 'pending',
+    `status=${payBasic.status} created=${payBasic.data?.created}`,
   );
 
-  // --- 20. Payment tidak ada → null ---------------------------------------------
-  const payNull = await api(`/api/orders/${freeOrder.id}/payment`, { token: tokenA });
+  // --- 20. Payment duplicate basic → created:false -----------------------------
+  const payBasicDup = await api(`/api/orders/${basicOrder.id}/payment`, {
+    method: 'POST',
+    token: tokenA,
+    expect: 200,
+  });
   record(
-    'GET /api/orders/:id/payment (belum ada → null)',
-    payNull.ok && payNull.data?.payment === null,
-    `status=${payNull.status} payment=${JSON.stringify(payNull.data?.payment)}`,
+    'POST payment (basic duplicate → created:false)',
+    payBasicDup.ok && payBasicDup.data?.created === false,
+    `status=${payBasicDup.status} created=${payBasicDup.data?.created}`,
   );
 
   // --- 21. Cancel order → pending/awaiting_payment ------------------------------
@@ -558,7 +562,7 @@ async function run() {
   // --- 38. Rate limit payment: burst 6 POST payment → ≥1 × 429 -----------------------------
   const burstPayCodes = [];
   for (let i = 0; i < 6; i += 1) {
-    burstPayCodes.push(await rawApi(`/api/orders/${freeOrder.id}/payment`, { token: tokenA }));
+    burstPayCodes.push(await rawApi(`/api/orders/${basicOrder.id}/payment`, { token: tokenA }));
   }
   record(
     'Rate limit POST /api/orders/:id/payment (burst 6 → ≥1 × 429)',

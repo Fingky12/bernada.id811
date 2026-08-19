@@ -209,6 +209,8 @@ async function loadInvitations() {
 
 async function loadTemplates() {
   templates = await api.listTemplates();
+  const tierLabel = { basic: 'Basic', premium: 'Premium', exclusive: 'Eksklusif' };
+  const tierClass = { basic: 'badge-neutral', premium: 'badge-warning', exclusive: 'badge-primary' };
   elements.templateGrid.innerHTML = templates
     .map((template) => `
       <label class="template-option" data-template-id="${template.id}">
@@ -216,6 +218,7 @@ async function loadTemplates() {
         <span class="template-option-check" aria-hidden="true">✓</span>
         <img class="template-option-thumb" src="${escapeHtml(template.previewUrl)}" alt="${escapeHtml(template.name)}" loading="lazy">
         <span class="template-option-name">${escapeHtml(template.name)}</span>
+        ${template.tier ? `<span class="badge badge-sm ${tierClass[template.tier] || 'badge-neutral'}">${tierLabel[template.tier] || template.tier}</span>` : ''}
       </label>`)
     .join('');
 

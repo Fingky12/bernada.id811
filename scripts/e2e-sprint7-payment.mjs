@@ -99,7 +99,7 @@ async function run() {
   const packages = await api('/api/packages');
   const pkgList = packages.data?.packages ?? [];
   const premium = pkgList.find((p) => p.code === 'premium');
-  const freePkg = pkgList.find((p) => p.code === 'free');
+  const basicPkg = pkgList.find((p) => p.code === 'basic');
 
   // --- 3. Buat undangan (packageId null, status draft) ------------------------
   const slugA = `s7-${Date.now().toString(36)}`;
@@ -250,27 +250,37 @@ async function run() {
   });
   record('POST verify (payment tidak ada → 404)', verify404.ok && verify404.data?.error?.code === 'NOT_FOUND', `status=${verify404.status}`);
 
-  // --- 11. Entitlement jalur free auto-paid (tanpa admin) ---------------------------
-  const slugFree = `s7-free-${Date.now().toString(36)}`;
-  const invFree = await api('/api/invitations', {
+  // --- 11. Entitlement jalur basic + admin verify ---------------------------
+  const slugBasic = `s7-basic-${Date.now().toString(36)}`;
+  const invBasic = await api('/api/invitations', {
     method: 'POST',
     token: tokenA,
-    body: { title: 'E2E7 Free Entitlement', slug: slugFree, templateId: templates.data.templates[0].id },
+    body: { title: 'E2E7 Basic Entitlement', slug: slugBasic, templateId: templates.data.templates[0].id },
     expect: 201,
   });
-  const invFreeId = invFree.data?.invitation?.id;
-  const orderFree = await api('/api/orders', {
+  const invBasicId = invBasic.data?.invitation?.id;
+  const orderBasic = await api('/api/orders', {
     method: 'POST',
     token: tokenA,
-    body: { packageId: freePkg.id, invitationId: invFreeId, idempotencyKey: `s7-free-${Date.now()}` },
+    body: { packageId: basicPkg.id, invitationId: invBasicId, idempotencyKey: `s7-basic-${Date.now()}` },
     expect: 201,
   });
-  const invAfterFree = await api(`/api/invitations/${invFreeId}`, { token: tokenA });
+  const payBasic = await api(`/api/orders/${orderBasic.data?.order?.id}/payment`, {
+    method: 'POST',
+    token: tokenA,
+    expect: 201,
+  });
+  const verifyBasic = await api(`/api/admin/payments/${payBasic.data?.payment?.id}/verify`, {
+    method: 'POST',
+    token: tokenC,
+    expect: 200,
+  });
+  const invAfterBasic = await api(`/api/invitations/${invBasicId}`, { token: tokenA });
   record(
-    'F2-07 free auto-paid → invitation.packageId = free (tanpa admin)',
-    orderFree.ok && orderFree.data?.order?.status === 'paid'
-      && invAfterFree.data?.invitation?.packageId === freePkg.id,
-    `orderStatus=${orderFree.data?.order?.status} packageId=${invAfterFree.data?.invitation?.packageId}`,
+    'F2-07 basic + admin verify → invitation.packageId = basic',
+    verifyBasic.ok && verifyBasic.data?.order?.status === 'paid'
+      && invAfterBasic.data?.invitation?.packageId === basicPkg.id,
+    `orderStatus=${verifyBasic.data?.order?.status} packageId=${invAfterBasic.data?.invitation?.packageId}`,
   );
 
   // --- 12. Admin list payments (filter & konten) --------------------------------------

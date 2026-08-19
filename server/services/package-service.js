@@ -3,7 +3,7 @@ import { HttpError } from '../lib/http-error.js';
 
 const PACKAGE_COLUMNS = `
   id, code, name, description, price_amount, currency,
-  is_active, sort_order, created_at, updated_at
+  is_active, sort_order, tier, created_at, updated_at
 `;
 
 function toPackageDto(row, features = []) {
@@ -16,6 +16,7 @@ function toPackageDto(row, features = []) {
     currency: row.currency,
     isActive: row.is_active,
     sortOrder: row.sort_order,
+    tier: row.tier,
     features,
     createdAt: row.created_at,
     updatedAt: row.updated_at,

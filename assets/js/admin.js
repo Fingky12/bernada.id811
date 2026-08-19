@@ -18,11 +18,13 @@ const elements = {
   logoutBtn: document.getElementById('logout-btn'),
   tabs: {
     summary: document.getElementById('tab-summary'),
+    payments: document.getElementById('tab-payments'),
     invitations: document.getElementById('tab-invitations'),
     guestbook: document.getElementById('tab-guestbook'),
   },
   panels: {
     summary: document.getElementById('panel-summary'),
+    payments: document.getElementById('panel-payments'),
     invitations: document.getElementById('panel-invitations'),
     guestbook: document.getElementById('panel-guestbook'),
   },
@@ -63,6 +65,25 @@ const elements = {
     next: document.getElementById('gb-next-page'),
     info: document.getElementById('gb-page-info'),
   },
+  payments: {
+    search: document.getElementById('pay-search'),
+    status: document.getElementById('pay-status'),
+    tbody: document.getElementById('payments-tbody'),
+    empty: document.getElementById('payments-empty'),
+    prev: document.getElementById('pay-prev-page'),
+    next: document.getElementById('pay-next-page'),
+    info: document.getElementById('pay-page-info'),
+  },
+  pendingPaymentsCard: document.getElementById('stat-pending-payments-card'),
+  pendingPayments: document.getElementById('stat-pending-payments'),
+  paymentDetailModal: document.getElementById('payment-detail-modal'),
+  paymentDetailBody: document.getElementById('payment-detail-body'),
+  closePaymentDetail: document.getElementById('close-payment-detail'),
+  verifyConfirmModal: document.getElementById('verify-confirm-modal'),
+  verifyConfirmBody: document.getElementById('verify-confirm-body'),
+  verifyConfirmBtn: document.getElementById('verify-confirm-btn'),
+  verifyCancel: document.getElementById('verify-cancel'),
+  closeVerifyConfirm: document.getElementById('close-verify-confirm'),
 };
 
 const state = {
@@ -70,9 +91,11 @@ const state = {
   users: { search: '', role: '', page: 1, pageSize: 20, total: 0 },
   invitations: { search: '', status: '', page: 1, pageSize: 20, total: 0 },
   guestbook: { search: '', page: 1, pageSize: 20, total: 0 },
+  payments: { search: '', status: '', page: 1, pageSize: 20, total: 0 },
+  pendingVerifyId: null,
 };
 
-const TAB_KEYS = ['summary', 'invitations', 'guestbook'];
+const TAB_KEYS = ['summary', 'payments', 'invitations', 'guestbook'];
 
 const toast = document.getElementById('toast');
 let toastTimer = null;
@@ -112,6 +135,17 @@ function attendanceBadge(attendance) {
     : '<span class="badge badge-danger badge-sm">Tidak Hadir</span>';
 }
 
+function paymentStatusBadge(status) {
+  const map = {
+    pending: 'badge-warning',
+    succeeded: 'badge-success',
+    failed: 'badge-danger',
+    expired: 'badge-neutral',
+  };
+  const label = { pending: 'Menunggu', succeeded: 'Selesai', failed: 'Gagal', expired: 'Kedaluwarsa' };
+  return `<span class="badge ${map[status] || 'badge-neutral'} badge-sm">${label[status] || status}</span>`;
+}
+
 function updatePagination({ current, total, pageSize }, elements) {
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
   elements.prev.disabled = current <= 1;
@@ -135,6 +169,7 @@ function renderStats(stats) {
   set(elements.stats.guests, stats.guests);
   set(elements.stats.giftAccounts, stats.giftAccounts);
   set(elements.stats.giftActive, `(${stats.giftAccountsActive} aktif)`);
+  set(elements.pendingPayments, stats.pendingPayments ?? 0);
 }
 
 async function loadStats() {
@@ -346,6 +381,135 @@ async function deleteGuestbookEntry(entryId) {
 }
 
 /* ==========================================================
+    Pembayaran — admin moderation
+  ========================================================== */
+
+function formatDateShort(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
+    + ' ' + d.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+}
+
+function formatCurrency(amount) {
+  return 'Rp ' + Number(amount).toLocaleString('id-ID');
+}
+
+function renderPayments(payments) {
+  elements.payments.tbody.innerHTML = payments
+    .map(
+      (p) => `
+        <tr>
+          <td>
+            <span class="admin-title">${escapeHtml(p.order?.orderNumber || '—')}</span>
+            <span class="admin-subtext">${escapeHtml(p.order?.status || '')}</span>
+          </td>
+          <td>${escapeHtml(p.ownerEmail || '—')}</td>
+          <td>${escapeHtml(p.order?.package?.name || '—')}</td>
+          <td>
+            <span class="admin-title">${escapeHtml(p.paymentReference || '—')}</span>
+            <span class="admin-subtext">${escapeHtml(p.provider || '')}</span>
+          </td>
+          <td>${paymentStatusBadge(p.status)}</td>
+          <td>${formatDateShort(p.createdAt)}</td>
+          <td class="admin-actions">
+            <button type="button" class="btn btn-ghost btn-sm admin-link" data-action="detail-payment" data-payment-id="${p.id}">Detail</button>
+            ${p.status === 'pending'
+              ? `<button type="button" class="btn btn-primary btn-sm" data-action="verify-payment" data-payment-id="${p.id}" data-payment-ref="${escapeHtml(p.paymentReference || '')}">Verifikasi</button>`
+              : ''}
+          </td>
+        </tr>`,
+    )
+    .join('');
+
+  elements.payments.empty.classList.toggle('d-none', payments.length > 0);
+  updatePagination(state.payments, elements.payments);
+}
+
+async function loadPayments() {
+  const data = await api.listAdminPayments({
+    search: state.payments.search,
+    status: state.payments.status,
+    page: state.payments.page,
+    pageSize: state.payments.pageSize,
+  });
+  state.payments.total = data.total;
+  state.payments.list = data.payments;
+  renderPayments(data.payments);
+}
+
+function openPaymentDetail(payment) {
+  const body = elements.paymentDetailBody;
+  body.innerHTML = `
+    <div class="payment-detail-section">
+      <div class="payment-detail-section-title">Informasi Pembayaran</div>
+      <div class="payment-detail-row"><span class="payment-detail-label">ID Pembayaran</span><span class="payment-detail-value">${escapeHtml(String(payment.id))}</span></div>
+      <div class="payment-detail-row"><span class="payment-detail-label">Referensi</span><span class="payment-detail-value">${escapeHtml(payment.paymentReference || '—')}</span></div>
+      <div class="payment-detail-row"><span class="payment-detail-label">Provider</span><span class="payment-detail-value">${escapeHtml(payment.provider || '—')}</span></div>
+      <div class="payment-detail-row"><span class="payment-detail-label">Status</span><span class="payment-detail-value">${paymentStatusBadge(payment.status)}</span></div>
+      <div class="payment-detail-row"><span class="payment-detail-label">Jumlah</span><span class="payment-detail-value">${formatCurrency(payment.amount)}</span></div>
+      <div class="payment-detail-row"><span class="payment-detail-label">Mata Uang</span><span class="payment-detail-value">${escapeHtml(payment.currency || 'IDR')}</span></div>
+      <div class="payment-detail-row"><span class="payment-detail-label">Dibuat</span><span class="payment-detail-value">${formatDateShort(payment.createdAt)}</span></div>
+      ${payment.paidAt ? `<div class="payment-detail-row"><span class="payment-detail-label">Dibayar</span><span class="payment-detail-value">${formatDateShort(payment.paidAt)}</span></div>` : ''}
+    </div>
+    <div class="payment-detail-section">
+      <div class="payment-detail-section-title">Informasi Order</div>
+      <div class="payment-detail-row"><span class="payment-detail-label">Order</span><span class="payment-detail-value">${escapeHtml(payment.order?.orderNumber || '—')}</span></div>
+      <div class="payment-detail-row"><span class="payment-detail-label">Status Order</span><span class="payment-detail-value">${escapeHtml(payment.order?.status || '—')}</span></div>
+      <div class="payment-detail-row"><span class="payment-detail-label">Paket</span><span class="payment-detail-value">${escapeHtml(payment.order?.package?.name || '—')}</span></div>
+      <div class="payment-detail-row"><span class="payment-detail-label">Pelanggan</span><span class="payment-detail-value">${escapeHtml(payment.ownerEmail || '—')}</span></div>
+    </div>
+    ${payment.metadata && Object.keys(payment.metadata).length > 0 ? `
+    <div class="payment-detail-section">
+      <div class="payment-detail-section-title">Metadata</div>
+      <pre style="margin:0;padding:var(--spacing-sm);background:var(--color-gray-50);border-radius:var(--border-radius-sm);font-size:var(--font-size-xs);overflow-x:auto;white-space:pre-wrap">${escapeHtml(JSON.stringify(payment.metadata, null, 2))}</pre>
+    </div>` : ''}
+  `;
+  elements.paymentDetailModal.hidden = false;
+  document.body.style.overflow = 'hidden';
+}
+
+function closePaymentDetailModal() {
+  elements.paymentDetailModal.hidden = true;
+  document.body.style.overflow = '';
+}
+
+function openVerifyConfirm(paymentId, ref) {
+  state.pendingVerifyId = paymentId;
+  elements.verifyConfirmBody.innerHTML = `
+    <p>Anda akan memverifikasi pembayaran ini:</p>
+    <p style="margin-top:var(--spacing-sm)"><strong>${escapeHtml(ref || '—')}</strong></p>
+    <p style="margin-top:var(--spacing-sm);color:var(--color-gray-600);font-size:var(--font-size-sm)">
+      Pembayaran akan ditandai berhasil dan order akan diaktifkan.
+    </p>
+  `;
+  elements.verifyConfirmModal.hidden = false;
+  document.body.style.overflow = 'hidden';
+}
+
+function closeVerifyConfirmModal() {
+  elements.verifyConfirmModal.hidden = true;
+  elements.verifyConfirmBtn.disabled = false;
+  state.pendingVerifyId = null;
+  document.body.style.overflow = '';
+}
+
+async function confirmVerifyPayment() {
+  const id = state.pendingVerifyId;
+  if (!id) return;
+  elements.verifyConfirmBtn.disabled = true;
+  try {
+    await api.verifyAdminPayment(id);
+    showToast('Pembayaran berhasil diverifikasi.', 'success');
+    closeVerifyConfirmModal();
+    await Promise.all([loadStats(), loadPayments()]);
+  } catch (error) {
+    showToast(error.message);
+    elements.verifyConfirmBtn.disabled = false;
+  }
+}
+
+/* ==========================================================
     Tab & event binding
   ========================================================== */
 
@@ -356,7 +520,9 @@ function showTab(which) {
     elements.tabs[key].setAttribute('aria-selected', String(active));
     elements.panels[key].classList.toggle('d-none', !active);
   }
-  if (which === 'invitations') {
+  if (which === 'payments') {
+    loadPayments().catch((error) => showToast(error.message));
+  } else if (which === 'invitations') {
     loadInvitations().catch((error) => showToast(error.message));
   } else if (which === 'guestbook') {
     loadGuestbook().catch((error) => showToast(error.message));
@@ -365,6 +531,7 @@ function showTab(which) {
 
 function wireEvents() {
   elements.tabs.summary.addEventListener('click', () => showTab('summary'));
+  elements.tabs.payments.addEventListener('click', () => showTab('payments'));
   elements.tabs.invitations.addEventListener('click', () => showTab('invitations'));
   elements.tabs.guestbook.addEventListener('click', () => showTab('guestbook'));
 
@@ -462,6 +629,72 @@ function wireEvents() {
       deleteGuestbookEntry(button.dataset.entryId);
     }
   });
+
+  const searchPayments = debounce(() => {
+    state.payments.search = elements.payments.search.value.trim();
+    state.payments.page = 1;
+    loadPayments().catch((error) => showToast(error.message));
+  });
+  elements.payments.search.addEventListener('input', searchPayments);
+
+  elements.payments.status.addEventListener('change', () => {
+    state.payments.status = elements.payments.status.value;
+    state.payments.page = 1;
+    loadPayments().catch((error) => showToast(error.message));
+  });
+
+  elements.payments.prev.addEventListener('click', () => {
+    if (state.payments.page > 1) {
+      state.payments.page -= 1;
+      loadPayments().catch((error) => showToast(error.message));
+    }
+  });
+
+  elements.payments.next.addEventListener('click', () => {
+    state.payments.page += 1;
+    loadPayments().catch((error) => showToast(error.message));
+  });
+
+  elements.payments.tbody.addEventListener('click', (event) => {
+    const detailBtn = event.target.closest('[data-action="detail-payment"]');
+    if (detailBtn) {
+      const paymentId = detailBtn.dataset.paymentId;
+      const payment = (state.payments.list || []).find((p) => String(p.id) === paymentId);
+      if (payment) openPaymentDetail(payment);
+      return;
+    }
+    const verifyBtn = event.target.closest('[data-action="verify-payment"]');
+    if (verifyBtn) {
+      openVerifyConfirm(verifyBtn.dataset.paymentId, verifyBtn.dataset.paymentRef);
+    }
+  });
+
+  elements.closePaymentDetail.addEventListener('click', closePaymentDetailModal);
+  elements.paymentDetailModal.addEventListener('click', (e) => {
+    if (e.target === elements.paymentDetailModal) closePaymentDetailModal();
+  });
+
+  elements.closeVerifyConfirm.addEventListener('click', closeVerifyConfirmModal);
+  elements.verifyCancel.addEventListener('click', closeVerifyConfirmModal);
+  elements.verifyConfirmModal.addEventListener('click', (e) => {
+    if (e.target === elements.verifyConfirmModal) closeVerifyConfirmModal();
+  });
+  elements.verifyConfirmBtn.addEventListener('click', confirmVerifyPayment);
+
+  if (elements.pendingPaymentsCard) {
+    elements.pendingPaymentsCard.addEventListener('click', () => {
+      state.payments.status = 'pending';
+      elements.payments.status.value = 'pending';
+      state.payments.page = 1;
+      showTab('payments');
+    });
+    elements.pendingPaymentsCard.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        elements.pendingPaymentsCard.click();
+      }
+    });
+  }
 
   elements.logoutBtn.addEventListener('click', async () => {
     await api.logout();

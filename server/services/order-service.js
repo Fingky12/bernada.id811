@@ -24,7 +24,7 @@ export function toOrderDto(row, pkg = null) {
     idempotencyKey: row.idempotency_key,
     expiresAt: row.expires_at,
     paidAt: row.paid_at,
-    package: pkg ? { id: pkg.id, code: pkg.code, name: pkg.name } : null,
+    package: pkg ? { id: pkg.id, code: pkg.code, name: pkg.name, tier: pkg.tier } : null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -254,7 +254,7 @@ export async function getOrderById(userId, orderId) {
 
 export async function getPackageSummary(packageId) {
   const { rows } = await pool.query(
-    'SELECT id, code, name FROM packages WHERE id = $1',
+    'SELECT id, code, name, tier FROM packages WHERE id = $1',
     [packageId],
   );
   return rows.length === 0 ? null : rows[0];
@@ -265,7 +265,7 @@ export async function listOrders(userId) {
   const { rows } = await pool.query(
     `SELECT o.id, o.order_number, o.user_id, o.package_id, o.invitation_id, o.amount, o.currency,
             o.status, o.idempotency_key, o.expires_at, o.paid_at, o.created_at, o.updated_at,
-            p.code AS package_code, p.name AS package_name
+            p.code AS package_code, p.name AS package_name, p.tier AS package_tier
      FROM orders o
      LEFT JOIN packages p ON p.id = o.package_id
      WHERE o.user_id = $1
@@ -277,6 +277,7 @@ export async function listOrders(userId) {
     id: row.package_id,
     code: row.package_code,
     name: row.package_name,
+    tier: row.package_tier,
   }));
 }
 

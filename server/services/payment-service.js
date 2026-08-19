@@ -211,7 +211,8 @@ export async function listPayments({ status = '', search = '', limit = 20, offse
             u.email AS owner_email,
             pk.id AS package_id,
             pk.code AS package_code,
-            pk.name AS package_name
+            pk.name AS package_name,
+            pk.tier AS package_tier
        FROM payments p
        LEFT JOIN orders o ON o.id = p.order_id
        LEFT JOIN users u ON u.id = o.user_id
@@ -234,6 +235,7 @@ export async function listPayments({ status = '', search = '', limit = 20, offse
               id: row.package_id,
               code: row.package_code,
               name: row.package_name,
+              tier: row.package_tier,
             }
           : null,
       },

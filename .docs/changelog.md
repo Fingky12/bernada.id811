@@ -10,6 +10,31 @@
 
 ---
 
+## 19-08-2026 — Pricing Tier Refactor (Sprint 8 extension)
+
+- 💰 **Pricing tier refactor** — model 4-package (free/basic/premium/exclusive) → 3-tier (basic=Rp77.000, premium=Rp129.000, exclusive=Rp279.000). Harga final sudah ditentukan owner.
+- 🏷️ **Template tier mapping** — setiap template mendapat kolom `tier` (basic/premium/exclusive). Theme → Tier → Price.
+- 🗄️ **Migrasi 0013** — `templates.tier`, `packages.tier`, update harga, deactivate `free` package. Tidak ada destructive change.
+- 🔗 **Trust chain dipertahankan** — `packages.price_amount → orders.amount → payments.amount`. Order lama tetap price snapshot.
+- 🎨 **Frontend update** — landing pricing render 3 tier, builder tampilkan tier badge pada template.
+- 🧪 **E2E update** — hardcoded `99000` → `129000`, free auto-paid tests → basic + admin verify. 114/114 PASS.
+- ✅ **Full regression** — Sprint 6 38/38 + Sprint 7 Payment 15/15 + Sprint 7 Expiry 15/15 + F2 Hardening 21/21 + Sprint 5 25/25.
+
+---
+
+## 19-08-2026 — Sprint 8 — Admin Payment UI
+
+- 🧑‍💼 **Sprint 8 — Admin Payment UI** (Status: 🟠 In Progress) — menghubungkan tab Pembayaran di admin panel dengan backend payment service.
+- 📋 **8.1 Admin Payment List** — tab "Pembayaran" aktif di admin panel; tabel dengan kolom Order/Pelanggan/Paket/Referensi/Status/Waktu/Aksi; filter by status (pending/succeeded/failed/expired); search by email; pagination.
+- 🔍 **8.2 Payment Detail** — modal detail pembayaran: info pembayaran (ID, referensi, provider, status, jumlah, mata uang, waktu) + info order (number, status, paket, pelanggan) + metadata.
+- ✅ **8.3 Verify Payment + Confirmation Modal** — tombol "Verifikasi" hanya untuk status `pending`; modal konfirmasi sebelum verify; setelah verify: payment → succeeded, order → paid; toast sukses/error.
+- 🔐 **8.4 Admin Authorization** — semua endpoint payment admin dilindungi `requireAdmin`; non-admin tidak bisa akses tab/data.
+- 🎨 **Modal CSS** — overlay, panel, head, body, foot, close, title + stat-card-action + payment-detail inner styles — semua memakai design token.
+- 📊 **Stat pending payments** — kartu "Menunggu Pembayaran" di ringkasan menampilkan jumlah, klik → filter pending + buka tab pembayaran.
+- ✅ **Health check PASS** — `npm run test:health` 200 ok; JS syntax clean; tidak ada perubahan backend/DB.
+
+---
+
 ## 16-08-2026 — Sprint 7 · Fase 4 — F2-08 Order Expiry & Release v1.5.1
 
 - ⏳ **F2-08 Order expiry** — order berbayar mendapat `expires_at` saat dibuat (default 24 jam, `ORDER_PAYMENT_EXPIRY_HOURS`, `server/config.js`). Mekanisme **lazy + deterministik tanpa background worker**: `expireOrderIfDue()` (scoped, dipanggil di `getOrderById`) & `expireOverdueOrders()` (sweep global, dipanggil di `listOrders`/`listPayments`).

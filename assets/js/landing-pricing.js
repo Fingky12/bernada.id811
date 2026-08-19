@@ -22,13 +22,11 @@ function renderPackages(packages) {
 
   grid.innerHTML = packages
     .map((pkg) => {
-      const popular = pkg.code === 'premium';
+      const popular = pkg.tier === 'premium';
       const features = (pkg.features || [])
         .map((feature) => `<li>${CHECK_ICON}${escapeHtml(feature)}</li>`)
         .join('');
-      const ctaLabel = Number(pkg.priceAmount) === 0
-        ? 'Mulai Gratis'
-        : `Pilih ${escapeHtml(pkg.name)}`;
+      const ctaLabel = `Pilih ${escapeHtml(pkg.name)}`;
       return `
         <article class="card pricing-card${popular ? ' pricing-popular' : ''}">
           ${popular ? '<span class="pricing-popular-badge">Paling Populer</span>' : ''}

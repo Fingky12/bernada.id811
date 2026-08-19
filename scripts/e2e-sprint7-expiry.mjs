@@ -124,7 +124,7 @@ async function run() {
   const packages = await api('/api/packages');
   const pkgList = packages.data?.packages ?? [];
   const premium = pkgList.find((p) => p.code === 'premium');
-  const freePkg = pkgList.find((p) => p.code === 'free');
+  const basicPkg = pkgList.find((p) => p.code === 'basic');
 
   // --- 2. Order dibuat: pending + expires_at future (F2-08 konsisten) --------
   const order1 = await api('/api/orders', {
@@ -286,16 +286,21 @@ async function run() {
   const order5 = await api('/api/orders', {
     method: 'POST',
     token: tokenA,
-    body: { packageId: freePkg.id, idempotencyKey: `s8-o5-${Date.now()}` },
+    body: { packageId: basicPkg.id, idempotencyKey: `s8-o5-${Date.now()}` },
     expect: 201,
   });
   const order5Id = order5.data?.order?.id;
+  const pay5 = await api(`/api/orders/${order5Id}/payment`, { method: 'POST', token: tokenA, expect: 201 });
+  if (pay5.data?.payment?.id) {
+    await api(`/api/admin/payments/${pay5.data.payment.id}/verify`, { method: 'POST', token: tokenC, expect: 200 });
+  }
   await forceExpired(order5Id);
   const order5Get = await api(`/api/orders/${order5Id}`, { token: tokenA });
+  const order5Status = order5Get.data?.order?.status;
   record(
     'F2-08 order paid TIDAK ter-expriy (status tetap paid)',
-    order5.data?.order?.status === 'paid' && order5Get.data?.order?.status === 'paid',
-    `status=${order5Get.data?.order?.status}`,
+    order5Status === 'paid',
+    `status=${order5Status}`,
   );
 
   // --- 13. Order CANCELLED tidak boleh ter-expriy ---------------------------------------------

@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Roadmap · Category : Panduan (source of truth)
-  Version  : 1.5.0 · Status : 🟠 Proses · Update : 16-08-2026
+  Version  : 1.6.0 · Status : 🟠 Proses · Update : 19-08-2026
 -->
 
 # Roadmap BERNADA.ID
@@ -10,7 +10,22 @@
 >
 > Status item: 🟡 Belum · 🟠 Proses/sebagian · ✅ Selesai.
 >
-> **Sprint berikutnya:** Sprint 8 (belum direncanakan) · **Sprint aktif:** Sprint 7 — Security & Commerce Hardening (Fase 1–4, 16-08-2026, 🟠 Proses — F2-08 ✅, siap release v1.5.1). Detail: `.docs/changelog.md`.
+> **Sprint berikutnya:** Sprint 9 (belum direncanakan) · **Sprint terakhir:** Sprint 8 — Admin Payment UI (19-08-2026, ✅ Closed — Audit 12/12 PASS). Detail: `.docs/sprint-8.md`.
+
+---
+
+## Sprint 8 — Admin Payment UI (🟠 In Progress)
+
+> Sprint 8 (19-08-2026, 🟠 In Progress) — menghubungkan tab Pembayaran di admin panel dengan backend payment service (Sprint 7). Detail: `.docs/sprint-8.md`.
+
+| Item | Status | Catatan |
+| --- | --- | --- |
+| 8.1 Admin Payment List | ✅ | Tab aktif, tabel, filter, search, pagination |
+| 8.2 Payment Detail | ✅ | Modal detail: payment info + order info + metadata |
+| 8.3 Verify Payment + Confirmation Modal | ✅ | Konfirmasi sebelum verify, toast sukses/error |
+| 8.4 Admin Authorization Regression | ✅ | `requireAdmin` melindungi semua endpoint |
+| Stat pending payments card | ✅ | Klik → filter pending + buka tab |
+| Modal CSS | ✅ | Overlay, panel, head, body, foot, close, title |
 
 ---
 

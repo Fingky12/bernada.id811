@@ -362,8 +362,163 @@
 
 
 /* ==========================================================
-  10. RESPONSIVE
-  ========================================================== */
+   10. STAT CARD ACTION (klik ke tab pembayaran)
+   ========================================================== */
+
+.stat-card-action {
+    cursor: pointer;
+    transition: var(--transition-normal);
+}
+
+.stat-card-action:hover {
+    border-color: var(--color-primary-200);
+    box-shadow: var(--shadow-md);
+}
+
+.stat-card-action:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+}
+
+.stat-card-action .stat-value {
+    color: var(--color-primary-600);
+}
+
+
+/* ==========================================================
+   11. MODAL
+   ----------------------------------------------------------
+   Overlay + panel untuk dialog detail & konfirmasi.
+   ========================================================== */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-index-modal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-lg);
+    background: var(--color-overlay-dark);
+    backdrop-filter: blur(var(--blur-xs));
+}
+
+.modal-overlay[hidden] {
+    display: none;
+}
+
+.modal-panel {
+    width: 100%;
+    max-width: 520px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-surface);
+    border-radius: var(--border-radius-2xl);
+    box-shadow: var(--shadow-2xl);
+    overflow: hidden;
+}
+
+.modal-panel-lg {
+    max-width: 680px;
+}
+
+.modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.modal-title {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-gray-900);
+}
+
+.modal-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    border-radius: var(--border-radius-full);
+    background: var(--color-gray-100);
+    color: var(--color-gray-600);
+    font-size: var(--font-size-xl);
+    line-height: 1;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.modal-close:hover {
+    background: var(--color-gray-200);
+    color: var(--color-gray-900);
+}
+
+.modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--spacing-xl);
+}
+
+.modal-foot {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md) var(--spacing-xl);
+    border-top: 1px solid var(--color-gray-200);
+}
+
+
+/* ==========================================================
+   12. PAYMENT DETAIL MODAL — inner markup
+   ========================================================== */
+
+.payment-detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: var(--spacing-sm) 0;
+    border-bottom: 1px solid var(--color-gray-100);
+}
+
+.payment-detail-row:last-child {
+    border-bottom: none;
+}
+
+.payment-detail-label {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-gray-500);
+}
+
+.payment-detail-value {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-900);
+    text-align: right;
+    word-break: break-word;
+}
+
+.payment-detail-section {
+    margin-bottom: var(--spacing-md);
+}
+
+.payment-detail-section-title {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-wide);
+    color: var(--color-gray-500);
+    margin-bottom: var(--spacing-xs);
+}
+
+
+/* ==========================================================
+   13. RESPONSIVE
+   ========================================================== */
 
 @media (max-width: 640px) {
     .admin-toolbar {
