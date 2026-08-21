@@ -96,7 +96,40 @@ scripts/e2e-sprint5.mjs                 — E2E auth/admin (25/25)
 | 7 | ✅ Closed | PASS | `.docs/audits/audit-sprint-7.md` |
 | 8 | ✅ Closed | PASS | `.docs/sprint-8.md` |
 
-## Next Sprint / Next Task
+---
+
+## Implementation Recap — Pricing Tier Refactor (19-08-2026)
+
+### Database
+- Migrasi 0013: `templates.tier`, `packages.tier`, harga final (77k/129k/279k), `free` deactivated
+
+### Backend
+- `template-service.js` — tier di DTO
+- `package-service.js` — tier di DTO
+- `order-service.js` — tier di package info (DTO + queries)
+- `payment-service.js` — tier di admin list query
+
+### Frontend
+- `landing-pricing.js` — popular badge pakai `pkg.tier`
+- `builder.js` — tier badge pada template selection
+
+### E2E Updates
+- `e2e-sprint6.mjs` — harga 129k, basic package flow
+- `e2e-sprint7-payment.mjs` — basic + admin verify (bukan free auto-paid)
+- `e2e-sprint7-expiry.mjs` — basic + admin verify untuk paid order test
+
+### Testing Results
+
+| Script | Hasil |
+|--------|-------|
+| Sprint 6 | 38/38 PASS |
+| Sprint 7 Payment | 15/15 PASS |
+| Sprint 7 Expiry | 15/15 PASS |
+| F2 Hardening | 21/21 PASS |
+| Sprint 5 | 25/25 PASS |
+| **Total** | **114/114 PASS** |
+
+### Next Sprint / Next Task
 
 Belum direncanakan. Kandidat:
 - Integrasi provider pembayaran nyata (butuh keputusan owner)
