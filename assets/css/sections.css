@@ -1084,12 +1084,12 @@ body.nav-open {
 }
 
 .footer-heading {
-    margin: 0 0 var(--spacing-xl);
-    font-family: var(--font-family-body);
-    font-size: var(--font-size-);
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-text-inverse);
-}
+     margin: 0 0 var(--spacing-xl);
+     font-family: var(--font-family-body);
+     font-size: var(--font-size-sm);
+     font-weight: var(--font-weight-semibold);
+     color: var(--color-text-inverse);
+ }
 
 .footer-links {
     display: grid;
