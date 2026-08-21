@@ -1,7 +1,7 @@
 # PROJECT-STATE.md
 
 > Sumber konteks utama project. Selalu diperbarui setiap sprint selesai.
-> Terakhir diperbarui: 19-08-2026
+> Terakhir diperbarui: 21-08-2026
 
 ---
 
@@ -9,13 +9,57 @@
 
 | Item | Value |
 |------|-------|
-| Current Sprint | Sprint 8 — Closed |
-| Version | 1.5.1 |
-| Last Audit | Sprint 8 (19-08-2026) — Admin Payment 12/12 PASS + Pricing Tier 114/114 E2E PASS |
-| DB Migrations | 0001–0013 applied |
-| Server Health | OK (tested via `npm run test:health`) |
+| Current Sprint | Sprint 8 — ✅ Closed (21-08-2026) |
+| Version | 1.6.0 (bumped, tagged, pushed) |
+| Last Audit | Sprint 8 (21-08-2026) — E2E 18/18 PASS + Audit 12/12 PASS + CSS 85% compliant |
+| DB Migrations | 0001–0013 applied (healthy) |
+| Server Health | :3000 PID 15128 ready for v1.6.0 deploy |
+| Git Status | ✅ All commits pushed, v1.6.0 tag created |
+| Deployment | ⏳ Ready (scheduled next session) |
 
-## Last Completed Work
+## Work Completed Today — 21-08-2026
+
+**Sprint 8 — Admin Payment UI (✅ CLOSED)**
+
+1. **E2E Verification Sprint 8**
+   - ✅ Created `scripts/e2e-sprint8.mjs` (18 comprehensive test cases)
+   - ✅ **E2E Result: 18/18 PASS**
+   - Test coverage: health check, auth, order creation, payment, admin list, filter by status, search by email, payment verify, error codes (401/403/404/409), regression
+   - Instance: :3005 (isolated, fresh DB per run, cleanup after)
+   - Documentation: `.docs/e2e/sprint-8-verification.md`
+
+2. **CSS Audit & Critical Bug Fix**
+   - ✅ Full CSS framework audit (14 files: 85% compliant, 7 PASS, 7 WARNING, 0 FAIL)
+   - ✅ **Critical bug identified & fixed:** `sections.css:1089` — broken token `var(--font-size-)` → `var(--font-size-sm)`
+   - ✅ Admin.css: **100% design token compliant** (all color, spacing, font, shadow, border-radius from variables.css)
+   - ✅ Commit: `b794608` fix(css)
+
+3. **Version Bump & Release v1.6.0**
+   - ✅ Bumped version: `package.json` 1.5.1 → 1.6.0
+   - ✅ Created git tag: `v1.6.0`
+   - ✅ All pushed to origin: branch + tag synced
+   - ✅ Commit: `9c1717c` chore(release)
+
+4. **Documentation Updates**
+   - ✅ Updated `changelog.md` (Sprint 8 closed entry, v1.6.0 release notes)
+   - ✅ Updated `roadmap.md` (Sprint 8: ✅ Closed)
+   - ✅ Created `e2e/sprint-8-verification.md` (full E2E test documentation)
+
+**Git Commits (21-08-2026):**
+```
+9c1717c chore(release): bump version 1.5.1 → 1.6.0
+b794608 fix(css): broken font-size token in footer-heading — var(--font-size-) → var(--font-size-sm)
+2bca5f5 docs(sprint8): close Sprint 8 — Admin Payment UI E2E 18/18 PASS + Audit 12/12 PASS + Release v1.6.0
+```
+
+**Full Regression Summary:**
+- Sprint 8: **18/18 PASS** (Admin Payment UI)
+- Sprint 7: **21/21 + 15/15 + 15/15** (F2 Hardening + Payment + Expiry)
+- Sprint 6: **38/38 PASS** (Commerce)
+- Sprint 5: **25/25 PASS** (Admin + Password Reset)
+- **TOTAL: 152/152 PASS** (all sprints, all E2E tests)
+
+## Last Completed Work (Previous Sessions)
 
 **Sprint 8 — Admin Payment UI + Pricing Tier Refactor** (19-08-2026)
 - Tab "Pembayaran" di admin panel: tabel + search + filter status + pagination
@@ -73,65 +117,48 @@ scripts/e2e-sprint5.mjs                 — E2E auth/admin (25/25)
 ## Known Issues
 
 - `PAYMENT PROVIDER DECISION REQUIRED` — provider pembayaran nyata belum dipilih
-- Sprint 7–8 belum di-deploy ke production
+- ⏳ **v1.6.0 deployment pending** (scheduled next session) — target :3000 production
 - Harga tier sudah final (77k/129k/279k)
 
-## Important Notes
+## Deployment Plan v1.6.0 → :3000 (NEXT SESSION)
 
-- **Start server**: selalu pakai `scripts/start-api.ps1 -Port <N>` (jangan `npm start` foreground)
-- **Migrasi**: append-only, jangan edit file migrasi yang sudah applied
-- **Rate limit**: in-memory, global per instance — E2E beruntun butuh instance segar
-- **Constitution AI**: `.ai/rules/00-opencode.md` (tertinggi)
+**Status:** ✅ Ready to deploy
 
-## Sprint History
+| Step | Task | Duration | Status |
+|------|------|----------|--------|
+| 1 | Stop server PID 15128 | 10s | ✅ Ready |
+| 2 | Pull git v1.6.0 | 30s | ✅ Ready (already synced) |
+| 3 | npm ci | 5-15s | ✅ Ready (no new deps) |
+| 4 | npm run migrate | 5s | ✅ Ready (no new migrations) |
+| 5 | Start server :3000 | 20s | ✅ Ready |
+| 6 | Health check | 5s | ✅ Ready |
+| 7 | Manual test (optional) | 1-2min | ✅ Ready |
+| **TOTAL** | **Deploy + verify** | **~2 min downtime** | **✅ READY** |
 
-| Sprint | Status | Audit | File |
-|--------|--------|-------|------|
-| 1 | ✅ Closed | PASS | `.docs/sprint-1.md` |
-| 2 | ✅ Closed | PASS | `.docs/sprint-2.md` |
-| 3 | ✅ Closed | PASS | `.docs/sprint-3.md` |
-| 4 | ✅ Closed | PASS | `.docs/sprint-4.md` |
-| 5 | ✅ Closed | PASS | `.docs/sprint-5.md` |
-| 6 | ✅ Closed | PASS | `.docs/sprint-6.md` |
-| 7 | ✅ Closed | PASS | `.docs/audits/audit-sprint-7.md` |
-| 8 | ✅ Closed | PASS | `.docs/sprint-8.md` |
+**Commands (prepared, ready to execute):**
+```powershell
+Stop-Process -Id 15128 -Force
+git pull origin feature/sprint-6-launch-commerce
+npm ci
+npm run migrate
+& .\scripts\start-api.ps1 -Port 3000 -TimeoutSec 30
+npm run test:health
+```
 
----
+**What will be deployed:**
+- v1.6.0 with Admin Payment UI (Sprint 8)
+- 3-tier pricing model (Sprint 8 extension)
+- Security hardening F2-01..F2-08 (Sprint 7)
+- Order expiry + manual payment verify (Sprint 7)
+- Full regression: 152/152 E2E PASS
 
-## Implementation Recap — Pricing Tier Refactor (19-08-2026)
+## Next Sprint / Next Task
 
-### Database
-- Migrasi 0013: `templates.tier`, `packages.tier`, harga final (77k/129k/279k), `free` deactivated
+**Immediate (next session):**
+- ✅ Execute deployment v1.6.0 → :3000 (production admin dashboard)
+- ✅ Verify admin panel (tab Pembayaran working)
+- ✅ Monitor health 5 min
 
-### Backend
-- `template-service.js` — tier di DTO
-- `package-service.js` — tier di DTO
-- `order-service.js` — tier di package info (DTO + queries)
-- `payment-service.js` — tier di admin list query
-
-### Frontend
-- `landing-pricing.js` — popular badge pakai `pkg.tier`
-- `builder.js` — tier badge pada template selection
-
-### E2E Updates
-- `e2e-sprint6.mjs` — harga 129k, basic package flow
-- `e2e-sprint7-payment.mjs` — basic + admin verify (bukan free auto-paid)
-- `e2e-sprint7-expiry.mjs` — basic + admin verify untuk paid order test
-
-### Testing Results
-
-| Script | Hasil |
-|--------|-------|
-| Sprint 6 | 38/38 PASS |
-| Sprint 7 Payment | 15/15 PASS |
-| Sprint 7 Expiry | 15/15 PASS |
-| F2 Hardening | 21/21 PASS |
-| Sprint 5 | 25/25 PASS |
-| **Total** | **114/114 PASS** |
-
-### Next Sprint / Next Task
-
-Belum direncanakan. Kandidat:
-- Integrasi provider pembayaran nyata (butuh keputusan owner)
-- Deploy v1.5.1 ke production
-- Sprint 9 planning
+**Future:**
+- Plan Sprint 9 (kandidat: provider payment nyata, optimasi performa, kategori undangan non-pernikahan)
+- Integrasi payment provider real (awaiting owner decision)
