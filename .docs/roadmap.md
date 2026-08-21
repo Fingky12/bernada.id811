@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Roadmap · Category : Panduan (source of truth)
-  Version  : 1.6.0 · Status : 🟠 Proses · Update : 19-08-2026
+  Version  : 1.7.0 · Status : 🟠 Proses · Update : 21-08-2026
 -->
 
 # Roadmap BERNADA.ID
@@ -10,13 +10,13 @@
 >
 > Status item: 🟡 Belum · 🟠 Proses/sebagian · ✅ Selesai.
 >
-> **Sprint berikutnya:** Sprint 9 (belum direncanakan) · **Sprint terakhir:** Sprint 8 — Admin Payment UI (19-08-2026, ✅ Closed — Audit 12/12 PASS). Detail: `.docs/sprint-8.md`.
+> **Sprint berikutnya:** Sprint 9 (belum direncanakan) · **Sprint terakhir:** Sprint 8 (21-08-2026, ✅ Closed — Audit 12/12 PASS, E2E 18/18 PASS). Detail: `.docs/sprint-8.md`.
 
 ---
 
-## Sprint 8 — Admin Payment UI (🟠 In Progress)
+## Sprint 8 — Admin Payment UI (✅ Closed 21-08-2026)
 
-> Sprint 8 (19-08-2026, 🟠 In Progress) — menghubungkan tab Pembayaran di admin panel dengan backend payment service (Sprint 7). Detail: `.docs/sprint-8.md`.
+> Sprint 8 (19–21-08-2026, ✅ Closed) — Admin Payment UI menghubungkan tab Pembayaran di admin panel dengan backend payment service (Sprint 7). Detail: `.docs/sprint-8.md`.
 
 | Item | Status | Catatan |
 | --- | --- | --- |
@@ -26,6 +26,9 @@
 | 8.4 Admin Authorization Regression | ✅ | `requireAdmin` melindungi semua endpoint |
 | Stat pending payments card | ✅ | Klik → filter pending + buka tab |
 | Modal CSS | ✅ | Overlay, panel, head, body, foot, close, title |
+| Audit Sprint 8 | ✅ | 12/12 PASS (audit doc) |
+| E2E Sprint 8 | ✅ | 18/18 PASS (E2E doc `.docs/e2e/sprint-8-verification.md`) |
+| Release v1.6.0 | ✅ | Siap deploy ke :3000 |
 
 ---
 

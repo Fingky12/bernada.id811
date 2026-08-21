@@ -1,7 +1,7 @@
 <!--
   BERNADA.ID ENGINEERING HANDBOOK
   Document : Changelog · Category : Catatan (living document)
-  Version  : 1.7.0 · Status : ✅ Stable · Update : 16-08-2026
+  Version  : 1.6.0 · Status : ✅ Stable · Update : 21-08-2026
 -->
 
 # Changelog
@@ -10,7 +10,24 @@
 
 ---
 
-## 19-08-2026 — Pricing Tier Refactor (Sprint 8 extension)
+## 21-08-2026 — Sprint 8 Closed — Admin Payment UI & Release v1.6.0
+
+- 🧑‍💼 **Sprint 8 — Admin Payment UI** (Status: ✅ Closed 21-08-2026) — menghubungkan tab Pembayaran di admin panel dengan backend payment service.
+- 📋 **8.1 Admin Payment List** — tab "Pembayaran" aktif di admin panel; tabel dengan kolom Order/Pelanggan/Paket/Referensi/Status/Waktu/Aksi; filter by status (pending/succeeded/failed/expired); search by email; pagination.
+- 🔍 **8.2 Payment Detail** — modal detail pembayaran: info pembayaran (ID, referensi, provider, status, jumlah, mata uang, waktu) + info order (number, status, paket, pelanggan) + metadata.
+- ✅ **8.3 Verify Payment + Confirmation Modal** — tombol "Verifikasi" hanya untuk status `pending`; modal konfirmasi sebelum verify; setelah verify: payment → succeeded, order → paid; toast sukses/error.
+- 🔐 **8.4 Admin Authorization** — semua endpoint payment admin dilindungi `requireAdmin`; non-admin tidak bisa akses tab/data.
+- 🎨 **Modal CSS** — overlay, panel, head, body, foot, close, title + stat-card-action + payment-detail inner styles — semua memakai design token.
+- 📊 **Stat pending payments** — kartu "Menunggu Pembayaran" di ringkasan menampilkan jumlah, klik → filter pending + buka tab pembayaran.
+- ✅ **Audit Sprint 8 — 12/12 PASS** — frontend wiring, CSS, authorization, 0 TODO/FIXME/HACK (audit doc `.docs/audits/audit-sprint-8.md`).
+- ✅ **E2E Sprint 8 — 18/18 PASS** — health, auth, order, payment, admin list, filter, search, verify, error codes, regression (E2E doc `.docs/e2e/sprint-8-verification.md`).
+- 💰 **Pricing tier refactor included** — model 3-tier (basic/premium/exclusive) sudah terpasang dari 19-08-2026.
+- 🏷️ **Full regression** — Sprint 6 38/38 + Sprint 7 Payment 15/15 + Sprint 7 Expiry 15/15 + F2 Hardening 21/21 + Sprint 5 25/25 + **Sprint 8 18/18 PASS**.
+- 📦 **Release v1.6.0 — Admin Payment UI Ready** — bump `package.json` ke v1.6.0; semua fitur Sprint 8 ready di-deploy ke :3000. Tag v1.6.0 siap dibuat.
+
+---
+
+## 19-08-2026 — Pricing Tier Refactor (Sprint 8 preparation)
 
 - 💰 **Pricing tier refactor** — model 4-package (free/basic/premium/exclusive) → 3-tier (basic=Rp77.000, premium=Rp129.000, exclusive=Rp279.000). Harga final sudah ditentukan owner.
 - 🏷️ **Template tier mapping** — setiap template mendapat kolom `tier` (basic/premium/exclusive). Theme → Tier → Price.
@@ -19,19 +36,6 @@
 - 🎨 **Frontend update** — landing pricing render 3 tier, builder tampilkan tier badge pada template.
 - 🧪 **E2E update** — hardcoded `99000` → `129000`, free auto-paid tests → basic + admin verify. 114/114 PASS.
 - ✅ **Full regression** — Sprint 6 38/38 + Sprint 7 Payment 15/15 + Sprint 7 Expiry 15/15 + F2 Hardening 21/21 + Sprint 5 25/25.
-
----
-
-## 19-08-2026 — Sprint 8 — Admin Payment UI
-
-- 🧑‍💼 **Sprint 8 — Admin Payment UI** (Status: 🟠 In Progress) — menghubungkan tab Pembayaran di admin panel dengan backend payment service.
-- 📋 **8.1 Admin Payment List** — tab "Pembayaran" aktif di admin panel; tabel dengan kolom Order/Pelanggan/Paket/Referensi/Status/Waktu/Aksi; filter by status (pending/succeeded/failed/expired); search by email; pagination.
-- 🔍 **8.2 Payment Detail** — modal detail pembayaran: info pembayaran (ID, referensi, provider, status, jumlah, mata uang, waktu) + info order (number, status, paket, pelanggan) + metadata.
-- ✅ **8.3 Verify Payment + Confirmation Modal** — tombol "Verifikasi" hanya untuk status `pending`; modal konfirmasi sebelum verify; setelah verify: payment → succeeded, order → paid; toast sukses/error.
-- 🔐 **8.4 Admin Authorization** — semua endpoint payment admin dilindungi `requireAdmin`; non-admin tidak bisa akses tab/data.
-- 🎨 **Modal CSS** — overlay, panel, head, body, foot, close, title + stat-card-action + payment-detail inner styles — semua memakai design token.
-- 📊 **Stat pending payments** — kartu "Menunggu Pembayaran" di ringkasan menampilkan jumlah, klik → filter pending + buka tab pembayaran.
-- ✅ **Health check PASS** — `npm run test:health` 200 ok; JS syntax clean; tidak ada perubahan backend/DB.
 
 ---
 
