@@ -19,6 +19,10 @@ const elements = {
   listView: document.getElementById('list-view'),
   editorView: document.getElementById('editor-view'),
   manageView: document.getElementById('manage-view'),
+  ordersView: document.getElementById('orders-view'),
+  ordersTableWrap: document.getElementById('orders-table-wrap'),
+  ordersTbody: document.getElementById('orders-tbody'),
+  ordersEmpty: document.getElementById('orders-empty'),
   grid: document.getElementById('invitation-grid'),
   emptyState: document.getElementById('empty-state'),
   createBtn: document.getElementById('create-btn'),
@@ -172,17 +176,19 @@ function renderInvitations(invitations) {
   const hasItems = invitations.length > 0;
   elements.emptyState.classList.toggle('d-none', hasItems);
 
-  const counts = { draft: 0, published: 0, unpublished: 0 };
+  const counts = { draft: 0, published: 0, unpublished: 0, views: 0 };
   for (const invitation of invitations) {
     const status = invitation.status || (invitation.isPublished ? 'published' : 'draft');
     if (status === 'published') counts.published += 1;
     else if (status === 'draft') counts.draft += 1;
     else counts.unpublished += 1;
+    counts.views += invitation.viewCount || 0;
   }
   setSummaryCount('sum-total', invitations.length);
   setSummaryCount('sum-draft', counts.draft);
   setSummaryCount('sum-published', counts.published);
   setSummaryCount('sum-unpublished', counts.unpublished);
+  setSummaryCount('sum-views', counts.views);
 
   elements.grid.innerHTML = invitations
     .map((invitation) => {
@@ -199,6 +205,7 @@ function renderInvitations(invitations) {
           </div>
           <div class="invitation-meta">
             <span class="invitation-meta-item">📅 ${escapeHtml(displayEventDate(invitation.eventDate))}</span>
+            ${(invitation.viewCount || 0) > 0 ? `<span class="invitation-meta-item">👁 ${invitation.viewCount} dilihat</span>` : ''}
           </div>
           <p class="invitation-slug">/${escapeHtml(invitation.slug)}</p>
           <div class="invitation-actions">
@@ -261,15 +268,13 @@ function selectTemplate(templateId) {
   ========================================================== */
 
 function showList() {
-  elements.listView.classList.remove('d-none');
-  elements.editorView.classList.add('d-none');
+  switchView(elements.listView);
   loadInvitations().catch(showToast);
 }
 
 function showEditor(invitation = null) {
   currentInvitationId = invitation?.id || null;
-  elements.listView.classList.add('d-none');
-  elements.editorView.classList.remove('d-none');
+  switchView(elements.editorView);
   elements.editorTitle.textContent = invitation ? 'Edit Undangan' : 'Buat Undangan';
   populateForm(invitation);
   updatePreview();
@@ -293,6 +298,8 @@ function populateForm(invitation) {
   document.getElementById('f-theme-primary-hex').value = theme.primaryColor;
   document.getElementById('f-theme-accent').value = theme.accentColor;
   document.getElementById('f-theme-accent-hex').value = theme.accentColor;
+
+  populateSections(invitation?.sections);
 
   selectTemplate(invitation?.templateId || null);
   autoSlug = invitation?.slug || '';
@@ -318,11 +325,33 @@ function buildPayload() {
     message: document.getElementById('f-message').value.trim(),
     musicUrl: document.getElementById('f-music').value.trim(),
     gallery,
+    sections: collectSections(),
     theme: getTheme(),
     templateId: elements.templateGrid.querySelector('input[name="templateId"]:checked')
       ? elements.templateGrid.querySelector('input[name="templateId"]:checked').value
       : null,
   };
+}
+
+const SECTION_TYPES = ['countdown', 'location', 'message', 'gift', 'gallery'];
+
+function collectSections() {
+  return SECTION_TYPES.map((type) => ({
+    type,
+    enabled: document.getElementById(`sec-${type}`).checked,
+  }));
+}
+
+function populateSections(sections) {
+  const disabled = new Set(
+    (Array.isArray(sections) ? sections : [])
+      .filter((s) => s && s.enabled === false)
+      .map((s) => s.type),
+  );
+  SECTION_TYPES.forEach((type) => {
+    const checkbox = document.getElementById(`sec-${type}`);
+    if (checkbox) checkbox.checked = !disabled.has(type);
+  });
 }
 
 function updateSlugPreview() {
@@ -357,11 +386,65 @@ async function saveInvitation() {
     KELOLA — TAMU & AMPLOP DIGITAL
   ========================================================== */
 
+const VIEWS = () => [elements.listView, elements.editorView, elements.manageView, elements.ordersView];
+
+function switchView(target) {
+  VIEWS().forEach((view) => view.classList.add('d-none'));
+  target.classList.remove('d-none');
+  document.querySelectorAll('.dash-nav-item[data-nav]').forEach((item) => {
+    item.classList.toggle(
+      'is-active',
+      item.dataset.nav === (target === elements.ordersView ? 'orders' : 'list'),
+    );
+  });
+}
+
+/* ==========================================================
+    PESANAN
+  ========================================================== */
+
+const ORDER_STATUS_LABELS = {
+  pending: { label: 'Menunggu Pembayaran', cls: 'badge-warning' },
+  awaiting_payment: { label: 'Menunggu Pembayaran', cls: 'badge-warning' },
+  paid: { label: 'Dibayar', cls: 'badge-success' },
+  succeeded: { label: 'Selesai', cls: 'badge-success' },
+  cancelled: { label: 'Dibatalkan', cls: 'badge-danger' },
+  expired: { label: 'Kedaluwarsa', cls: 'badge-danger' },
+  failed: { label: 'Gagal', cls: 'badge-danger' },
+};
+
+function formatRupiah(amount) {
+  return `Rp ${Number(amount || 0).toLocaleString('id-ID')}`;
+}
+
+async function showOrders() {
+  switchView(elements.ordersView);
+  try {
+    const orders = await api.listOrders();
+    const hasItems = orders.length > 0;
+    elements.ordersTableWrap.classList.toggle('d-none', !hasItems);
+    elements.ordersEmpty.classList.toggle('d-none', hasItems);
+    elements.ordersTbody.innerHTML = orders
+      .map((order) => {
+        const statusConfig = ORDER_STATUS_LABELS[order.status] || { label: order.status, cls: 'badge-warning' };
+        return `
+          <tr>
+            <td>${escapeHtml(order.orderNumber)}</td>
+            <td>${escapeHtml(order.package?.name || '—')}</td>
+            <td>${formatRupiah(order.amount)}</td>
+            <td><span class="badge badge-sm ${statusConfig.cls}">${statusConfig.label}</span></td>
+            <td>${escapeHtml(formatEventDate(order.createdAt) || '-')}</td>
+          </tr>`;
+      })
+      .join('');
+  } catch (error) {
+    showToast(error.message, 'danger');
+  }
+}
+
 function showManage(invitation) {
   currentManageInvitation = invitation;
-  elements.listView.classList.add('d-none');
-  elements.editorView.classList.add('d-none');
-  elements.manageView.classList.remove('d-none');
+  switchView(elements.manageView);
   elements.manage.title.textContent = `Kelola — ${invitation.title}`;
   loadManageData();
 }
@@ -679,6 +762,16 @@ async function init() {
 
   document.querySelectorAll('.js-create').forEach((btn) => {
     btn.addEventListener('click', () => showEditor());
+  });
+  document.querySelectorAll('.dash-nav-item[data-nav]').forEach((item) => {
+    item.addEventListener('click', (event) => {
+      event.preventDefault();
+      if (item.dataset.nav === 'orders') {
+        showOrders();
+      } else {
+        showList();
+      }
+    });
   });
   elements.backBtn.addEventListener('click', showList);
   elements.cancelBtn.addEventListener('click', showList);

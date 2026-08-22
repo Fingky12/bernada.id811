@@ -5,6 +5,7 @@ import { getTemplateById } from './template-service.js';
 const COLUMNS = `
   id, owner_id, template_id, slug, title, event_date, event_time,
   venue, location, couple, message, theme, music_url, gallery,
+  sections, view_count,
   is_published, status, package_id, published_at, created_at, updated_at
 `;
 
@@ -24,6 +25,8 @@ function toInvitationDto(row) {
     theme: row.theme,
     musicUrl: row.music_url,
     gallery: row.gallery || [],
+    sections: row.sections || [],
+    viewCount: row.view_count || 0,
     isPublished: row.is_published,
     status: row.status,
     packageId: row.package_id,
@@ -65,8 +68,8 @@ export async function createInvitation(ownerId, data) {
     const { rows } = await pool.query(
       `INSERT INTO invitations
          (owner_id, template_id, slug, title, event_date, event_time,
-          venue, location, couple, message, theme, music_url, gallery)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+          venue, location, couple, message, theme, music_url, gallery, sections)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
        RETURNING ${COLUMNS}`,
       [
         ownerId,
@@ -82,6 +85,7 @@ export async function createInvitation(ownerId, data) {
         data.theme,
         data.musicUrl,
         JSON.stringify(data.gallery ?? []),
+        JSON.stringify(data.sections ?? []),
       ],
     );
     return toInvitationDto(rows[0]);
@@ -126,6 +130,7 @@ export async function updateInvitation(id, ownerId, changes) {
     theme: changes.theme,
     music_url: changes.musicUrl,
     gallery: changes.gallery !== undefined ? JSON.stringify(changes.gallery) : undefined,
+    sections: changes.sections !== undefined ? JSON.stringify(changes.sections) : undefined,
   };
 
   const entries = Object.entries(mapping).filter(([, value]) => value !== undefined);
@@ -243,7 +248,7 @@ export async function getPublishedInvitationBySlug(slug) {
   const { rows } = await pool.query(
     `SELECT i.id, i.slug, i.title, i.event_date, i.event_time,
             i.venue, i.location, i.couple, i.message, i.theme, i.music_url,
-            i.gallery, i.published_at,
+            i.gallery, i.sections, i.view_count, i.published_at,
             t.name  AS template_name,
             t.category AS template_category,
             t.preview_url AS template_preview_url
@@ -274,6 +279,8 @@ export async function getPublishedInvitationBySlug(slug) {
       theme: row.theme,
       musicUrl: row.music_url,
       gallery: row.gallery || [],
+      sections: row.sections || [],
+      viewCount: row.view_count || 0,
       publishedAt: row.published_at,
     },
     template: row.template_name
@@ -284,4 +291,12 @@ export async function getPublishedInvitationBySlug(slug) {
         }
       : null,
   };
+}
+
+/* Naive view counter — dipanggil hanya dari route API publik (bukan OG render). */
+export async function incrementViewCount(id) {
+  await pool.query(
+    'UPDATE invitations SET view_count = view_count + 1 WHERE id = $1',
+    [id],
+  );
 }

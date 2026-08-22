@@ -423,6 +423,28 @@
     margin-bottom: var(--spacing-xl);
 }
 
+.section-toggles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--spacing-sm);
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--border-radius-md);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-primary);
+    cursor: pointer;
+}
+
+.checkbox-label:hover {
+    background: var(--color-surface-alt);
+}
+
 .editor-section-title {
     font-family: var(--font-family-heading);
     font-size: var(--font-size-lg);
@@ -1119,7 +1141,7 @@
 
 .dash-summary-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--spacing-md);
 }
 
@@ -1217,6 +1239,10 @@
     .dash-summary {
         grid-template-columns: auto 1fr;
         align-items: center;
+    }
+
+    .dash-summary-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
     }
 }
 

@@ -79,6 +79,32 @@ function renderGuestGreeting() {
   }
 }
 
+/* Section engine: sembunyikan bagian yang dinonaktifkan pemilik undangan.
+   Default (sections kosong) = semua tampil. cover/couple/rsvp selalu tampil. */
+const SECTION_ELEMENT_IDS = {
+  countdown: 'countdown-section',
+  location: 'location-section',
+  message: 'message-section',
+  gift: 'gift-section',
+  gallery: 'gallery-section',
+};
+
+function applySections(sections) {
+  const disabled = new Set(
+    (Array.isArray(sections) ? sections : [])
+      .filter((s) => s && s.enabled === false && SECTION_ELEMENT_IDS[s.type])
+      .map((s) => s.type),
+  );
+  for (const [type, elementId] of Object.entries(SECTION_ELEMENT_IDS)) {
+    const el = document.getElementById(elementId);
+    if (!el) continue;
+    if (disabled.has(type)) {
+      el.classList.add('d-none');
+      el.dataset.sectionDisabled = 'true';
+    }
+  }
+}
+
 function formatTime(time) {
   const trimmed = String(time || '').trim();
   if (!trimmed) return '';
@@ -148,7 +174,7 @@ function render() {
 
 function renderGallery() {
   const photos = (invitation.invitation.gallery || []).filter(Boolean);
-  if (photos.length === 0) {
+  if (photos.length === 0 || elements.gallerySection.dataset.sectionDisabled === 'true') {
     elements.gallerySection.classList.add('d-none');
     elements.gallery.innerHTML = '';
     return;
@@ -171,7 +197,7 @@ function renderGallery() {
   ========================================================== */
 
 function renderGiftAccounts(accounts) {
-  if (!accounts || accounts.length === 0) {
+  if (!accounts || accounts.length === 0 || elements.giftSection.dataset.sectionDisabled === 'true') {
     elements.giftSection.classList.add('d-none');
     elements.giftAccounts.innerHTML = '';
     return;
@@ -493,6 +519,7 @@ async function init() {
 
   applyTheme(invitation.invitation.theme);
   render();
+  applySections(invitation.invitation.sections);
   renderGuestGreeting();
 
   if (invitation.invitation.eventDate) {

@@ -19,10 +19,10 @@
             </a>
 
             <nav class="dash-nav" aria-label="Navigasi dasbor">
-                <a class="dash-nav-item is-active" href="#list-view"><span class="dash-nav-icon" aria-hidden="true">📊</span>Dashboard</a>
-                <a class="dash-nav-item" href="#list-view"><span class="dash-nav-icon" aria-hidden="true">💌</span>Undangan Saya</a>
+                <a class="dash-nav-item is-active" href="#list-view" data-nav="list"><span class="dash-nav-icon" aria-hidden="true">📊</span>Dashboard</a>
+                <a class="dash-nav-item" href="#list-view" data-nav="list"><span class="dash-nav-icon" aria-hidden="true">💌</span>Undangan Saya</a>
                 <button class="dash-nav-item js-create" type="button"><span class="dash-nav-icon" aria-hidden="true">✨</span>Buat Undangan</button>
-                <a class="dash-nav-item" href="/checkout"><span class="dash-nav-icon" aria-hidden="true">💳</span>Pemesanan</a>
+                <a class="dash-nav-item" href="#orders-view" data-nav="orders"><span class="dash-nav-icon" aria-hidden="true">💳</span>Pemesanan</a>
                 <a class="dash-nav-item" href="/#portofolio"><span class="dash-nav-icon" aria-hidden="true">🖼️</span>Galeri Template</a>
                 <a id="admin-link" class="dash-nav-item d-none" href="/admin"><span class="dash-nav-icon" aria-hidden="true">🛡️</span>Panel Admin</a>
             </nav>
@@ -76,6 +76,10 @@
                             <span id="sum-unpublished" class="dash-metric-value">0</span>
                             <span class="dash-metric-label">Nonaktif</span>
                         </div>
+                        <div class="dash-metric">
+                            <span id="sum-views" class="dash-metric-value">0</span>
+                            <span class="dash-metric-label">Total Dilihat</span>
+                        </div>
                     </div>
                 </div>
 
@@ -84,7 +88,7 @@
                         <span class="dash-quick-icon" aria-hidden="true">✨</span>
                         <span class="dash-quick-title">Buat Undangan</span>
                     </button>
-                    <a class="dash-quick-tile" href="/checkout">
+                    <a class="dash-quick-tile" href="#orders-view" data-nav="orders">
                         <span class="dash-quick-icon" aria-hidden="true">💳</span>
                         <span class="dash-quick-title">Pemesanan</span>
                     </a>
@@ -110,6 +114,36 @@
                     <h2 class="empty-state-title">Belum ada undangan</h2>
                     <p class="empty-state-text">Mulai buat undangan digital pertama Anda — pilih template, sesuaikan tema, dan bagikan ke orang tercinta.</p>
                     <button id="empty-create-btn" class="btn btn-primary js-create" type="button">Buat Undangan</button>
+                </div>
+            </section>
+
+            <!-- ================================
+                LIHAT: PESANAN
+            ================================= -->
+            <section id="orders-view" class="d-none" aria-label="Daftar pemesanan">
+                <div class="dash-section-head">
+                    <h2 class="dash-section-title">Pemesanan Saya</h2>
+                    <a class="btn btn-primary btn-sm" href="/checkout">+ Beli Paket</a>
+                </div>
+                <div id="orders-table-wrap" class="admin-table-wrap">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">No. Order</th>
+                                <th scope="col">Paket</th>
+                                <th scope="col">Jumlah</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Tanggal</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-tbody" aria-live="polite"></tbody>
+                    </table>
+                </div>
+                <div id="orders-empty" class="empty-state d-none">
+                    <div class="empty-state-icon" aria-hidden="true">🧾</div>
+                    <h2 class="empty-state-title">Belum ada pemesanan</h2>
+                    <p class="empty-state-text">Pilih paket untuk mengaktifkan undangan premium Anda.</p>
+                    <a class="btn btn-primary" href="/checkout">Lihat Paket</a>
                 </div>
             </section>
 
@@ -197,6 +231,18 @@
                                 <h2 class="editor-section-title">Pilih Template</h2>
                                 <p class="editor-section-hint">Klik salah satu template untuk memakainya.</p>
                                 <div id="template-grid" class="template-grid"></div>
+                            </section>
+
+                            <section class="editor-section">
+                                <h2 class="editor-section-title">Bagian Undangan</h2>
+                                <p class="editor-section-hint">Centang bagian yang ingin ditampilkan pada undangan.</p>
+                                <div class="section-toggles">
+                                    <label class="checkbox-label"><input type="checkbox" id="sec-countdown" checked> Hitung Mundur</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="sec-location" checked> Lokasi Acara</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="sec-message" checked> Kata Sambutan</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="sec-gift" checked> Amplop Digital</label>
+                                    <label class="checkbox-label"><input type="checkbox" id="sec-gallery" checked> Galeri Foto</label>
+                                </div>
                             </section>
 
                             <section class="editor-section">

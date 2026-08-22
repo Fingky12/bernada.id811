@@ -23,6 +23,8 @@ const guestbookLimiter = rateLimit({ windowMs: 60 * 1000, max: 20 });
 invitationsRouter.get('/public/:slug', publicLimiter, async (req, res) => {
   const slug = validateSlug(req.params.slug, 'slug');
   const result = await invitationService.getPublishedInvitationBySlug(slug);
+  await invitationService.incrementViewCount(result.invitation.id);
+  result.invitation.viewCount += 1; // sertakan kunjungan ini dalam respons
   res.status(200).json(result);
 });
 
@@ -77,6 +79,28 @@ invitationsRouter.get('/public/:slug/gift-accounts', publicLimiter, async (req, 
 
 invitationsRouter.use(requireAuth);
 
+const SECTION_TYPES = ['countdown', 'location', 'message', 'gift', 'gallery'];
+
+function validateSections(value) {
+  if (value === undefined || value === null) {
+    return [];
+  }
+  if (!Array.isArray(value)) {
+    throw new HttpError(400, 'VALIDATION_ERROR', 'sections harus berupa daftar.');
+  }
+  const seen = new Set();
+  const result = [];
+  for (const item of value) {
+    const type = item && typeof item === 'object' ? String(item.type || '') : '';
+    if (!SECTION_TYPES.includes(type) || seen.has(type)) {
+      continue;
+    }
+    seen.add(type);
+    result.push({ type, enabled: item.enabled !== false });
+  }
+  return result;
+}
+
 function validateCreateFields(body) {
   return {
     title: requiredString(body.title, 'title', { max: 150 }),
@@ -93,6 +117,7 @@ function validateCreateFields(body) {
     theme: validateThemeColors(body.theme),
     musicUrl: optionalString(body.musicUrl, 'musicUrl', { max: 500 }),
     gallery: validateStringArray(body.gallery, 'gallery'),
+    sections: validateSections(body.sections),
   };
 }
 
@@ -135,6 +160,9 @@ function validateUpdateFields(body) {
   }
   if (body.gallery !== undefined) {
     changes.gallery = validateStringArray(body.gallery, 'gallery');
+  }
+  if (body.sections !== undefined) {
+    changes.sections = validateSections(body.sections);
   }
   return changes;
 }
