@@ -162,3 +162,30 @@ npm run test:health
 **Future:**
 - Plan Sprint 9 (kandidat: provider payment nyata, optimasi performa, kategori undangan non-pernikahan)
 - Integrasi payment provider real (awaiting owner decision)
+
+---
+
+## Sprint 9 — UI/UX Polish Final
+**Date:** 22-08-2026
+**Status:** COMPLETED
+
+### Completed
+- Admin Detail Panel styling: card layout, typography, responsive grid 2-col tablet, detail-header/actions, detail rows/labels/values using design tokens
+- Auth Tabs Enhanced: active/inactive visual states (border solid, primary-600 color, gold shadow, bold), focus-visible ring, larger interactive hitbox
+- Auth Alert Layout: increased padding, gap between text, better spacing for clear accessibility
+- Footer Responsive: uppercase headings, letter-spacing consistent, links hover gold, gap tuning across mobile/tablet/desktop
+- Portfolio Overflow Clamp: enforced overflow-x: clip to prevent stray horizontal overflow at all breakpoints
+
+### Files Changed
+- `assets/css/pages.css`: added `.admin-detail`, `.detail-header`, `.detail-actions`, `.detail-row`, `.detail-label`, `.detail-value`, `.detail-grid-2`, responsive breakpoints (768px), improved `.auth-tabs`, `.auth-tab.is-active`, `.auth-alert` padding & gap
+- `assets/css/sections.css`: improved `.footer-heading`, `.footer-links a:hover`, added `overflow-x: clip` to `.portfolio`
+
+### Verification
+- Desktop: PASS (admin detail card aligned, auth tabs clear, footer consistent, portfolio overflow clamped)
+- Tablet: PASS (2-col admin detail grid working)
+- Mobile: PASS (auth tabs compact, footer stacked, all responsive breakpoints behaving)
+- E2E Regression: PASS (Sprint 8: 18/18 PASS, no breaks)
+- Health Check: PASS
+
+### Result
+All 4 NEEDS FIX items from Sprint 9 audit completed. Admin panel details, auth user flow, and footer/ responsive behavior now visually consistent with BERNADA.ID design system. Code flows scoped, token-based, non-breaking.
