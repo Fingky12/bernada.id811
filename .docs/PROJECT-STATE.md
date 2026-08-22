@@ -300,3 +300,33 @@ All Sprint 9 NEEDS FIX items converted to PASS. Dashboard shell consistent acros
 
 ### Result
 Fitur galeri undangan berfungsi penuh (create/update + og:image). Sprint 10 tuntas menyeluruh.
+
+---
+
+## Sprint 11 — Analytics Views, Section Engine MVP, Orders View
+**Date:** 23-08-2026
+**Status:** COMPLETED
+
+### Completed
+- **A. Analytics dasar**: migration `0014_invitation_view_count` (kolom `view_count`); `incrementViewCount()` dipanggil route publik (bukan OG render); response viewCount termasuk kunjungan berjalan; dashboard metric "Total Dilihat" + badge "👁 N dilihat" per kartu undangan.
+- **B. Section engine MVP**: migration `0015_invitation_sections` (`sections JSONB`, array `{type, enabled}`); whitelist toggle: countdown/location/message/gift/gallery; `validateSections()` drop tipe ilegal & duplikat; public page `applySections()` sembunyikan bagian disabled; editor checkbox "Bagian Undangan" tersimpan via payload.
+- **C. Customer Orders view**: sidebar nav + quick tile "Pemesanan" → section `#orders-view`; tabel order (No. Order, Paket, Jumlah, Status badge, Tanggal) dari `GET /api/orders`; empty state + CTA ke `/checkout`.
+
+### Files Changed
+- `database/migrations/0014_invitation_view_count.sql`, `0015_invitation_sections.sql`
+- `server/services/invitation-service.js` — COLUMNS/DTO + sections/viewCount; INSERT & UPDATE mapping; `incrementViewCount()`
+- `api/routes/invitations.js` — `validateSections()`; increment di route publik (+1 respons)
+- `pages/invitation.html` — id `location-section`
+- `assets/js/invitation.js` — `applySections()`, guard d-none gift/gallery
+- `pages/builder.html` — nav data-nav, quick tile orders, section orders-view, checkbox Bagian Undangan
+- `assets/js/builder.js` — switchView, showOrders, collect/populateSections, views summary
+- `assets/css/pages.css` — summary grid 4 kolom @md, `.section-toggles`, `.checkbox-label`
+
+### Verification
+- Custom checks: **7 PASS** (sections create/PATCH/expose, viewCount 1→2, orders list)
+- E2E Regression: Sprint 8 **18/18 PASS**
+- Health Check: PASS
+- Syntax: PASS (service, routes, builder.js, invitation.js)
+
+### Result
+Tiga fitur plan_premium (#20 Analytics MVP, #7 Section Engine MVP, #5 Orders) selesai & terintegrasi tanpa breaking change. Migrasi 0001–0015 applied healthy.
