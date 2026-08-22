@@ -247,3 +247,32 @@ AGENTS.md kini memuat workflow wajib yang mengikat untuk semua perubahan project
 
 ### Result
 All Sprint 9 NEEDS FIX items converted to PASS. Dashboard shell consistent across builder + admin using BERNADA.ID design system (maroon sidebar, gold accent, white surface cards, rounded shadows, token-based spacing). No backend/API/database/business-logic changes. Ready for final audit.
+
+---
+
+## Sprint 10 — Personalized Guest URL + Dynamic OG/SEO Meta
+**Date:** 23-08-2026
+**Status:** COMPLETED (dengan 1 temuan bug existing terpisah)
+
+### Completed
+- **Personalized Guest URL** (`plan_premium.md` #16): `/u/:slug?to=Nama` menampilkan "Kepada Yth. Bapak/Ibu Nama" di cover undangan + prefill nama di form RSVP. Client-side via `URLSearchParams`, aman XSS (textContent), max 80 char.
+- **Dynamic OG/SEO Meta** (`plan_premium.md` #26): `/u/:slug` kini dirender server-side dengan meta dinamis — title `"{Couple} — Undangan Pernikahan Digital"`, description (tanggal + venue), og:title/description/url/image, twitter card. og:image diambil dari gallery[0] pertama (absolut). Fallback generik bila slug tidak ditemukan/belum terbit (tetap 200, demo fallback tetap jalan).
+
+### Files Changed
+- `server/app.js`: route `/u/:slug` render HTML via `renderInvitationPage()` — inject meta dari `invitationService.getPublishedInvitationBySlug()`; escapeHtmlMeta untuk keamanan
+- `pages/invitation.html`: placeholder meta (`__META_*__`) + elemen `#cover-guest`
+- `assets/js/invitation.js`: `getGuestName()`, `renderGuestGreeting()` (sapaan tamu + prefill RSVP)
+- `assets/css/invitation.css`: style `.inv-guest` (accent gold token)
+
+### Verification
+- Meta dinamis: PASS (title/desc/url sesuai data undangan terbit; noindex tetap; fallback generik OK)
+- Elemen personalisasi: PASS (`#cover-guest` ada; logika textContent aman XSS)
+- E2E Regression: Sprint 8 **18/18 PASS**
+- Health Check: PASS
+- Syntax: PASS (app.js, invitation.js)
+
+### Temuan Terpisah (BELUM diperbaiki — butuh keputusan owner)
+- **BUG**: `POST/PATCH /api/invitations` dengan field `gallery` array → 500 INTERNAL_ERROR.
+- Root cause: kolom DB `gallery` bertipe JSONB, driver `pg` mengirim JS array sebagai Postgres array literal → mismatch type.
+- Dampak: upload galeri via editor builder gagal senyap (fitur belum pernah lolos E2E).
+- Usulan fix kecil: `JSON.stringify()` gallery sebelum query di `createInvitation` & `updateInvitation`.

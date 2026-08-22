@@ -103,6 +103,15 @@
   margin-bottom: var(--spacing-xl);
 }
 
+/* Sapaan personal tamu (?to=Nama) */
+.inv-guest {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-sm);
+  letter-spacing: var(--letter-spacing-wide);
+  color: var(--inv-accent, var(--color-gold-500));
+  margin-bottom: var(--spacing-sm);
+}
+
 .inv-open-btn {
   margin-inline: auto;
 }

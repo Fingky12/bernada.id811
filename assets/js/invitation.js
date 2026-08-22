@@ -21,6 +21,7 @@ const elements = {
   openBtn: document.getElementById('open-btn'),
   main: document.getElementById('inv-main'),
   coverCouple: document.getElementById('cover-couple'),
+  coverGuest: document.getElementById('cover-guest'),
   coverDate: document.getElementById('cover-date'),
   mainCouple: document.getElementById('main-couple'),
   mainDate: document.getElementById('main-date'),
@@ -58,6 +59,24 @@ const GUESTBOOK_KEY = (slug) => `bernada:guestbook:${slug}`;
 function getSlug() {
   const segments = window.location.pathname.split('/').filter(Boolean);
   return segments[segments.length - 1] || '';
+}
+
+function getGuestName() {
+  const value = new URLSearchParams(window.location.search).get('to');
+  if (!value) return '';
+  const trimmed = value.trim().slice(0, 80);
+  return trimmed || '';
+}
+
+function renderGuestGreeting() {
+  const guestName = getGuestName();
+  if (!guestName) return;
+  elements.coverGuest.textContent = `Kepada Yth. Bapak/Ibu ${guestName}`;
+  elements.coverGuest.classList.remove('d-none');
+  const rsvpName = document.getElementById('rsvp-name');
+  if (rsvpName && !rsvpName.value) {
+    rsvpName.value = guestName;
+  }
 }
 
 function formatTime(time) {
@@ -474,6 +493,7 @@ async function init() {
 
   applyTheme(invitation.invitation.theme);
   render();
+  renderGuestGreeting();
 
   if (invitation.invitation.eventDate) {
     const target = new Date(invitation.invitation.eventDate);
