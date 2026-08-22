@@ -276,3 +276,27 @@ All Sprint 9 NEEDS FIX items converted to PASS. Dashboard shell consistent acros
 - Root cause: kolom DB `gallery` bertipe JSONB, driver `pg` mengirim JS array sebagai Postgres array literal → mismatch type.
 - Dampak: upload galeri via editor builder gagal senyap (fitur belum pernah lolos E2E).
 - Usulan fix kecil: `JSON.stringify()` gallery sebelum query di `createInvitation` & `updateInvitation`.
+
+---
+
+## Sprint 10b — Fix Gallery JSONB 500
+**Date:** 23-08-2026
+**Status:** COMPLETED (disetujui owner, diapply & terverifikasi)
+
+### Completed
+- Fix bug existing: `POST/PATCH /api/invitations` dengan field `gallery` array → 500 INTERNAL_ERROR.
+- Root cause: kolom DB `gallery` bertipe JSONB; driver `pg` mengirim JS array sebagai Postgres array literal → type mismatch.
+- Fix (2 baris): `JSON.stringify()` gallery sebelum query — `createInvitation` (`data.gallery ?? []`) & `updateInvitation` mapping.
+
+### Files Changed
+- `server/services/invitation-service.js`: 2 lokasi stringify
+
+### Verification
+- Create with gallery: **201** (sebelumnya 500)
+- PATCH update gallery: **200**
+- OG meta dinamis: **og:image** = `https://example.com/foto3.jpg` (server-side render ambil `gallery[0]`) ✅
+- E2E Regression: Sprint 8 **18/18 PASS**
+- Health Check: PASS (API restart via start-api.ps1)
+
+### Result
+Fitur galeri undangan berfungsi penuh (create/update + og:image). Sprint 10 tuntas menyeluruh.

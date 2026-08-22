@@ -81,7 +81,7 @@ export async function createInvitation(ownerId, data) {
         data.message,
         data.theme,
         data.musicUrl,
-        data.gallery,
+        JSON.stringify(data.gallery ?? []),
       ],
     );
     return toInvitationDto(rows[0]);
@@ -125,7 +125,7 @@ export async function updateInvitation(id, ownerId, changes) {
     message: changes.message,
     theme: changes.theme,
     music_url: changes.musicUrl,
-    gallery: changes.gallery,
+    gallery: changes.gallery !== undefined ? JSON.stringify(changes.gallery) : undefined,
   };
 
   const entries = Object.entries(mapping).filter(([, value]) => value !== undefined);
