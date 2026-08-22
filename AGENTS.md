@@ -124,6 +124,13 @@ dokumentasi, maupun perubahan lainnya.
    - Jangan otomatis melanjutkan task, sprint, audit, atau pekerjaan lain.
    - Tunggu instruksi berikutnya dari manusia.
 
+8. LANJUT/NANTI
+   -Cantumkan Progress yang menggantung/Belom PASS
+   -List Kerjaan Yang Menggantung
+   -Plan-Plan Yang Mau Dikerjakan Setelah Ini
+
+
+
 PRINSIP UTAMA:
 Setiap perubahan harus mengikuti aturan project, scope task,
 verification, project history, dan workflow di atas.
