@@ -11,19 +11,47 @@
 </head>
 <body>
 
-    <header class="app-header">
-        <div class="container app-header-inner">
+    <div class="dash-layout">
+
+        <aside id="dash-sidebar" class="dash-sidebar" aria-label="Menu panel admin">
             <a class="app-brand" href="/" aria-label="BERNADA.ID — beranda">
                 <span class="app-brand-mark" aria-hidden="true">B</span>
                 <span class="brand-text">BERNADA<em>.ID</em></span>
             </a>
-            <div class="app-user">
-                <a class="btn btn-ghost btn-sm" href="/builder">← Dasbor Saya</a>
-                <span id="app-user-name" class="app-user-name"></span>
+
+            <nav id="admin-tabs" class="dash-nav" role="tablist" aria-label="Navigasi panel admin">
+                <button id="tab-summary" class="dash-nav-item is-active" role="tab" aria-selected="true" aria-controls="panel-summary" type="button"><span class="dash-nav-icon" aria-hidden="true">📊</span>Ringkasan</button>
+                <button id="tab-payments" class="dash-nav-item" role="tab" aria-selected="false" aria-controls="panel-payments" type="button"><span class="dash-nav-icon" aria-hidden="true">💳</span>Pembayaran</button>
+                <button id="tab-invitations" class="dash-nav-item" role="tab" aria-selected="false" aria-controls="panel-invitations" type="button"><span class="dash-nav-icon" aria-hidden="true">💌</span>Undangan</button>
+                <button id="tab-guestbook" class="dash-nav-item" role="tab" aria-selected="false" aria-controls="panel-guestbook" type="button"><span class="dash-nav-icon" aria-hidden="true">📖</span>Buku Tamu</button>
+            </nav>
+
+            <nav class="dash-nav" aria-label="Navigasi lainnya">
+                <a class="dash-nav-item" href="/builder"><span class="dash-nav-icon" aria-hidden="true">🏠</span>Dasbor Saya</a>
+            </nav>
+
+            <div class="dash-user">
+                <span id="dash-avatar" class="dash-avatar" aria-hidden="true">A</span>
+                <span class="dash-user-info">
+                    <span id="app-user-name" class="dash-user-name"></span>
+                    <span class="dash-user-role">Administrator</span>
+                </span>
                 <button id="logout-btn" class="btn btn-outline btn-sm" type="button">Keluar</button>
             </div>
-        </div>
-    </header>
+        </aside>
+
+        <div id="dash-backdrop" class="dash-backdrop" hidden></div>
+
+        <div class="dash-main">
+
+            <header class="dash-header">
+                <div class="flex items-center gap-sm">
+                    <button id="dash-nav-toggle" class="btn btn-outline btn-sm" type="button"
+                            aria-label="Buka menu navigasi" aria-controls="dash-sidebar">☰ Menu</button>
+                    <h1 class="dash-header-title">Panel Admin</h1>
+                </div>
+                <span id="dash-welcome" class="dash-welcome"></span>
+            </header>
 
     <main class="app-main">
         <div class="container">
@@ -34,13 +62,6 @@
                         <h1 class="page-title">Panel Admin</h1>
                         <p class="page-subtitle">Ringkasan statistik, daftar pengguna, undangan, dan buku tamu BERNADA.ID.</p>
                     </div>
-                </div>
-
-                <div class="admin-tabs" role="tablist" aria-label="Navigasi panel admin">
-                    <button id="tab-summary" class="admin-tab is-active" role="tab" aria-selected="true" type="button">Ringkasan</button>
-                    <button id="tab-payments" class="admin-tab" role="tab" aria-selected="false" type="button">Pembayaran</button>
-                    <button id="tab-invitations" class="admin-tab" role="tab" aria-selected="false" type="button">Undangan</button>
-                    <button id="tab-guestbook" class="admin-tab" role="tab" aria-selected="false" type="button">Buku Tamu</button>
                 </div>
 
                 <!-- ===== Tab: Ringkasan ===== -->
@@ -240,6 +261,8 @@
 
         </div>
     </main>
+        </div>
+    </div>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 

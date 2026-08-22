@@ -38,3 +38,25 @@ export function formatGuestbookDate(iso) {
     minute: '2-digit',
   });
 }
+
+/* Dashboard shell: toggle sidebar drawer (tablet/mobile) */
+export function initDashShell() {
+  const sidebar = document.getElementById('dash-sidebar');
+  const toggle = document.getElementById('dash-nav-toggle');
+  const backdrop = document.getElementById('dash-backdrop');
+  if (!sidebar || !toggle || !backdrop) return;
+
+  const close = () => {
+    sidebar.classList.remove('is-open');
+    backdrop.hidden = true;
+  };
+
+  toggle.addEventListener('click', () => {
+    const open = sidebar.classList.toggle('is-open');
+    backdrop.hidden = !open;
+  });
+  backdrop.addEventListener('click', close);
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') close();
+  });
+}

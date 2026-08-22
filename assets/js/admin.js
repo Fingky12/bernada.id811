@@ -11,7 +11,7 @@
   ========================================================== */
 
 import { api } from './api.js';
-import { escapeHtml, formatDate, formatGuestbookDate } from './util.js';
+import { escapeHtml, formatDate, formatGuestbookDate, initDashShell } from './util.js';
 
 const elements = {
   userName: document.getElementById('app-user-name'),
@@ -723,7 +723,12 @@ async function init() {
 
   state.currentUser = user;
   elements.userName.textContent = user.fullName || user.email;
+  const welcome = document.getElementById('dash-welcome');
+  if (welcome) welcome.textContent = `Selamat datang, ${user.fullName || user.email}`;
+  const avatar = document.getElementById('dash-avatar');
+  if (avatar) avatar.textContent = (user.fullName || user.email || 'A').trim().charAt(0).toUpperCase();
   wireEvents();
+  initDashShell();
 
   try {
     await Promise.all([loadStats(), loadUsers()]);

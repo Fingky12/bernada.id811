@@ -210,3 +210,40 @@ All 4 NEEDS FIX items from Sprint 9 audit completed. Admin panel details, auth u
 
 ### Result
 AGENTS.md kini memuat workflow wajib yang mengikat untuk semua perubahan project ke depannya.
+
+---
+
+## Sprint 9 — UI/UX Dashboard Redesign (FINAL)
+**Date:** 22-08-2026
+**Status:** COMPLETED
+
+### Completed
+- Redesign dashboard shell: sidebar maroon (mobile drawer) + dash-header + main content, applied to `builder.html` (user) & `admin.html` (admin)
+- **Admin Detail Panel**: new `.admin-detail` card style with `.detail-header`, `.detail-actions`, `.detail-row`, `.detail-label`/`.detail-value`, `.detail-grid-2` responsive (mobile 1-col, md 2-col) using design tokens
+- **Auth UI**: clarified `.auth-tab.is-active` (border solid, primary-700, gold shadow, bold weight, focus-visible ring); tightened `.auth-alert` padding and gap for clearer aria-live messaging
+- **Footer**: responsive alignment polish (`.footer-heading` uppercase/letter-spacing, `.footer-links a:hover` gold, gap consistency across breakpoints)
+- **Portfolio Carousel**: enforced `overflow-x: clip` on `.portfolio` to eliminate stray horizontal overflow at all breakpoints (unchanged behavior/data)
+- Quick actions grid (4 tiles) + summary card (total + Draf/Terbit/Nonaktif counts) on builder list view via `.dash-summary` / `.dash-quick` / `.dash-metric`
+- Added `initDashShell()` to `util.js` to toggle mobile sidebar drawer (shared by builder.js & admin.js)
+- Admin tab buttons migrated into sidebar with existing IDs (`tab-summary`, `tab-payments`, `tab-invitations`, `tab-guestbook`) → no admin.js tab-switch logic changed (is-active + aria-selected handled by existing switchTab)
+
+### Files Changed
+- `pages/builder.html` — restructure ke `dash-layout` + `.dash-sidebar` + `.dash-header`; pindah `app-user-name`, `logout-btn`, `admin-link` ke sidebar; add `.dash-summary`, `.dash-quick`, `.dash-section-head`; wrap sections in `.dash-main`
+- `pages/admin.html` — restructure ke `dash-layout` + `.dash-sidebar` (tab buttons as nav items, IDs preserved) + `.dash-header`; hapus duplikat `.admin-tabs` horizontal
+- `assets/js/builder.js` — import `initDashShell`; hitung & render summary counts (`sum-total`, `sum-draft`, `sum-published`, `sum-unpublished`); set welcome text + avatar initial + role; ganti listener createBtn/emptyCreateBtn dengan delegation `.js-create`
+- `assets/js/admin.js` — import `initDashShell`; set welcome text + avatar initial
+- `assets/js/util.js` — add `initDashShell()` export (toggle + backdrop + Escape)
+- `assets/css/pages.css` — add `.dash-*` (layout, sidebar, nav, user, header, summary, quick, metric) responsive section + `.admin-detail` family; refine `.auth-tabs`, `.auth-tab.is-active`, `.auth-alert`
+- `assets/css/sections.css` — polish `.footer-heading`, `.footer-links a:hover`; `overflow-x: clip` pada `.portfolio`
+
+### Verification
+- Desktop: PASS (sidebar fixed, header sticky, summary/grid aligned)
+- Tablet (1024px+ breakpoint): PASS (sidebar fixed, 2-col summary)
+- Mobile (<1024px): PASS (sidebar drawer + toggle + backdrop, stacked summary/quick, 2-col quick)
+- E2E Regression: PASS (Sprint 8: 18/18 PASS — admin payment flow + API untouched)
+- Health Check: PASS (database connected)
+- Syntax Check: PASS (`node --check` builder.js, admin.js, util.js)
+- Page Status: /builder 200, /admin 200
+
+### Result
+All Sprint 9 NEEDS FIX items converted to PASS. Dashboard shell consistent across builder + admin using BERNADA.ID design system (maroon sidebar, gold accent, white surface cards, rounded shadows, token-based spacing). No backend/API/database/business-logic changes. Ready for final audit.

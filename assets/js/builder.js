@@ -10,7 +10,7 @@
   ========================================================== */
 
 import { api } from './api.js';
-import { escapeHtml, formatDate as formatEventDate } from './util.js';
+import { escapeHtml, formatDate as formatEventDate, initDashShell } from './util.js';
 
 const elements = {
   userName: document.getElementById('app-user-name'),
@@ -152,6 +152,11 @@ function getTheme() {
     DAFTAR UNDANGAN
   ========================================================== */
 
+function setSummaryCount(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = String(value);
+}
+
 function statusBadge(invitation) {
   const status = invitation.status || (invitation.isPublished ? 'published' : 'draft');
   const config = {
@@ -166,6 +171,18 @@ function statusBadge(invitation) {
 function renderInvitations(invitations) {
   const hasItems = invitations.length > 0;
   elements.emptyState.classList.toggle('d-none', hasItems);
+
+  const counts = { draft: 0, published: 0, unpublished: 0 };
+  for (const invitation of invitations) {
+    const status = invitation.status || (invitation.isPublished ? 'published' : 'draft');
+    if (status === 'published') counts.published += 1;
+    else if (status === 'draft') counts.draft += 1;
+    else counts.unpublished += 1;
+  }
+  setSummaryCount('sum-total', invitations.length);
+  setSummaryCount('sum-draft', counts.draft);
+  setSummaryCount('sum-published', counts.published);
+  setSummaryCount('sum-unpublished', counts.unpublished);
 
   elements.grid.innerHTML = invitations
     .map((invitation) => {
@@ -643,6 +660,12 @@ async function init() {
     if (user.role === 'admin' && elements.adminLink) {
       elements.adminLink.classList.remove('d-none');
     }
+    const welcome = document.getElementById('dash-welcome');
+    if (welcome) welcome.textContent = `Selamat datang, ${user.fullName || user.email}`;
+    const avatar = document.getElementById('dash-avatar');
+    if (avatar) avatar.textContent = (user.fullName || user.email || 'B').trim().charAt(0).toUpperCase();
+    const roleEl = document.getElementById('dash-user-role');
+    if (roleEl) roleEl.textContent = user.role === 'admin' ? 'Administrator' : 'Member';
   } catch {
     window.location.href = '/login';
     return;
@@ -654,11 +677,13 @@ async function init() {
     showToast(error.message, 'danger');
   }
 
-  elements.createBtn.addEventListener('click', () => showEditor());
-  elements.emptyCreateBtn.addEventListener('click', () => showEditor());
+  document.querySelectorAll('.js-create').forEach((btn) => {
+    btn.addEventListener('click', () => showEditor());
+  });
   elements.backBtn.addEventListener('click', showList);
   elements.cancelBtn.addEventListener('click', showList);
   elements.grid.addEventListener('click', handleGridAction);
+  initDashShell();
 
   elements.form.addEventListener('submit', (event) => {
     event.preventDefault();

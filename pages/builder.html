@@ -10,33 +10,97 @@
 </head>
 <body>
 
-    <header class="app-header">
-        <div class="container app-header-inner">
+    <div class="dash-layout">
+
+        <aside id="dash-sidebar" class="dash-sidebar" aria-label="Menu dasbor">
             <a class="app-brand" href="/" aria-label="BERNADA.ID — beranda">
                 <span class="app-brand-mark" aria-hidden="true">B</span>
                 <span class="brand-text">BERNADA<em>.ID</em></span>
             </a>
-            <div class="app-user">
-                <a id="admin-link" class="btn btn-ghost btn-sm d-none" href="/admin">Admin</a>
-                <span id="app-user-name" class="app-user-name"></span>
+
+            <nav class="dash-nav" aria-label="Navigasi dasbor">
+                <a class="dash-nav-item is-active" href="#list-view"><span class="dash-nav-icon" aria-hidden="true">📊</span>Dashboard</a>
+                <a class="dash-nav-item" href="#list-view"><span class="dash-nav-icon" aria-hidden="true">💌</span>Undangan Saya</a>
+                <button class="dash-nav-item js-create" type="button"><span class="dash-nav-icon" aria-hidden="true">✨</span>Buat Undangan</button>
+                <a class="dash-nav-item" href="/checkout"><span class="dash-nav-icon" aria-hidden="true">💳</span>Pemesanan</a>
+                <a class="dash-nav-item" href="/#portofolio"><span class="dash-nav-icon" aria-hidden="true">🖼️</span>Galeri Template</a>
+                <a id="admin-link" class="dash-nav-item d-none" href="/admin"><span class="dash-nav-icon" aria-hidden="true">🛡️</span>Panel Admin</a>
+            </nav>
+
+            <div class="dash-user">
+                <span id="dash-avatar" class="dash-avatar" aria-hidden="true">B</span>
+                <span class="dash-user-info">
+                    <span id="app-user-name" class="dash-user-name"></span>
+                    <span id="dash-user-role" class="dash-user-role">Member</span>
+                </span>
                 <button id="logout-btn" class="btn btn-outline btn-sm" type="button">Keluar</button>
             </div>
-        </div>
-    </header>
+        </aside>
 
-    <main class="app-main">
-        <div class="container">
+        <div id="dash-backdrop" class="dash-backdrop" hidden></div>
+
+        <div class="dash-main">
+
+            <header class="dash-header">
+                <div class="flex items-center gap-sm">
+                    <button id="dash-nav-toggle" class="btn btn-outline btn-sm" type="button"
+                            aria-label="Buka menu navigasi" aria-controls="dash-sidebar">☰ Menu</button>
+                    <h1 class="dash-header-title">Dashboard</h1>
+                </div>
+                <span id="dash-welcome" class="dash-welcome"></span>
+            </header>
+
+            <main class="app-main">
+                <div class="container">
 
             <!-- ================================
                 LIHAT: DAFTAR UNDANGAN
             ================================= -->
             <section id="list-view" aria-label="Daftar undangan">
-                <div class="page-head">
-                    <div>
-                        <h1 class="page-title">Undangan Saya</h1>
-                        <p class="page-subtitle">Buat, kelola, dan publikasikan undangan digital Anda.</p>
+
+                <div class="dash-summary" aria-label="Ringkasan undangan">
+                    <div class="dash-summary-total">
+                        <span class="dash-summary-total-label">Total Undangan</span>
+                        <strong id="sum-total" class="dash-summary-total-value">0</strong>
                     </div>
-                    <button id="create-btn" class="btn btn-primary" type="button">+ Buat Undangan</button>
+                    <div class="dash-summary-grid">
+                        <div class="dash-metric">
+                            <span id="sum-draft" class="dash-metric-value">0</span>
+                            <span class="dash-metric-label">Draf</span>
+                        </div>
+                        <div class="dash-metric">
+                            <span id="sum-published" class="dash-metric-value">0</span>
+                            <span class="dash-metric-label">Terbit</span>
+                        </div>
+                        <div class="dash-metric">
+                            <span id="sum-unpublished" class="dash-metric-value">0</span>
+                            <span class="dash-metric-label">Nonaktif</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dash-quick" aria-label="Aksi cepat">
+                    <button class="dash-quick-tile js-create" type="button">
+                        <span class="dash-quick-icon" aria-hidden="true">✨</span>
+                        <span class="dash-quick-title">Buat Undangan</span>
+                    </button>
+                    <a class="dash-quick-tile" href="/checkout">
+                        <span class="dash-quick-icon" aria-hidden="true">💳</span>
+                        <span class="dash-quick-title">Pemesanan</span>
+                    </a>
+                    <a class="dash-quick-tile" href="/#portofolio">
+                        <span class="dash-quick-icon" aria-hidden="true">🖼️</span>
+                        <span class="dash-quick-title">Galeri Template</span>
+                    </a>
+                    <a class="dash-quick-tile" href="/">
+                        <span class="dash-quick-icon" aria-hidden="true">🏠</span>
+                        <span class="dash-quick-title">Beranda</span>
+                    </a>
+                </div>
+
+                <div class="dash-section-head">
+                    <h2 class="dash-section-title">Undangan Terbaru</h2>
+                    <button id="create-btn" class="btn btn-primary btn-sm js-create" type="button">+ Buat Undangan</button>
                 </div>
 
                 <div id="invitation-grid" class="invitation-grid" aria-live="polite"></div>
@@ -45,7 +109,7 @@
                     <div class="empty-state-icon" aria-hidden="true">💌</div>
                     <h2 class="empty-state-title">Belum ada undangan</h2>
                     <p class="empty-state-text">Mulai buat undangan digital pertama Anda — pilih template, sesuaikan tema, dan bagikan ke orang tercinta.</p>
-                    <button id="empty-create-btn" class="btn btn-primary" type="button">Buat Undangan</button>
+                    <button id="empty-create-btn" class="btn btn-primary js-create" type="button">Buat Undangan</button>
                 </div>
             </section>
 
@@ -297,6 +361,8 @@
 
         </div>
     </main>
+        </div>
+    </div>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
