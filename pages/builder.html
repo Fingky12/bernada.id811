@@ -223,6 +223,11 @@
                                         <textarea class="input textarea" id="f-gallery" name="gallery" rows="3"
                                                   placeholder="https://...&#10;https://..." maxlength="2000"></textarea>
                                         <p class="form-hint">Opsional — satu URL gambar per baris. Tampil sebagai galeri di undangan.</p>
+                                        <label class="btn btn-outline btn-sm btn-upload">
+                                            ⬆ Upload Foto (JPG/PNG/WEBP, maks 5 MB)
+                                            <input type="file" id="f-gallery-files" accept=".jpg,.jpeg,.png,.webp" multiple hidden>
+                                        </label>
+                                        <p class="form-hint d-none" id="upload-status" aria-live="polite"></p>
                                     </div>
                                 </div>
                             </section>
@@ -235,14 +240,8 @@
 
                             <section class="editor-section">
                                 <h2 class="editor-section-title">Bagian Undangan</h2>
-                                <p class="editor-section-hint">Centang bagian yang ingin ditampilkan pada undangan.</p>
-                                <div class="section-toggles">
-                                    <label class="checkbox-label"><input type="checkbox" id="sec-countdown" checked> Hitung Mundur</label>
-                                    <label class="checkbox-label"><input type="checkbox" id="sec-location" checked> Lokasi Acara</label>
-                                    <label class="checkbox-label"><input type="checkbox" id="sec-message" checked> Kata Sambutan</label>
-                                    <label class="checkbox-label"><input type="checkbox" id="sec-gift" checked> Amplop Digital</label>
-                                    <label class="checkbox-label"><input type="checkbox" id="sec-gallery" checked> Galeri Foto</label>
-                                </div>
+                                <p class="editor-section-hint">Centang bagian yang tampil, atur urutan dengan tombol ↑ ↓.</p>
+                                <ul id="sections-list" class="sections-list"></ul>
                             </section>
 
                             <section class="editor-section">
@@ -326,6 +325,9 @@
                                 <div class="stat-box"><span class="stat-value" id="stat-hadir">0</span><span class="stat-label">Hadir</span></div>
                                 <div class="stat-box"><span class="stat-value" id="stat-tidak-hadir">0</span><span class="stat-label">Tidak Hadir</span></div>
                                 <div class="stat-box"><span class="stat-value" id="stat-diundang">0</span><span class="stat-label">Diundang</span></div>
+                                <div class="stat-box"><span class="stat-value" id="stat-wishes">0</span><span class="stat-label">Ucapan</span></div>
+                                <div class="stat-box"><span class="stat-value" id="stat-rsvp-hadir">0</span><span class="stat-label">Konfirmasi Hadir</span></div>
+                                <div class="stat-box"><span class="stat-value" id="stat-total-tamu-hadir">0</span><span class="stat-label">Tamu Hadir</span></div>
                             </div>
                         </section>
 

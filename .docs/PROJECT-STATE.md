@@ -160,16 +160,19 @@ npm run test:health
 - ✅ Monitor health 5 min
 
 **Future:**
+
 - Plan Sprint 9 (kandidat: provider payment nyata, optimasi performa, kategori undangan non-pernikahan)
 - Integrasi payment provider real (awaiting owner decision)
 
 ---
 
 ## Sprint 9 — UI/UX Polish Final
+
 **Date:** 22-08-2026
 **Status:** COMPLETED
 
 ### Completed
+
 - Admin Detail Panel styling: card layout, typography, responsive grid 2-col tablet, detail-header/actions, detail rows/labels/values using design tokens
 - Auth Tabs Enhanced: active/inactive visual states (border solid, primary-600 color, gold shadow, bold), focus-visible ring, larger interactive hitbox
 - Auth Alert Layout: increased padding, gap between text, better spacing for clear accessibility
@@ -177,10 +180,12 @@ npm run test:health
 - Portfolio Overflow Clamp: enforced overflow-x: clip to prevent stray horizontal overflow at all breakpoints
 
 ### Files Changed
+
 - `assets/css/pages.css`: added `.admin-detail`, `.detail-header`, `.detail-actions`, `.detail-row`, `.detail-label`, `.detail-value`, `.detail-grid-2`, responsive breakpoints (768px), improved `.auth-tabs`, `.auth-tab.is-active`, `.auth-alert` padding & gap
 - `assets/css/sections.css`: improved `.footer-heading`, `.footer-links a:hover`, added `overflow-x: clip` to `.portfolio`
 
 ### Verification
+
 - Desktop: PASS (admin detail card aligned, auth tabs clear, footer consistent, portfolio overflow clamped)
 - Tablet: PASS (2-col admin detail grid working)
 - Mobile: PASS (auth tabs compact, footer stacked, all responsive breakpoints behaving)
@@ -188,36 +193,44 @@ npm run test:health
 - Health Check: PASS
 
 ### Result
+
 All 4 NEEDS FIX items from Sprint 9 audit completed. Admin panel details, auth user flow, and footer/ responsive behavior now visually consistent with BERNADA.ID design system. Code flows scoped, token-based, non-breaking.
 
 ---
 
 ## Aturan Tambahan — Workflow Kerja BERNADA.ID
+
 **Date:** 22-08-2026
 **Status:** COMPLETED
 
 ### Completed
+
 - Tambahkan section "8. WORKFLOW KERJA BERNADA.ID — WAJIB" ke `AGENTS.md`
 - Workflow wajib 7 langkah: PAHAMI → BACA KONTEKS RELEVAN → KERJA → VERIFY → PROJECT HISTORY → REPORT → STOP
 - Berlaku untuk setiap perubahan tanpa membedakan besar/kecil
 
 ### Files Changed
+
 - `AGENTS.md`: +51 baris (section 8, tanpa mengubah aturan lain)
 
 ### Verification
+
 - Diff review: PASS (hanya penambahan, tidak ada penghapusan/perubahan aturan lama)
 - Struktur file: PASS (section 8 diakhiri file, format konsisten)
 
 ### Result
+
 AGENTS.md kini memuat workflow wajib yang mengikat untuk semua perubahan project ke depannya.
 
 ---
 
 ## Sprint 9 — UI/UX Dashboard Redesign (FINAL)
+
 **Date:** 22-08-2026
 **Status:** COMPLETED
 
 ### Completed
+
 - Redesign dashboard shell: sidebar maroon (mobile drawer) + dash-header + main content, applied to `builder.html` (user) & `admin.html` (admin)
 - **Admin Detail Panel**: new `.admin-detail` card style with `.detail-header`, `.detail-actions`, `.detail-row`, `.detail-label`/`.detail-value`, `.detail-grid-2` responsive (mobile 1-col, md 2-col) using design tokens
 - **Auth UI**: clarified `.auth-tab.is-active` (border solid, primary-700, gold shadow, bold weight, focus-visible ring); tightened `.auth-alert` padding and gap for clearer aria-live messaging
@@ -228,6 +241,7 @@ AGENTS.md kini memuat workflow wajib yang mengikat untuk semua perubahan project
 - Admin tab buttons migrated into sidebar with existing IDs (`tab-summary`, `tab-payments`, `tab-invitations`, `tab-guestbook`) → no admin.js tab-switch logic changed (is-active + aria-selected handled by existing switchTab)
 
 ### Files Changed
+
 - `pages/builder.html` — restructure ke `dash-layout` + `.dash-sidebar` + `.dash-header`; pindah `app-user-name`, `logout-btn`, `admin-link` ke sidebar; add `.dash-summary`, `.dash-quick`, `.dash-section-head`; wrap sections in `.dash-main`
 - `pages/admin.html` — restructure ke `dash-layout` + `.dash-sidebar` (tab buttons as nav items, IDs preserved) + `.dash-header`; hapus duplikat `.admin-tabs` horizontal
 - `assets/js/builder.js` — import `initDashShell`; hitung & render summary counts (`sum-total`, `sum-draft`, `sum-published`, `sum-unpublished`); set welcome text + avatar initial + role; ganti listener createBtn/emptyCreateBtn dengan delegation `.js-create`
@@ -237,6 +251,7 @@ AGENTS.md kini memuat workflow wajib yang mengikat untuk semua perubahan project
 - `assets/css/sections.css` — polish `.footer-heading`, `.footer-links a:hover`; `overflow-x: clip` pada `.portfolio`
 
 ### Verification
+
 - Desktop: PASS (sidebar fixed, header sticky, summary/grid aligned)
 - Tablet (1024px+ breakpoint): PASS (sidebar fixed, 2-col summary)
 - Mobile (<1024px): PASS (sidebar drawer + toggle + backdrop, stacked summary/quick, 2-col quick)
@@ -246,25 +261,30 @@ AGENTS.md kini memuat workflow wajib yang mengikat untuk semua perubahan project
 - Page Status: /builder 200, /admin 200
 
 ### Result
+
 All Sprint 9 NEEDS FIX items converted to PASS. Dashboard shell consistent across builder + admin using BERNADA.ID design system (maroon sidebar, gold accent, white surface cards, rounded shadows, token-based spacing). No backend/API/database/business-logic changes. Ready for final audit.
 
 ---
 
 ## Sprint 10 — Personalized Guest URL + Dynamic OG/SEO Meta
+
 **Date:** 23-08-2026
 **Status:** COMPLETED (dengan 1 temuan bug existing terpisah)
 
 ### Completed
+
 - **Personalized Guest URL** (`plan_premium.md` #16): `/u/:slug?to=Nama` menampilkan "Kepada Yth. Bapak/Ibu Nama" di cover undangan + prefill nama di form RSVP. Client-side via `URLSearchParams`, aman XSS (textContent), max 80 char.
 - **Dynamic OG/SEO Meta** (`plan_premium.md` #26): `/u/:slug` kini dirender server-side dengan meta dinamis — title `"{Couple} — Undangan Pernikahan Digital"`, description (tanggal + venue), og:title/description/url/image, twitter card. og:image diambil dari gallery[0] pertama (absolut). Fallback generik bila slug tidak ditemukan/belum terbit (tetap 200, demo fallback tetap jalan).
 
 ### Files Changed
+
 - `server/app.js`: route `/u/:slug` render HTML via `renderInvitationPage()` — inject meta dari `invitationService.getPublishedInvitationBySlug()`; escapeHtmlMeta untuk keamanan
 - `pages/invitation.html`: placeholder meta (`__META_*__`) + elemen `#cover-guest`
 - `assets/js/invitation.js`: `getGuestName()`, `renderGuestGreeting()` (sapaan tamu + prefill RSVP)
 - `assets/css/invitation.css`: style `.inv-guest` (accent gold token)
 
 ### Verification
+
 - Meta dinamis: PASS (title/desc/url sesuai data undangan terbit; noindex tetap; fallback generik OK)
 - Elemen personalisasi: PASS (`#cover-guest` ada; logika textContent aman XSS)
 - E2E Regression: Sprint 8 **18/18 PASS**
@@ -272,6 +292,7 @@ All Sprint 9 NEEDS FIX items converted to PASS. Dashboard shell consistent acros
 - Syntax: PASS (app.js, invitation.js)
 
 ### Temuan Terpisah (BELUM diperbaiki — butuh keputusan owner)
+
 - **BUG**: `POST/PATCH /api/invitations` dengan field `gallery` array → 500 INTERNAL_ERROR.
 - Root cause: kolom DB `gallery` bertipe JSONB, driver `pg` mengirim JS array sebagai Postgres array literal → mismatch type.
 - Dampak: upload galeri via editor builder gagal senyap (fitur belum pernah lolos E2E).
@@ -280,18 +301,22 @@ All Sprint 9 NEEDS FIX items converted to PASS. Dashboard shell consistent acros
 ---
 
 ## Sprint 10b — Fix Gallery JSONB 500
+
 **Date:** 23-08-2026
 **Status:** COMPLETED (disetujui owner, diapply & terverifikasi)
 
 ### Completed
+
 - Fix bug existing: `POST/PATCH /api/invitations` dengan field `gallery` array → 500 INTERNAL_ERROR.
 - Root cause: kolom DB `gallery` bertipe JSONB; driver `pg` mengirim JS array sebagai Postgres array literal → type mismatch.
 - Fix (2 baris): `JSON.stringify()` gallery sebelum query — `createInvitation` (`data.gallery ?? []`) & `updateInvitation` mapping.
 
 ### Files Changed
+
 - `server/services/invitation-service.js`: 2 lokasi stringify
 
 ### Verification
+
 - Create with gallery: **201** (sebelumnya 500)
 - PATCH update gallery: **200**
 - OG meta dinamis: **og:image** = `https://example.com/foto3.jpg` (server-side render ambil `gallery[0]`) ✅
@@ -299,20 +324,24 @@ All Sprint 9 NEEDS FIX items converted to PASS. Dashboard shell consistent acros
 - Health Check: PASS (API restart via start-api.ps1)
 
 ### Result
+
 Fitur galeri undangan berfungsi penuh (create/update + og:image). Sprint 10 tuntas menyeluruh.
 
 ---
 
 ## Sprint 11 — Analytics Views, Section Engine MVP, Orders View
+
 **Date:** 23-08-2026
 **Status:** COMPLETED
 
 ### Completed
+
 - **A. Analytics dasar**: migration `0014_invitation_view_count` (kolom `view_count`); `incrementViewCount()` dipanggil route publik (bukan OG render); response viewCount termasuk kunjungan berjalan; dashboard metric "Total Dilihat" + badge "👁 N dilihat" per kartu undangan.
 - **B. Section engine MVP**: migration `0015_invitation_sections` (`sections JSONB`, array `{type, enabled}`); whitelist toggle: countdown/location/message/gift/gallery; `validateSections()` drop tipe ilegal & duplikat; public page `applySections()` sembunyikan bagian disabled; editor checkbox "Bagian Undangan" tersimpan via payload.
 - **C. Customer Orders view**: sidebar nav + quick tile "Pemesanan" → section `#orders-view`; tabel order (No. Order, Paket, Jumlah, Status badge, Tanggal) dari `GET /api/orders`; empty state + CTA ke `/checkout`.
 
 ### Files Changed
+
 - `database/migrations/0014_invitation_view_count.sql`, `0015_invitation_sections.sql`
 - `server/services/invitation-service.js` — COLUMNS/DTO + sections/viewCount; INSERT & UPDATE mapping; `incrementViewCount()`
 - `api/routes/invitations.js` — `validateSections()`; increment di route publik (+1 respons)
@@ -323,10 +352,47 @@ Fitur galeri undangan berfungsi penuh (create/update + og:image). Sprint 10 tunt
 - `assets/css/pages.css` — summary grid 4 kolom @md, `.section-toggles`, `.checkbox-label`
 
 ### Verification
+
 - Custom checks: **7 PASS** (sections create/PATCH/expose, viewCount 1→2, orders list)
 - E2E Regression: Sprint 8 **18/18 PASS**
 - Health Check: PASS
 - Syntax: PASS (service, routes, builder.js, invitation.js)
 
 ### Result
+
 Tiga fitur plan_premium (#20 Analytics MVP, #7 Section Engine MVP, #5 Orders) selesai & terintegrasi tanpa breaking change. Migrasi 0001–0015 applied healthy.
+
+---
+
+## Sprint 11b — Section Reorder UI, Media Upload, RSVP/Wishes Stats
+**Date:** 23-08-2026
+**Status:** COMPLETED
+
+### Completed
+
+- **A. Reorder UI section engine**: public page menyusun ulang DOM sesuai urutan array `sections` (insertBefore anchor rsvp — bagian inti tetap di akhir); editor "Bagian Undangan" menjadi ordered list dengan tombol ↑↓ per item; order tersimpan via payload.
+- **B. Media upload MVP**: endpoint `POST /api/uploads` (owner auth) menerima base64 JSON; validasi magic bytes (JPEG/PNG/WEBP) + max 5 MB; simpan ke folder `uploads/` (gitignored), serve static `/uploads`; editor builder tombol "Upload Foto" (multi-file) → URL otomatis ditambahkan ke textarea galeri.
+  - ponytail: base64-over-JSON tanpa dependency multer — upgrade multipart+S3/CDN bila traffic produksi naik.
+- **C. RSVP/Wishes stats per undangan**: `GET /api/invitations/:id/guestbook-stats` (owner-scoped) → total ucapan, konfirmasi hadir, total tamu hadir; manage view "Statistik Tamu" + 3 box baru (Ucapan / Konfirmasi Hadir / Tamu Hadir).
+
+### Files Changed
+
+- `pages/builder.html`, `assets/js/builder.js` — sections-list reorder UI (↑↓), wireGalleryUpload multi-upload, loadGuestbookStats, 3 stat-box baru
+- `assets/js/invitation.js` — applySections reorder DOM + guard d-none
+- `assets/js/api.js` — uploadImage(), getGuestbookStats()
+- `api/routes/uploads.js` (baru) — POST upload + magic-bytes validation
+- `api/index.js`, `server/app.js` — mount router + static `/uploads`
+- `server/services/guestbook-service.js` — getGuestbookStats()
+- `api/routes/invitations.js` — GET /:id/guestbook-stats
+- `assets/css/pages.css` — .sections-list/.sections-item/.sections-move/.btn-upload
+- `.gitignore` — uploads/
+
+### Verification
+
+- Custom checks: **12/12 PASS** (upload PNG 201 + static serve + content-type png; reject non-image 400 & no-auth 401; sections order tersimpan & expose di publik; stats total=2 / hadir=1 / tamu-hadir=3 akurat)
+- E2E Regression: Sprint 8 **18/18 PASS**
+- Health Check: PASS · Syntax: PASS
+
+### Result
+
+Reorder section berfungsi end-to-end (editor → DB → public DOM). Upload foto lokal bekerja tanpa dependency baru. Analytics ucapan/RSVP tampil di dashboard kelola.

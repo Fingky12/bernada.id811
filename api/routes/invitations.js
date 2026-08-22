@@ -219,6 +219,12 @@ invitationsRouter.get('/:id/status', async (req, res) => {
   });
 });
 
+invitationsRouter.get('/:id/guestbook-stats', async (req, res) => {
+  const id = parseId(req.params.id);
+  const stats = await guestbookService.getGuestbookStats(id, req.user.id);
+  res.status(200).json({ stats });
+});
+
 invitationsRouter.patch('/:id/status', async (req, res) => {
   const id = parseId(req.params.id);
   const nextStatus = requiredString(req.body?.status, 'status', { max: 20 }).toLowerCase();

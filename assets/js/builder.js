@@ -42,6 +42,9 @@ const elements = {
       hadir: document.getElementById('stat-hadir'),
       tidakHadir: document.getElementById('stat-tidak-hadir'),
       diundang: document.getElementById('stat-diundang'),
+      wishes: document.getElementById('stat-wishes'),
+      rsvpHadir: document.getElementById('stat-rsvp-hadir'),
+      totalTamuHadir: document.getElementById('stat-total-tamu-hadir'),
     },
     fullName: document.getElementById('g-full-name'),
     phone: document.getElementById('g-phone'),
@@ -334,24 +337,72 @@ function buildPayload() {
 }
 
 const SECTION_TYPES = ['countdown', 'location', 'message', 'gift', 'gallery'];
+const SECTION_LABELS = {
+  countdown: 'Hitung Mundur',
+  location: 'Lokasi Acara',
+  message: 'Kata Sambutan',
+  gift: 'Amplop Digital',
+  gallery: 'Galeri Foto',
+};
+let sectionsState = [];
+
+function renderSectionsList() {
+  const list = document.getElementById('sections-list');
+  if (!list) return;
+  list.innerHTML = sectionsState
+    .map((section, index) => `
+      <li class="sections-item" data-type="${section.type}">
+        <label class="checkbox-label">
+          <input type="checkbox" data-sec="${section.type}"${section.enabled ? ' checked' : ''}>
+          ${escapeHtml(SECTION_LABELS[section.type])}
+        </label>
+        <span class="sections-move">
+          <button type="button" class="btn btn-ghost btn-sm" data-move="up" data-index="${index}"${index === 0 ? ' disabled' : ''} aria-label="Naikkan ${escapeHtml(SECTION_LABELS[section.type])}">↑</button>
+          <button type="button" class="btn btn-ghost btn-sm" data-move="down" data-index="${index}"${index === sectionsState.length - 1 ? ' disabled' : ''} aria-label="Turunkan ${escapeHtml(SECTION_LABELS[section.type])}">↓</button>
+        </span>
+      </li>`)
+    .join('');
+}
+
+function wireSectionsList() {
+  const list = document.getElementById('sections-list');
+  if (!list) return;
+  list.addEventListener('change', (event) => {
+    const checkbox = event.target.closest('input[data-sec]');
+    if (!checkbox) return;
+    const section = sectionsState.find((s) => s.type === checkbox.dataset.sec);
+    if (section) section.enabled = checkbox.checked;
+  });
+  list.addEventListener('click', (event) => {
+    const button = event.target.closest('button[data-move]');
+    if (!button || button.disabled) return;
+    const index = Number(button.dataset.index);
+    const swapWith = button.dataset.move === 'up' ? index - 1 : index + 1;
+    if (swapWith < 0 || swapWith >= sectionsState.length) return;
+    [sectionsState[index], sectionsState[swapWith]] = [sectionsState[swapWith], sectionsState[index]];
+    renderSectionsList();
+  });
+}
 
 function collectSections() {
-  return SECTION_TYPES.map((type) => ({
-    type,
-    enabled: document.getElementById(`sec-${type}`).checked,
+  return sectionsState.map((section) => ({
+    type: section.type,
+    enabled: document.querySelector(`input[data-sec="${section.type}"]`)?.checked ?? section.enabled,
   }));
 }
 
 function populateSections(sections) {
-  const disabled = new Set(
-    (Array.isArray(sections) ? sections : [])
-      .filter((s) => s && s.enabled === false)
-      .map((s) => s.type),
-  );
-  SECTION_TYPES.forEach((type) => {
-    const checkbox = document.getElementById(`sec-${type}`);
-    if (checkbox) checkbox.checked = !disabled.has(type);
-  });
+  const saved = Array.isArray(sections) ? sections.filter((s) => s && SECTION_TYPES.includes(s.type)) : [];
+  const byType = Object.fromEntries(saved.map((s) => [s.type, s]));
+  const orderedTypes = [
+    ...saved.map((s) => s.type),
+    ...SECTION_TYPES.filter((type) => !byType[type]),
+  ];
+  sectionsState = orderedTypes.map((type) => ({
+    type,
+    enabled: byType[type] ? byType[type].enabled !== false : true,
+  }));
+  renderSectionsList();
 }
 
 function updateSlugPreview() {
@@ -451,7 +502,7 @@ function showManage(invitation) {
 
 async function loadManageData() {
   try {
-    await Promise.all([loadGuestStats(), loadGuests(), loadGiftAccounts()]);
+    await Promise.all([loadGuestStats(), loadGuests(), loadGiftAccounts(), loadGuestbookStats()]);
   } catch (error) {
     showToast(error.message, 'danger');
   }
@@ -463,6 +514,15 @@ async function loadGuestStats() {
   elements.manage.stats.hadir.textContent = stats.hadir;
   elements.manage.stats.tidakHadir.textContent = stats.tidakHadir;
   elements.manage.stats.diundang.textContent = stats.diundang;
+}
+
+async function loadGuestbookStats() {
+  const stats = await api.getGuestbookStats(currentManageInvitation.id);
+  if (elements.manage.stats.wishes) {
+    elements.manage.stats.wishes.textContent = stats.total;
+    elements.manage.stats.rsvpHadir.textContent = stats.hadir;
+    elements.manage.stats.totalTamuHadir.textContent = stats.totalTamuHadir;
+  }
 }
 
 async function loadGuests() {
@@ -726,11 +786,66 @@ function wireEditorEvents() {
       }
     });
   });
+
+  wireGalleryUpload();
+}
+
+const UPLOAD_MAX_BYTES = 5 * 1024 * 1024;
+
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result).split(',')[1] || '');
+    reader.onerror = () => reject(new Error('Gagal membaca file.'));
+    reader.readAsDataURL(file);
+  });
+}
+
+function setUploadStatus(message) {
+  const status = document.getElementById('upload-status');
+  if (!status) return;
+  status.textContent = message;
+  status.classList.toggle('d-none', !message);
+}
+
+function wireGalleryUpload() {
+  const input = document.getElementById('f-gallery-files');
+  if (!input) return;
+  input.addEventListener('change', async () => {
+    const files = Array.from(input.files || []);
+    input.value = '';
+    if (files.length === 0) return;
+
+    const textarea = document.getElementById('f-gallery');
+    const uploaded = [];
+    try {
+      for (let i = 0; i < files.length; i += 1) {
+        const file = files[i];
+        setUploadStatus(`Mengunggah ${i + 1}/${files.length}: ${file.name}…`);
+        if (file.size > UPLOAD_MAX_BYTES) {
+          showToast(`${file.name} dilewati — maksimal 5 MB.`, 'danger');
+          continue;
+        }
+        const base64Data = await fileToBase64(file);
+        uploaded.push(await api.uploadImage(file.name, base64Data));
+      }
+      if (uploaded.length > 0) {
+        const existing = textarea.value.split('\n').map((url) => url.trim()).filter(Boolean);
+        textarea.value = [...existing, ...uploaded].join('\n');
+        showToast(`${uploaded.length} foto ditambahkan ke galeri.`, 'success');
+      }
+    } catch (error) {
+      showToast(error.message, 'danger');
+    } finally {
+      setUploadStatus('');
+    }
+  });
 }
 
 async function init() {
   wireEditorEvents();
   wireManageEvents();
+  wireSectionsList();
 
   if (!(await api.initSession())) {
     window.location.href = '/login';

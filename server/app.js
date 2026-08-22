@@ -94,6 +94,7 @@ export function createApp() {
   app.use('/api', apiRouter);
 
   app.use('/assets', express.static(path.join(ROOT_DIR, 'assets')));
+  app.use('/uploads', express.static(path.join(ROOT_DIR, 'uploads')));
   app.use('/pages', express.static(path.join(ROOT_DIR, 'pages')));
 
   const page = (file) => (req, res) => {

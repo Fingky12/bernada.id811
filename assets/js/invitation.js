@@ -90,11 +90,10 @@ const SECTION_ELEMENT_IDS = {
 };
 
 function applySections(sections) {
-  const disabled = new Set(
-    (Array.isArray(sections) ? sections : [])
-      .filter((s) => s && s.enabled === false && SECTION_ELEMENT_IDS[s.type])
-      .map((s) => s.type),
+  const list = (Array.isArray(sections) ? sections : []).filter(
+    (s) => s && s.type && SECTION_ELEMENT_IDS[s.type],
   );
+  const disabled = new Set(list.filter((s) => s.enabled === false).map((s) => s.type));
   for (const [type, elementId] of Object.entries(SECTION_ELEMENT_IDS)) {
     const el = document.getElementById(elementId);
     if (!el) continue;
@@ -102,6 +101,16 @@ function applySections(sections) {
       el.classList.add('d-none');
       el.dataset.sectionDisabled = 'true';
     }
+  }
+
+  // Reorder: susun ulang bagian yang bisa diatur sesuai urutan config,
+  // disisipkan sebelum section RSVP (bagian inti tetap di akhir).
+  const main = document.getElementById('inv-main');
+  const anchor = document.getElementById('rsvp-section');
+  if (!main || !anchor) return;
+  for (const item of [...list].reverse()) {
+    const el = document.getElementById(SECTION_ELEMENT_IDS[item.type]);
+    if (el) main.insertBefore(el, anchor);
   }
 }
 

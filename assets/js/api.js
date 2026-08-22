@@ -165,6 +165,14 @@ export const api = {
     await request(`/invitations/${id}`, { method: 'DELETE' });
   },
 
+  async uploadImage(filename, base64Data) {
+    const data = await request('/uploads', {
+      method: 'POST',
+      body: { filename, data: base64Data },
+    });
+    return data.url;
+  },
+
   async setPublished(id, isPublished) {
     const action = isPublished ? 'publish' : 'unpublish';
     const data = await request(`/invitations/${id}/${action}`, {
@@ -209,6 +217,11 @@ export const api = {
 
   async getGuestStats(invitationId) {
     return request(`/invitations/${invitationId}/guests/stats`);
+  },
+
+  async getGuestbookStats(invitationId) {
+    const data = await request(`/invitations/${invitationId}/guestbook-stats`);
+    return data.stats;
   },
 
   async updateGuest(guestId, payload) {

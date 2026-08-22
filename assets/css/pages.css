@@ -445,6 +445,38 @@
     background: var(--color-surface-alt);
 }
 
+.sections-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.sections-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-2xs) var(--spacing-sm);
+    border: 1px solid var(--color-border-light);
+    border-radius: var(--border-radius-md);
+    background: var(--color-surface);
+}
+
+.sections-move {
+    display: inline-flex;
+    gap: var(--spacing-2xs);
+}
+
+.btn-upload {
+    display: inline-flex;
+    align-items: center;
+    margin-top: var(--spacing-xs);
+    cursor: pointer;
+}
+
 .editor-section-title {
     font-family: var(--font-family-heading);
     font-size: var(--font-size-lg);

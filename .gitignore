@@ -17,3 +17,6 @@ Thumbs.db
 # Editor
 .idea/
 .vscode/
+
+# User uploads
+uploads/

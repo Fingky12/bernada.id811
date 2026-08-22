@@ -54,3 +54,31 @@ export async function addGuestbookEntry(slug, data) {
   );
   return toGuestbookDto(rows[0]);
 }
+
+/* Statistik RSVP/Wishes milik owner (dashboard kelola). */
+export async function getGuestbookStats(invitationId, ownerId) {
+  const { rows: own } = await pool.query(
+    'SELECT id FROM invitations WHERE id = $1 AND owner_id = $2',
+    [invitationId, ownerId],
+  );
+  if (own.length === 0) {
+    throw new HttpError(404, 'NOT_FOUND', 'Undangan tidak ditemukan.');
+  }
+  const { rows } = await pool.query(
+    `SELECT
+       COUNT(*)                                        AS total,
+       COUNT(*) FILTER (WHERE attendance = 'hadir')        AS hadir,
+       COUNT(*) FILTER (WHERE attendance = 'tidak-hadir') AS tidak_hadir,
+       COALESCE(SUM(guests_count) FILTER (WHERE attendance = 'hadir'), 0) AS total_tamu_hadir
+     FROM guestbook
+     WHERE invitation_id = $1`,
+    [invitationId],
+  );
+  const row = rows[0];
+  return {
+    total: Number(row.total),
+    hadir: Number(row.hadir),
+    tidakHadir: Number(row.tidak_hadir),
+    totalTamuHadir: Number(row.total_tamu_hadir),
+  };
+}
