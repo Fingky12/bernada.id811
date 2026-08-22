@@ -50,19 +50,23 @@ Isi wajib: root cause, bukti (file/commit/test), solusi terbukti, solusi yang ga
 ## 5. Aturan Operasional (ringkas — detail di docs/knowledge/operational-rules.md)
 
 **PostgreSQL:**
+
 - Cek server running → cek readiness → reuse jika sehat.
 - Jangan start instance kedua; jangan stop service yang bukan dibuat workflow ini.
 - Jangan paksa hapus `postmaster.pid`.
 
 **Database safety:**
+
 - Tanpa verifikasi → dilarang: drop database, truncate produksi, delete massal tanpa WHERE, ubah migrasi yang sudah diterapkan.
 - Gunakan jalur resmi: migrasi baru `database/migrations/000N_*.sql` + `npm run migrate`.
 
 **E2E:**
+
 - Urutan: health check DB → health check API (`npm run test:health`) → baru test.
 - Gagal → diagnosis dulu, jangan retry membabi buta.
 
 **Umum:**
+
 - Jangan reinstall dependency sebagai langkah pertama.
 - Jangan restart service berulang tanpa diagnosis.
 
@@ -124,14 +128,12 @@ dokumentasi, maupun perubahan lainnya.
    - Jangan otomatis melanjutkan task, sprint, audit, atau pekerjaan lain.
    - Tunggu instruksi berikutnya dari manusia.
 
-8. LANJUT/NANTI
-   -Cantumkan Progress yang menggantung/Belom PASS
-   -List Kerjaan Yang Menggantung
-   -Plan-Plan Yang Mau Dikerjakan Setelah Ini
-
-
+8. LANJUT Kerjakan/NANTI
+   1. Commit & push Github?
+   2. Cantumkan List Progress yang menggantung/Belom PASS & List Kerjaan saat ini belom clear
+   3. List Perbaikan Bug/Error saat ini, Perbaiki?
+   4. Berikan Plan-Plan Berikutnya Yang Dikerjakan Setelah Ini (Tergantung Keputusan)
 
 PRINSIP UTAMA:
 Setiap perubahan harus mengikuti aturan project, scope task,
 verification, project history, dan workflow di atas.
-
