@@ -752,6 +752,7 @@ body.nav-open {
     position: relative;
     isolation: isolate;
     overflow: hidden;
+    overflow-x: clip;
 }
 
 .portfolio::after {
@@ -1067,8 +1068,9 @@ body.nav-open {
 
 .footer-top {
     display: grid;
-    gap: var(--spacing-xl);
+    gap: var(--spacing-2xl);
     padding-block: var(--spacing-5xl);
+    align-items: start;
 }
 
 .footer-brand .brand-text {
@@ -1077,29 +1079,37 @@ body.nav-open {
 }
 
 .footer-brand p {
-    margin: var(--spacing-xl) 0 0;
+    margin: var(--spacing-md) 0 0;
     max-width: var(--container-sm);
     font-size: var(--font-size-sm);
     color: var(--color-gray-400);
+    line-height: var(--line-height-relaxed);
 }
 
 .footer-heading {
-     margin: 0 0 var(--spacing-xl);
+     margin: 0 0 var(--spacing-md);
      font-family: var(--font-family-body);
      font-size: var(--font-size-sm);
      font-weight: var(--font-weight-semibold);
      color: var(--color-text-inverse);
+     text-transform: uppercase;
+     letter-spacing: var(--letter-spacing-wide);
  }
 
 .footer-links {
     display: grid;
-    gap: var(--spacing-xs);
+    gap: var(--spacing-sm);
 }
 
 .footer-links a {
     display: inline-block;
     font-size: var(--font-size-sm);
     text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+.footer-links a:hover {
+    color: var(--color-gold-400);
 }
 
 .footer-contact {
