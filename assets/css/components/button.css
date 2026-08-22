@@ -57,7 +57,7 @@
 
 .btn-primary:hover {
     background: var(--color-primary-600);
-    transform: translateY(-3px);
+    transform: translateY(var(--motion-lift-sm));
     color: var(--color-text-inverse);
 }
 
@@ -181,7 +181,7 @@
 
 .btn-success:hover {
     background: var(--color-success-600);
-    transform: translateY(-3px);
+    transform: translateY(var(--motion-lift-sm));
 }
 
 .btn-success:active {
@@ -206,7 +206,7 @@
 
 .btn-danger:hover {
     background: var(--color-danger-600);
-    transform: translateY(-3px);
+    transform: translateY(var(--motion-lift-sm));
 }
 
 .btn-danger:active {
@@ -232,7 +232,7 @@
 
 .btn-gold:hover {
     background: var(--color-gold-600);
-    transform: translateY(-3px);
+    transform: translateY(var(--motion-lift-sm));
 }
 
 .btn-gold:active {

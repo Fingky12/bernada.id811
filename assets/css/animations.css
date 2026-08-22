@@ -102,7 +102,7 @@
 @keyframes slide-up {
     from {
         opacity: 0;
-        transform: translateY(1.5rem);
+        transform: translateY(var(--motion-distance-md));
     }
 
     to {
@@ -114,7 +114,7 @@
 @keyframes slide-down {
     from {
         opacity: 0;
-        transform: translateY(-1.5rem);
+        transform: translateY(calc(var(--motion-distance-md) * -1));
     }
 
     to {
@@ -126,7 +126,7 @@
 @keyframes slide-left {
     from {
         opacity: 0;
-        transform: translateX(1.5rem);
+        transform: translateX(var(--motion-distance-md));
     }
 
     to {
@@ -138,7 +138,7 @@
 @keyframes slide-right {
     from {
         opacity: 0;
-        transform: translateX(-1.5rem);
+        transform: translateX(calc(var(--motion-distance-md) * -1));
     }
 
     to {
@@ -160,7 +160,7 @@
 @keyframes zoom-in {
     from {
         opacity: 0;
-        transform: scale(0.95);
+        transform: scale(var(--motion-scale-down));
     }
 
     to {
@@ -177,7 +177,7 @@
 
     to {
         opacity: 0;
-        transform: scale(0.95);
+        transform: scale(var(--motion-scale-down));
     }
 }
 
@@ -195,7 +195,7 @@
 @keyframes rotate-in {
     from {
         opacity: 0;
-        transform: rotate(-8deg) scale(0.96);
+        transform: rotate(var(--motion-rotate-slight)) scale(0.96);
     }
 
     to {

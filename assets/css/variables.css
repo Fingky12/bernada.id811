@@ -604,4 +604,55 @@
   /* Durasi melayang ornamen (gerakan halus, siklus penuh) */
   --animation-float: 6s;        /* naik-turun sekali dalam 6 detik */
 
+/* ==========================================================
+   19. MOTION DISTANCES (PHASE 2)
+   ----------------------------------------------------------
+   Jarak dan rotasi untuk animasi, transisi, dan interaksi.
+   ========================================================== */
+
+  --motion-distance-sm: 0.5rem;   /* jarak kecil - subtle shift */
+  --motion-distance-md: 1.5rem;   /* jarak sedang - noticeable move */
+  --motion-distance-lg: 2rem;     /* jarak besar - dramatic effect */
+  --motion-rotate-slight: -8deg;  /* rotasi halus - tilt effect */
+  --motion-scale-down: 0.95;      /* skala kurang - shrink effect */
+
+/* ==========================================================
+   20. HOVER LIFTS (PHASE 2)
+   ----------------------------------------------------------
+   Lift effect untuk button, card, interactive elements.
+   ========================================================== */
+
+  --motion-lift-sm: -3px;         /* lift kecil - subtle */
+  --motion-lift-md: -4px;         /* lift sedang - standard */
+  --motion-lift-lg: -6px;         /* lift besar - dramatic */
+
+/* ==========================================================
+   21. FORM CONTROLS (PHASE 3)
+   ----------------------------------------------------------
+   Offset dan jarak untuk form elements.
+   ========================================================== */
+
+  --form-switch-distance: 1.375rem;  /* jarak geser switch */
+  --form-check-offset: 2px;           /* offset checkbox */
+  --form-switch-offset: 2px;          /* offset switch knob */
+
+/* ==========================================================
+   22. DECORATIVE ELEMENTS (PHASE 3)
+   ----------------------------------------------------------
+   Ukuran garis dan titik dekoratif.
+   ========================================================== */
+
+  --deco-line-thin: 1px;           /* garis tipis */
+  --deco-line-md: 2px;             /* garis sedang */
+  --deco-dot-sm: 0.5rem;           /* titik kecil */
+
+/* ==========================================================
+   23. LAYOUT CONSTRAINTS (PHASE 3)
+   ----------------------------------------------------------
+   Ukuran dan batasan untuk layout grid.
+   ========================================================== */
+
+  --layout-sidebar-width: 20rem;    /* lebar sidebar */
+  --layout-grid-min-width: 17.5rem; /* lebar kolom grid minimal */
+
 }
