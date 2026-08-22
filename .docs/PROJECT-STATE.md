@@ -189,3 +189,24 @@ npm run test:health
 
 ### Result
 All 4 NEEDS FIX items from Sprint 9 audit completed. Admin panel details, auth user flow, and footer/ responsive behavior now visually consistent with BERNADA.ID design system. Code flows scoped, token-based, non-breaking.
+
+---
+
+## Aturan Tambahan — Workflow Kerja BERNADA.ID
+**Date:** 22-08-2026
+**Status:** COMPLETED
+
+### Completed
+- Tambahkan section "8. WORKFLOW KERJA BERNADA.ID — WAJIB" ke `AGENTS.md`
+- Workflow wajib 7 langkah: PAHAMI → BACA KONTEKS RELEVAN → KERJA → VERIFY → PROJECT HISTORY → REPORT → STOP
+- Berlaku untuk setiap perubahan tanpa membedakan besar/kecil
+
+### Files Changed
+- `AGENTS.md`: +51 baris (section 8, tanpa mengubah aturan lain)
+
+### Verification
+- Diff review: PASS (hanya penambahan, tidak ada penghapusan/perubahan aturan lama)
+- Struktur file: PASS (section 8 diakhiri file, format konsisten)
+
+### Result
+AGENTS.md kini memuat workflow wajib yang mengikat untuk semua perubahan project ke depannya.

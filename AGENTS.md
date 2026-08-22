@@ -77,3 +77,54 @@ Isi wajib: root cause, bukti (file/commit/test), solusi terbukti, solusi yang ga
 - Jangan commit `.env`, secret, credential.
 - Jangan tulis secret/password ke log, knowledge base, atau dokumen.
 - Periksa `git status` dan `git diff` sebelum commit. AI hanya commit atas perintah eksplisit manusia (lihat `.ai/rules/06-git-workflow.md`).
+
+---
+
+## 8. WORKFLOW KERJA BERNADA.ID — WAJIB
+
+Workflow ini berlaku untuk SETIAP perubahan tanpa membedakan besar/kecil:
+feature, bug fix, UI/UX, refactor, audit, maintenance, konfigurasi,
+dokumentasi, maupun perubahan lainnya.
+
+### Urutan wajib
+
+1. PAHAMI
+   - Pahami tujuan dan scope task.
+   - Jangan memperluas pekerjaan tanpa instruksi.
+
+2. BACA KONTEKS RELEVAN
+   - Baca hanya file, skill, dan dokumentasi yang diperlukan.
+   - Jangan membaca seluruh project jika tidak relevan.
+
+3. KERJA
+   - Lakukan perubahan sesuai scope dan aturan BERNADA.ID.
+   - Jangan mengerjakan pekerjaan tambahan di luar scope.
+
+4. VERIFY
+   - Jalankan verification/test yang relevan terhadap perubahan.
+   - Jangan menyatakan PASS jika belum diverifikasi.
+   - Jika gagal, diagnosis dan perbaiki sebelum menyatakan selesai.
+
+5. PROJECT HISTORY
+   - Setelah pekerjaan selesai dan verification PASS,
+     TAMBAHKAN history baru ke `.docs/PROJECT-STATE.md`.
+   - Jangan menghapus, menimpa, atau mengganti history sebelumnya.
+   - Catat hanya pekerjaan yang benar-benar selesai.
+
+6. REPORT
+   Report wajib mencantumkan:
+   - pekerjaan yang dilakukan
+   - file yang berubah
+   - verification yang dijalankan
+   - hasil verification
+   - status akhir
+
+7. STOP
+   - Setelah report selesai, STOP.
+   - Jangan otomatis melanjutkan task, sprint, audit, atau pekerjaan lain.
+   - Tunggu instruksi berikutnya dari manusia.
+
+PRINSIP UTAMA:
+Setiap perubahan harus mengikuti aturan project, scope task,
+verification, project history, dan workflow di atas.
+
