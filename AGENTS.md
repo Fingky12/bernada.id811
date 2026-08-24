@@ -2,9 +2,24 @@
 
 > Instruksi untuk OpenCode (AI agent) agar setiap masalah yang selesai menjadi **pengetahuan reusable** pada sesi berikutnya.
 
+## Fakta Teknis Kunci (terverifikasi)
+
+- **Stack**: Node ≥22 ESM (`"type": "module"`), Express 5, PostgreSQL lokal (v18.4, scoop), tanpa ORM (`pg` + SQL mentah), tanpa build step frontend.
+- **Env**: semua script memuat `.env` via flag native `--env-file-if-exists=.env` — bukan `dotenv`. Jangan tambah library env.
+- **Entrypoint**: `server/index.js` → `server/app.js`; pool DB lazy di `server/db.js` (server tetap hidup saat DB mati — jangan asumsikan DB down hanya karena `/api/health` hidup).
+- **Verifikasi** (tidak ada lint/test framework): urutan wajib
+  1. DB ready (`pg_isready`, lihat skill `postgres-windows`)
+  2. `npm run test:health` (exit 1 = FAIL)
+  3. Sentuh auth/admin/DB → `node --env-file-if-exists=.env scripts/e2e-sprint5.mjs`
+- **Migrasi**: append-only, file baru `database/migrations/00NN_*.sql` + `npm run migrate`. Dilarang edit/hapus file yang sudah tercatat di `schema_migrations` (lesson L-001).
+- **Start/stop stack lengkap** (PostgreSQL + API): `start-bernada.ps1` / `stop-bernada.ps1` di root. Script ini tahu path scoop & reuse instance berjalan — pakai, jangan bikin start instance sendiri.
+- **Rate limit in-memory per IP** (auth 10/mnt) → E2E beruntun bisa kena `429`; skrip sudah self-heal (tunggu 61s, retry sekali). Jangan matikan rate limiter agar test lolos (L-002).
+- **Versi**: percaya `package.json`, bukan header versi di README (README sering telat update).
+- **Admin CLI**: `npm run admin:promote -- <email>`.
+
 ---
 
-## 1. Hierarki Sumber Kebenaran
+## Hierarki Sumber Kebenaran
 
 1. `.ai/rules/00-opencode.md` — Constitution AI (tertinggi) + `.ai/rules/*`.
 2. `AGENTS.md` (file ini) — alur kerja knowledge.
@@ -14,7 +29,7 @@
 
 Konflik antar aturan → yang lebih tinggi menang (lihat Constitution §2).
 
-## 2. Sebelum Perubahan Besar (WAJIB)
+## 2. Sebelum Perubahan(WAJIB)
 
 1. Baca `AGENTS.md`.
 2. Muat skill yang relevan dengan domain perubahan:
@@ -103,6 +118,7 @@ dokumentasi, maupun perubahan lainnya.
 3. KERJA
    - Lakukan perubahan sesuai scope dan aturan BERNADA.ID.
    - Jangan mengerjakan pekerjaan tambahan di luar scope.
+   - Audit (lihat `.ai/rules/10-engineering-workflow.md`)
 
 4. VERIFY
    - Jalankan verification/test yang relevan terhadap perubahan.
